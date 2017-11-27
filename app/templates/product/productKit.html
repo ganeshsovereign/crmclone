@@ -1,24 +1,24 @@
 <td>
-				{{line.sequence}}
+	{{line.sequence}}
 </td>
 
 <td>
-				<a ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a>
+	<a ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a>
 </td>
 
 <td>
-				<pre class="no-padding small">{{ line.description || 'empty' }}</pre>
+	<pre class="no-padding small">{{ line.description || 'empty' }}</pre>
 </td>
 
 
 <td class="align-right">
-				<span>{{ line.qty || 0 }} <small>{{line.product.unit}}</small></span>
-				<div ng-if="line.product.info.productType.inventory">
-								<hr>
-								<div>{{line.allocated || '0'}} Alloués</div>
-								<div>{{line.onHand || '0'}} Disponibles</div>
-								<div>{{line.fulfilled || '0'}} Expediés</div>
-				</div>
+	<span>{{ line.qty || 0 }} <small>{{line.product.unit}}</small></span>
+	<div ng-if="line.product.info.productType.inventory">
+		<hr>
+		<div>{{line.allocated || '0'}} Alloués</div>
+		<div>{{line.onHand || '0'}} Disponibles</div>
+		<div>{{line.fulfilled || '0'}} Expediés</div>
+	</div>
 </td>
 
 <!--<td class="align-right">
@@ -33,20 +33,20 @@
 </td>-->
 
 <td class="align-right">
-				<div class="row" ng-repeat="tax in line.total_taxes">
-								<div class="col-md-12" ng-if="tax.taxeId.rate">
-												<span>{{ tax.value | currency}} ({{tax.taxeId.rate | percent:1}})</span>
-								</div>
-								<div class="col-md-12" ng-if="tax.taxeId.isFixValue">
-												<span>{{ tax.value | currency}} ({{tax.taxeId.code}})</span>
-								</div>
-				</div>
+	<div class="row" ng-repeat="tax in line.total_taxes">
+		<div class="col-md-12" ng-if="tax.taxeId.rate">
+			<span>{{ tax.value | currency}} ({{tax.taxeId.rate | percent:1}})</span>
+		</div>
+		<div class="col-md-12" ng-if="tax.taxeId.isFixValue">
+			<span>{{ tax.value | currency}} ({{tax.taxeId.code}})</span>
+		</div>
+	</div>
 </td>
 
 <td colspan="4">
 </td>
 
 <td>
-				<div class="btn-toolbar" role="toolbar">
-				</div>
+	<div class="btn-toolbar" role="toolbar">
+	</div>
 </td>

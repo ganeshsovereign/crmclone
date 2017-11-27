@@ -1,244 +1,244 @@
 <div ng-if="user.isremoved" class="alert alert-danger">
-				<strong>@(users:BeCareful)</strong>&nbsp;@(users:UserHasBeenDeleted)
+	<strong>@(users:BeCareful)</strong>&nbsp;@(users:UserHasBeenDeleted)
 </div>
 
 <div class="page-bar" ng-init="findOne()">
-				<ul class="page-breadcrumb">
-								<li>
-												<i class="fa fa-home"></i>
-												<a ui-sref="home">@(Home)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span>@(Parameters)</span>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span>@(companies:ManagementEntity)</span>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<a ui-sref="settings.entity.list">@(companies:ListOfEntity)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span>@(companies:CardEntity) :</span>
-								</li>
-								<li>
-												<span class="font-green-jungle sbold">{{object.name}}</span>
-								</li>
-				</ul>
-				<div class="page-toolbar" ng-hide="user.isremoved">
-								<div class="btn-group pull-right">
-												<button type="button" class="btn yellow-lemon dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+	<ul class="page-breadcrumb">
+		<li>
+			<i class="fa fa-home"></i>
+			<a ui-sref="home">@(Home)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span>@(Parameters)</span>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span>@(companies:ManagementEntity)</span>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<a ui-sref="settings.entity.list">@(companies:ListOfEntity)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span>@(companies:CardEntity) :</span>
+		</li>
+		<li>
+			<span class="font-green-jungle sbold">{{object.name}}</span>
+		</li>
+	</ul>
+	<div class="page-toolbar" ng-hide="user.isremoved">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn yellow-lemon dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                 @(Tools) <i class="fa fa-angle-down"></i>
             </button>
-												<ul class="dropdown-menu pull-right" role="menu">
-																<li>
-																				<a href="#" class="font-red" ng-show="login.rights.object.delete" confirmed-click="remove(object)" ng-confirm-click="@(ConfirmDeleteUser)" title="Delete Users ?">
+			<ul class="dropdown-menu pull-right" role="menu">
+				<li>
+					<a href="#" class="font-red" ng-show="login.rights.object.delete" confirmed-click="remove(object)" ng-confirm-click="@(ConfirmDeleteUser)" title="Delete Users ?">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
-																</li>
-												</ul>
-								</div>
-				</div>
+				</li>
+			</ul>
+		</div>
+	</div>
 </div>
 
 <div ng-if="object.isremoved" class="alert alert-danger"><strong>@(users:BeCareful) !</strong> @(users:UserHasBeenDeleted) </div>
 
 <div class="row">
-				<div class="col-md-offset-1 col-md-10">
-								<div class="row">
-												<div class="col-md-12">
-																<div class="col-md-3 col-sm-12">
-																				<div class="portlet light portlet bordered">
-																								<div class="portlet-body">
-																												<div class="row">
-																																<div class="row list-separated profile-stat">
-																																				<div class="col-md-12">
-																																								<div class="col-md-6">
-																																												<div class="profile">
-																																																<img ng-src="{{getImage('product', object.imageSrc)}}" class="img-responsive" alt="Entity" />
-																																												</div>
-																																								</div>
-																																								<div class="col-md-6">
-																																												<div class="profile-usertitle">
-																																																<div class="row">
-																																																				<div class="col-md-12">
-																																																								<h5 class="page-title" ng-class="{'font-red':!object.isEnable}">
-																																																												<i class="fa fa-user"></i> {{object.name}}
-																																																				</div>
-																																																</div>
-																																																<hr>
-																																																<div class="row">
-																																																				<div class="col-md-12">
-																																																								<div class="md-checkbox-inline">
-																																																												<div class="md-checkbox has-success">
-																																																																<input type="checkbox" id="isEnable" class="md-check" ng-model="object.isEnable" ng-checked="object.isEnable">
-																																																																<label for="isEnable">
+	<div class="col-md-offset-1 col-md-10">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-3 col-sm-12">
+					<div class="portlet light portlet bordered">
+						<div class="portlet-body">
+							<div class="row">
+								<div class="row list-separated profile-stat">
+									<div class="col-md-12">
+										<div class="col-md-6">
+											<div class="profile">
+												<img ng-src="{{getImage('product', object.imageSrc)}}" class="img-responsive" alt="Entity" />
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="profile-usertitle">
+												<div class="row">
+													<div class="col-md-12">
+														<h5 class="page-title" ng-class="{'font-red':!object.isEnable}">
+															<i class="fa fa-user"></i> {{object.name}}
+													</div>
+												</div>
+												<hr>
+												<div class="row">
+													<div class="col-md-12">
+														<div class="md-checkbox-inline">
+															<div class="md-checkbox has-success">
+																<input type="checkbox" id="isEnable" class="md-check" ng-model="object.isEnable" ng-checked="object.isEnable">
+																<label for="isEnable">
                                                                 <span></span>
                                                                 <span class="check"></span>
                                                                 <span class="box"></span> @(Activated)</label>
-																																																												</div>
-																																																								</div>
-																																																				</div>
-																																																</div>
+															</div>
+														</div>
+													</div>
+												</div>
 
-																																												</div>
-																																								</div>
-																																				</div>
-																																</div>
-																												</div>
-																												<div class="row">
-																																<div class="profile-usermenu">
-																																				<ul class="nav">
-																																								<li ng-class="{active: $state.includes('settings.entity.show.billing')}">
-																																												<a ui-sref="settings.entity.show.billing({id:object._id})">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="profile-usermenu">
+									<ul class="nav">
+										<li ng-class="{active: $state.includes('settings.entity.show.billing')}">
+											<a ui-sref="settings.entity.show.billing({id:object._id})">
                                                 <i class="icon-credit-card"></i> @(orders:Billing) </a>
-																																								</li>
-																																				</ul>
-																																</div>
-																												</div>
-																												<div class="row">
-																																<div class="col-md-offset-1 col-md-10">
-																																				<div class="row list-separated profile-stat">
-																																								<div class=" col-md-6 col-sm-6 col-xs-6">
-																																												<div class="uppercase profile-stat-title"> <i class="icon-calendar font-yellow-crusta"></i> {{object.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
-																																								</div>
-																																								<div class="col-md-6 col-sm-6 col-xs-6">
-																																												<div class="uppercase profile-stat-title"> <i class="icon-refresh font-yellow-crusta"></i> {{object.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
-																																								</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-offset-1 col-md-10">
+									<div class="row list-separated profile-stat">
+										<div class=" col-md-6 col-sm-6 col-xs-6">
+											<div class="uppercase profile-stat-title"> <i class="icon-calendar font-yellow-crusta"></i> {{object.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
+										</div>
+										<div class="col-md-6 col-sm-6 col-xs-6">
+											<div class="uppercase profile-stat-title"> <i class="icon-refresh font-yellow-crusta"></i> {{object.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+										</div>
 
-																																								<div>
-																																												<div class="col-md-6 col-sm-6 col-xs-6">
-																																																<div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{object.creationDate.username}}</a> </div>
-																																																<!--<div class="uppercase profile-stat-text"> @(CreatedBy)</div>-->
-																																												</div>
-																																												<div class="col-md-6 col-sm-6 col-xs-6">
-																																																<div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{object.editedBy.username}}</a> </div>
-																																																<!-- <div class="uppercase profile-stat-text"> @(EditedBy) </div>-->
-																																												</div>
-																																								</div>
-																																				</div>
+										<div>
+											<div class="col-md-6 col-sm-6 col-xs-6">
+												<div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{object.creationDate.username}}</a> </div>
+												<!--<div class="uppercase profile-stat-text"> @(CreatedBy)</div>-->
+											</div>
+											<div class="col-md-6 col-sm-6 col-xs-6">
+												<div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{object.editedBy.username}}</a> </div>
+												<!-- <div class="uppercase profile-stat-text"> @(EditedBy) </div>-->
+											</div>
+										</div>
+									</div>
 
-																																				<div class="row list-separated profile-stat">
-																																								<div class="col-md-12">
-																																												<div class="uppercase profile-stat-title"> <i class="icon-key font-yellow-crusta"></i> {{object.lastConnection | date:'dd/MM/yyyy'}} </div>
+									<div class="row list-separated profile-stat">
+										<div class="col-md-12">
+											<div class="uppercase profile-stat-title"> <i class="icon-key font-yellow-crusta"></i> {{object.lastConnection | date:'dd/MM/yyyy'}} </div>
 
-																																								</div>
-																																				</div>
-																																</div>
-																												</div>
-																								</div>
-																				</div>
-																</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-																<div class="col-md-9  col-sm-12">
-																				<div class="form-horizontal form-row-seperated">
-																								<div class="portlet light bordered">
-																												<div class="portlet-title">
-																																<div ng-if="object._id" class="caption">
-																																				<i class="icon-info"></i>
-																																				<span class="caption-subject dark bold uppercase"> @(users:Main)</span>
-																																</div>
-																																<div ng-if="!object._id" class="caption">
-																																				<i class="icon-magic-wand"></i>
-																																				<span class="caption-subject dark bold uppercase"> @(companies:NewEntity)</span>
-																																</div>
-																																<save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
-																												</div>
+				<div class="col-md-9  col-sm-12">
+					<div class="form-horizontal form-row-seperated">
+						<div class="portlet light bordered">
+							<div class="portlet-title">
+								<div ng-if="object._id" class="caption">
+									<i class="icon-info"></i>
+									<span class="caption-subject dark bold uppercase"> @(users:Main)</span>
+								</div>
+								<div ng-if="!object._id" class="caption">
+									<i class="icon-magic-wand"></i>
+									<span class="caption-subject dark bold uppercase"> @(companies:NewEntity)</span>
+								</div>
+								<save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+							</div>
 
-																												<div class="portlet-body">
-																																<div class="form-body">
-																																				<div class="row">
-																																								<div class="col-md-6 col-sm-12">
-																																												<div class="portlet light bordered">
-																																																<div class="form-group form-md-line-input has-success">
-																																																				<input type="text" class="form-control" id="Name" ng-model="object.name">
-																																																				<label for="Name">@(Name)<span class="required">
+							<div class="portlet-body">
+								<div class="form-body">
+									<div class="row">
+										<div class="col-md-6 col-sm-12">
+											<div class="portlet light bordered">
+												<div class="form-group form-md-line-input has-success">
+													<input type="text" class="form-control" id="Name" ng-model="object.name">
+													<label for="Name">@(Name)<span class="required">
                                                             * </span></label>
-																																																</div>
+												</div>
 
-																																																<div class="form-group form-md-line-input">
-																																																				<input type="text" class="form-control" id="brand" ng-model="object.companyInfo.brand">
-																																																				<label for="brand">@(companies:SocGroupShort) </label>
-																																																</div>
+												<div class="form-group form-md-line-input">
+													<input type="text" class="form-control" id="brand" ng-model="object.companyInfo.brand">
+													<label for="brand">@(companies:SocGroupShort) </label>
+												</div>
 
-																																																<div class="caption">
-																																																				<address ng-model="object.address" mode="simple"></address>
-																																																</div>
-																																												</div>
-																																								</div>
-																																								<div class="col-md-6 col-sm-12">
-																																												<div class="portlet light bordered">
-																																																<div class="row">
-																																																				<div class="col-md-12 col-sm-12">
-																																																								<div class="form-group form-md-line-input">
-																																																												<input type="text" class="form-control" id="BankingEtablishment" ng-model="object.companyInfo.idprof2">
-																																																												<label for="BankingEtablishment">@(companies:ProfId2FR)</label>
-																																																								</div>
+												<div class="caption">
+													<address ng-model="object.address" mode="simple"></address>
+												</div>
+											</div>
+										</div>
+										<div class="col-md-6 col-sm-12">
+											<div class="portlet light bordered">
+												<div class="row">
+													<div class="col-md-12 col-sm-12">
+														<div class="form-group form-md-line-input">
+															<input type="text" class="form-control" id="BankingEtablishment" ng-model="object.companyInfo.idprof2">
+															<label for="BankingEtablishment">@(companies:ProfId2FR)</label>
+														</div>
 
-																																																								<div class="form-group form-md-line-input">
-																																																												<input type="text" class="form-control" id="IBAN" ng-model="object.companyInfo.idprof3">
-																																																												<label for="IBAN">@(companies:ProfId3FR)</label>
-																																																								</div>
+														<div class="form-group form-md-line-input">
+															<input type="text" class="form-control" id="IBAN" ng-model="object.companyInfo.idprof3">
+															<label for="IBAN">@(companies:ProfId3FR)</label>
+														</div>
 
-																																																								<div class="form-group form-md-line-input">
-																																																												<input type="text" class="form-control" id="BIC/SWIFT" ng-model="employee.companyInfo.forme_juridique_code">
-																																																												<label for="BIC/SWIFT">@(companies:ProfId5FR)</label>
-																																																								</div>
-																																																				</div>
-																																																</div>
-																																												</div>
+														<div class="form-group form-md-line-input">
+															<input type="text" class="form-control" id="BIC/SWIFT" ng-model="employee.companyInfo.forme_juridique_code">
+															<label for="BIC/SWIFT">@(companies:ProfId5FR)</label>
+														</div>
+													</div>
+												</div>
+											</div>
 
-																																												<div class="portlet light bordered">
-																																																<div class="form-group form-md-line-input">
-																																																				<input type="text" class="form-control" id="Phone" ng-model="object.phones.phone">
-																																																				<label for="Tel-Fixe">@(Tel-Fixe)</label>
-																																																</div>
+											<div class="portlet light bordered">
+												<div class="form-group form-md-line-input">
+													<input type="text" class="form-control" id="Phone" ng-model="object.phones.phone">
+													<label for="Tel-Fixe">@(Tel-Fixe)</label>
+												</div>
 
-																																																<div class="form-group form-md-line-input">
-																																																				<input type="text" class="form-control" id="PhoneMobile" ng-model="object.phones.mobile">
-																																																				<label for="PhoneMobile">@(companies:PhoneMobile) </label>
-																																																</div>
+												<div class="form-group form-md-line-input">
+													<input type="text" class="form-control" id="PhoneMobile" ng-model="object.phones.mobile">
+													<label for="PhoneMobile">@(companies:PhoneMobile) </label>
+												</div>
 
-																																																<div class="form-group form-md-line-input">
-																																																				<input type="text" class="form-control" id="Fax" ng-model="object.phones.fax">
-																																																				<label for="Fax">@(Fax) </label>
-																																																</div>
+												<div class="form-group form-md-line-input">
+													<input type="text" class="form-control" id="Fax" ng-model="object.phones.fax">
+													<label for="Fax">@(Fax) </label>
+												</div>
 
-																																																<div class="form-group form-md-line-input">
-																																																				<div class="input-group">
-																																																								<div class="input-group-control">
-																																																												<input type="text" class="form-control" id="Email" ng-model="object.emails.email">
-																																																												<label for="Email">@(Email)</label>
-																																																								</div>
-																																																								<span class="input-group-btn btn-right">
+												<div class="form-group form-md-line-input">
+													<div class="input-group">
+														<div class="input-group-control">
+															<input type="text" class="form-control" id="Email" ng-model="object.emails.email">
+															<label for="Email">@(Email)</label>
+														</div>
+														<span class="input-group-btn btn-right">
                                                                     <a ng-href="mailto:{{object.emails.email}}"  class="btn yellow" type="button"> <i class="fa fa-envelope"></i></a>
                                                                 </span>
-																																																				</div>
-																																																</div>
+													</div>
+												</div>
 
-																																																<div class="form-group form-md-line-input">
-																																																				<div class="input-group">
-																																																								<div class="input-group-control">
-																																																												<input type="text" placeholder="@(companies:WithHttp)" class="form-control" id="object.url" ng-model="object.url">
-																																																												<label for="object.url">@(Web) </label>
-																																																								</div>
-																																																								<span class="input-group-btn btn-right">
+												<div class="form-group form-md-line-input">
+													<div class="input-group">
+														<div class="input-group-control">
+															<input type="text" placeholder="@(companies:WithHttp)" class="form-control" id="object.url" ng-model="object.url">
+															<label for="object.url">@(Web) </label>
+														</div>
+														<span class="input-group-btn btn-right">
                                                                         <a ng-href="http://{{object.url}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-globe"></i></a>
                                                                     </span>
-																																																				</div>
-																																																</div>
-																																												</div>
-																																								</div>
-																																				</div>
-																																</div>
-																												</div>
-																								</div>
-																				</div>
-																</div>
+													</div>
 												</div>
+											</div>
+										</div>
+									</div>
 								</div>
+							</div>
+						</div>
+					</div>
 				</div>
+			</div>
+		</div>
+	</div>
 </div>

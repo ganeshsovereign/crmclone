@@ -1,78 +1,78 @@
 <div class="portlet light portlet-form bordered">
-				<div class="portlet-title">
-								<div class="caption">
-												<i class="icon-picture"></i>
-												<span class="caption-subject dark bold uppercase"> @(AttachedFiles)</span>
-								</div>
-								<div class="tools">
-												<a href="" class="collapse"> </a>
-								</div>
-				</div>
-				<div class="portlet-body">
-								<div ng-include="'/templates/gridfs/file.html'"></div>
-				</div>
+	<div class="portlet-title">
+		<div class="caption">
+			<i class="icon-picture"></i>
+			<span class="caption-subject dark bold uppercase"> @(AttachedFiles)</span>
+		</div>
+		<div class="tools">
+			<a href="" class="collapse"> </a>
+		</div>
+	</div>
+	<div class="portlet-body">
+		<div ng-include="'/templates/gridfs/file.html'"></div>
+	</div>
 </div>
 <div class="portlet light portlet-form bordered">
-				<div class="portlet-title">
-								<div class="caption">
-												<i class=" icon-layers font-green"></i>
-												<span class="caption-subject font-green bold uppercase">@(Pictures)</span>
-								</div>
-								<div class="actions">
-												<pagination total-items="page.total" ng-model="page.page" items-per-page="page.limit" max-size="6" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="find()"></pagination>
-												<div id="imagesList_filter" class="dataTables_filter"><label>@(Search) : <input type="text"  ng-model="search" ng-change="find()" class="form-control input-small input-sm input-inline" placeholder="" ></label></div>
-								</div>
-				</div>
-				<div class="portlet-body" style="display: block;">
-								<div class="mt-element-card mt-element-overlay">
-												<div class="row">
-																<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-repeat="image in images">
-																				<div class="mt-card-item">
-																								<div class="mt-card-avatar mt-overlay-1">
-																												<img ng-src="/erp/api/images/bank/m/{{image.imageSrc}}">
-																												<div class="mt-overlay">
-																																<ul class="mt-info">
-																																				<li>
-																																								<a class="btn default btn-outline" href="javascript:;">
+	<div class="portlet-title">
+		<div class="caption">
+			<i class=" icon-layers font-green"></i>
+			<span class="caption-subject font-green bold uppercase">@(Pictures)</span>
+		</div>
+		<div class="actions">
+			<pagination total-items="page.total" ng-model="page.page" items-per-page="page.limit" max-size="6" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="find()"></pagination>
+			<div id="imagesList_filter" class="dataTables_filter"><label>@(Search) : <input type="text"  ng-model="search" ng-change="find()" class="form-control input-small input-sm input-inline" placeholder="" ></label></div>
+		</div>
+	</div>
+	<div class="portlet-body" style="display: block;">
+		<div class="mt-element-card mt-element-overlay">
+			<div class="row">
+				<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-repeat="image in images">
+					<div class="mt-card-item">
+						<div class="mt-card-avatar mt-overlay-1">
+							<img ng-src="/erp/api/images/bank/m/{{image.imageSrc}}">
+							<div class="mt-overlay">
+								<ul class="mt-info">
+									<li>
+										<a class="btn default btn-outline" href="javascript:;">
                                             <i class="icon-magnifier"></i>
                                         </a>
-																																				</li>
-																																				<li>
-																																								<a class="btn default btn-outline" href="javascript:;">
+									</li>
+									<li>
+										<a class="btn default btn-outline" href="javascript:;">
                                             <i class="icon-link"></i>
                                         </a>
-																																				</li>
-																																</ul>
-																												</div>
-																								</div>
-																								<div class="mt-card-content">
-																												<h3 class="mt-card-name">{{image.langs[_language].name}}</h3>
-																												<p class="mt-card-desc font-grey-mint">{{image.imageSrc}}</p>
-																												<!--<p class="mt-card-desc font-grey-mint">{{image.langs[_language].description}}</p>-->
-																												<p class="mt-card-desc font-grey-mint">{{image.size.width}} x {{image.size.height}} ({{image.length | number:2}} MB)</p>
-																												<div class="mt-card-social">
-																																<ul>
-																																				<li>
-																																								<button class="btn btn-icon-only green" ng-hide="productImages.indexOf(image._id)>=0" ng-click="addImageToProduct(image)" ng-if="product._id">
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="mt-card-content">
+							<h3 class="mt-card-name">{{image.langs[_language].name}}</h3>
+							<p class="mt-card-desc font-grey-mint">{{image.imageSrc}}</p>
+							<!--<p class="mt-card-desc font-grey-mint">{{image.langs[_language].description}}</p>-->
+							<p class="mt-card-desc font-grey-mint">{{image.size.width}} x {{image.size.height}} ({{image.length | number:2}} MB)</p>
+							<div class="mt-card-social">
+								<ul>
+									<li>
+										<button class="btn btn-icon-only green" ng-hide="productImages.indexOf(image._id)>=0" ng-click="addImageToProduct(image)" ng-if="product._id">
                                             <i class="fa fa-plus"></i>
                                         </button>
-																																				</li>
-																																				<li>
-																																								<button class="btn btn-icon-only blue" ng-click="editImage(image)">
+									</li>
+									<li>
+										<button class="btn btn-icon-only blue" ng-click="editImage(image)">
                                             <i class="fa fa-pencil"></i>
                                         </button>
-																																				</li>
-																																				<li>
-																																								<button class="btn btn-icon-only red" confirmed-click="delete(image._id, $index)" ng-confirm-click="Supprimer definitivement l'image {{image.imageSrc}} ?">
+									</li>
+									<li>
+										<button class="btn btn-icon-only red" confirmed-click="delete(image._id, $index)" ng-confirm-click="Supprimer definitivement l'image {{image.imageSrc}} ?">
                                             <i class="fa fa-trash"></i>
                                         </button>
-																																				</li>
-																																</ul>
-																												</div>
-																								</div>
-																				</div>
-																</div>
-												</div>
-								</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 				</div>
+			</div>
+		</div>
+	</div>
 </div>

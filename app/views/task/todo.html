@@ -1,86 +1,86 @@
 <div class="todo-main-header">
-				<ul class="todo-breadcrumb">
-								<li>
-												<i class="fa fa-home"></i>
-												<a ui-sref="home">@(Home)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span class="todo-active">Todo</span>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<a ui-sref="task.list">@(tasks:TasksList)</a>
-								</li>
-				</ul>
+	<ul class="todo-breadcrumb">
+		<li>
+			<i class="fa fa-home"></i>
+			<a ui-sref="home">@(Home)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span class="todo-active">Todo</span>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<a ui-sref="task.list">@(tasks:TasksList)</a>
+		</li>
+	</ul>
 </div>
 
 <div class="todo-container">
-				<div class="row">
-								<div class="col-md-3" ng-show="login.groups.length > 1">
-												<ul class="todo-projects-container">
-																<li class="todo-padding-b-0">
-																				<div class="todo-head">
-																								<!--<button class="btn btn-square btn-sm green todo-bold">Add Project</button>-->
-																								<h3>@(Groups)</h3>
-																								<!--<p>4 Waiting Attention</p>-->
-																				</div>
-																</li>
-																<div ng-repeat-start="selectgroup in groups | filter:{countTask: '!!'}" class="todo-projects-divider"></div>
-																<li ng-repeat-end="" class="todo-projects-item" ng-class="{'todo-active':selectgroup.name == group}" ng-click="find(selectgroup.name);">
-																				<h3 class="uppercase" ng-class="{'todo-blue':selectgroup == group}">{{selectgroup.name}}</h3>
-																				<p>{{selectgroup.description}}</p>
-																				<div class="todo-project-item-foot">
-																								<p class="todo-red todo-inline">{{selectgroup.countTask}} @(tasks:TasksRemaining)</p>
-																								<p class="todo-inline todo-float-r">{{selectgroup.count}} @(Members)
-																												<!--<a class="todo-add-button" href="#todo-members-modal" data-toggle="modal">+</a>-->
-																								</p>
-																				</div>
-																</li>
-												</ul>
-								</div>
-								<div ng-class="{'col-md-9':login.groups.length > 1, 'col-md-12':login.groups.length <= 1}">
-												<div class="todo-tasks-container">
-																<div class="todo-head">
-																				<button class="btn btn-square btn-sm red todo-bold" ui-sref="task.create">@(tasks:NewTask)</button>
-																				<h3>
-																								<span class="todo-grey">@(Group) : </span> {{group|| '@(All2)'}} </h3>
-																				<!--<p class="todo-inline">2 Members
+	<div class="row">
+		<div class="col-md-3" ng-show="login.groups.length > 1">
+			<ul class="todo-projects-container">
+				<li class="todo-padding-b-0">
+					<div class="todo-head">
+						<!--<button class="btn btn-square btn-sm green todo-bold">Add Project</button>-->
+						<h3>@(Groups)</h3>
+						<!--<p>4 Waiting Attention</p>-->
+					</div>
+				</li>
+				<div ng-repeat-start="selectgroup in groups | filter:{countTask: '!!'}" class="todo-projects-divider"></div>
+				<li ng-repeat-end="" class="todo-projects-item" ng-class="{'todo-active':selectgroup.name == group}" ng-click="find(selectgroup.name);">
+					<h3 class="uppercase" ng-class="{'todo-blue':selectgroup == group}">{{selectgroup.name}}</h3>
+					<p>{{selectgroup.description}}</p>
+					<div class="todo-project-item-foot">
+						<p class="todo-red todo-inline">{{selectgroup.countTask}} @(tasks:TasksRemaining)</p>
+						<p class="todo-inline todo-float-r">{{selectgroup.count}} @(Members)
+							<!--<a class="todo-add-button" href="#todo-members-modal" data-toggle="modal">+</a>-->
+						</p>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div ng-class="{'col-md-9':login.groups.length > 1, 'col-md-12':login.groups.length <= 1}">
+			<div class="todo-tasks-container">
+				<div class="todo-head">
+					<button class="btn btn-square btn-sm red todo-bold" ui-sref="task.create">@(tasks:NewTask)</button>
+					<h3>
+						<span class="todo-grey">@(Group) : </span> {{group|| '@(All2)'}} </h3>
+					<!--<p class="todo-inline">2 Members
                         <a class="todo-add-button" href="#todo-members-modal" data-toggle="modal">+</a>
                     </p>-->
 
-																				<select ng-model="group" ng-change="find()" ng-options="s for s in login.groups" class="input-small form-control">
+					<select ng-model="group" ng-change="find()" ng-options="s for s in login.groups" class="input-small form-control">
                         <option value="">-- @(tasks:MyTasks) --</option>
                     </select>
 
-																</div>
-																<ul class="todo-tasks-content">
-																				<li class="todo-tasks-item" ng-repeat="task in tasks" ng-class="{'todo-task-ended':task.ended}">
-																								<div class="row">
-																												<div class="col-md-9">
-																																<input uniform type="checkbox" ng-disabled="task.ended" ng-model="task.ended" ng-click="closed(task)" />
-																																<h4 class="todo-inline">
-																																				<a ui-sref="task.show({id:task._id})" ng-class="{bold:!task.ended, 'text-warning':task.usertodo.id != login._id, 'line-through':task.ended}">{{task.name}}</a>
-																																</h4> <span ng-hide="task.ended" class="label label-sm" ng-class="task.status.css">{{task.status.name}}</span> <button ng-show="task.ended && task.author.id == login._id" class="btn btn-sm red" ng-click="setArchived(task)"><i class="fa fa-times"></i> @(tasks:SetArchived)</button>
-																																<p>{{task.description}}</p>
-																												</div>
-																												<div class="col-md-3">
-																																<div class="col-md-12">
-																																				<p class="todo-inline todo-float-r"><a href="#" tooltip-placement="right" uib-tooltip="tasks:AffectedTo">{{task.usertodo.name}}</a>,
-																																								<span ng-class="{'todo-red':task.status.id == 'expired', 'todo-green':task.status.id != 'expired'}">{{task.datef| date:'dd/MM HH:mm'}}</span>
-																																				</p>
-																																</div>
-																																<div class="col-md-12">
-																																				<div class="pull-right">
-																																								<span class="label label-info label-sm">{{task.group.name}}</span>
-																																								<span ng-if="login.multiEntities" class="label label-default label-sm">{{task.entity}}</span>
-																																				</div>
-																																</div>
-																												</div>
-																								</div>
-																				</li>
-																</ul>
-												</div>
-								</div>
 				</div>
+				<ul class="todo-tasks-content">
+					<li class="todo-tasks-item" ng-repeat="task in tasks" ng-class="{'todo-task-ended':task.ended}">
+						<div class="row">
+							<div class="col-md-9">
+								<input uniform type="checkbox" ng-disabled="task.ended" ng-model="task.ended" ng-click="closed(task)" />
+								<h4 class="todo-inline">
+									<a ui-sref="task.show({id:task._id})" ng-class="{bold:!task.ended, 'text-warning':task.usertodo.id != login._id, 'line-through':task.ended}">{{task.name}}</a>
+								</h4> <span ng-hide="task.ended" class="label label-sm" ng-class="task.status.css">{{task.status.name}}</span> <button ng-show="task.ended && task.author.id == login._id" class="btn btn-sm red" ng-click="setArchived(task)"><i class="fa fa-times"></i> @(tasks:SetArchived)</button>
+								<p>{{task.description}}</p>
+							</div>
+							<div class="col-md-3">
+								<div class="col-md-12">
+									<p class="todo-inline todo-float-r"><a href="#" tooltip-placement="right" uib-tooltip="tasks:AffectedTo">{{task.usertodo.name}}</a>,
+										<span ng-class="{'todo-red':task.status.id == 'expired', 'todo-green':task.status.id != 'expired'}">{{task.datef| date:'dd/MM HH:mm'}}</span>
+									</p>
+								</div>
+								<div class="col-md-12">
+									<div class="pull-right">
+										<span class="label label-info label-sm">{{task.group.name}}</span>
+										<span ng-if="login.multiEntities" class="label label-default label-sm">{{task.entity}}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 </div>

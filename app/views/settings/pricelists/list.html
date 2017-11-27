@@ -1,70 +1,70 @@
 <div ui-view=""></div>
 
 <div class="portlet-body">
-				<div class="form-body">
-								<div class="row">
-												<div class="col-md-12">
-																<div class="portlet light bordered">
-																				<div class="portlet-title">
-																								<div class="caption ">
-																												<i class="fa fa-money font-grey-gallery"></i>
-																												<span class="caption-subject font-grey-gallery bold uppercase">@(products:PriceLists)</span>
-																								</div>
-																								<div class="actions">
-																												<a class="btn blue" ui-sref="settings.product.pricelists.create">@(Add) <i class="fa fa-plus"></i></a>
-																												<a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i></a>
-																								</div>
-																				</div>
-																				<div class="tools">
-																				</div>
-																				<div class="portlet light">
-																								<div class="dataTables_wrapper no-footer table-responsive">
-																												<div class="dataTables_wrapper no-footer table-responsive">
-																																<table class="table table-striped table-bordered table-hover no-footer" id="priceList">
-																																				<thead>
-																																								<tr role="row" class="heading">
-																																												<th>@(Code)</th>
-																																												<th>@(Name)</th>
-																																												<th>@(Currency)</th>
-																																												<th>@(Default)</th>
-																																												<th>@(products:FixedPrices)</th>
-																																												<th>@(products:SupplierCost)</th>
-																																												<th>@(products:IsCoef)</th>
-																																												<th>@(products:IsGlobalDiscount)</th>
-																																												<th>@(Discount)</th>
-																																												<th>@(NbOfCustomers)</th>
-																																												<th>@(Action)</th>
-																																								</tr>
-																																				</thead>
-																																				<tbody>
-																																								<tr ng-repeat="line in listObject">
-																																												<td>{{line.priceListCode}}</td>
-																																												<td>{{line.name}}</td>
-																																												<td class="text-center">{{line.currency}}</td>
-																																												<td class="text-center"><span ng-show="line.defaultPriceList == true" class="fa fa-check font-blue"></span></td>
-																																												<td class="text-center"><span ng-show="line.isFixed == true" class="fa fa-check font-blue"></span></td>
-																																												<td class="text-center"><span ng-show="line.cost == true" class="fa fa-check font-blue"></span></td>
-																																												<td class="text-center"><span ng-show="line.isCoef == true" class="fa fa-check font-blue"></span></td>
-																																												<td class="text-center"><span ng-show="line.isGlobalDiscount == true" class="fa fa-check font-blue"></span></td>
-																																												<!--<td><input type="checkbox" class="md-check has-success" ng-model="line.defaultPriceList" disabled ng-checked="line.defaultPriceList"></td>
+	<div class="form-body">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="portlet light bordered">
+					<div class="portlet-title">
+						<div class="caption ">
+							<i class="fa fa-money font-grey-gallery"></i>
+							<span class="caption-subject font-grey-gallery bold uppercase">@(products:PriceLists)</span>
+						</div>
+						<div class="actions">
+							<a class="btn blue" ui-sref="settings.product.pricelists.create">@(Add) <i class="fa fa-plus"></i></a>
+							<a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i></a>
+						</div>
+					</div>
+					<div class="tools">
+					</div>
+					<div class="portlet light">
+						<div class="dataTables_wrapper no-footer table-responsive">
+							<div class="dataTables_wrapper no-footer table-responsive">
+								<table class="table table-striped table-bordered table-hover no-footer" id="priceList">
+									<thead>
+										<tr role="row" class="heading">
+											<th>@(Code)</th>
+											<th>@(Name)</th>
+											<th>@(Currency)</th>
+											<th>@(Default)</th>
+											<th>@(products:FixedPrices)</th>
+											<th>@(products:SupplierCost)</th>
+											<th>@(products:IsCoef)</th>
+											<th>@(products:IsGlobalDiscount)</th>
+											<th>@(Discount)</th>
+											<th>@(NbOfCustomers)</th>
+											<th>@(Action)</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr ng-repeat="line in listObject">
+											<td>{{line.priceListCode}}</td>
+											<td>{{line.name}}</td>
+											<td class="text-center">{{line.currency}}</td>
+											<td class="text-center"><span ng-show="line.defaultPriceList == true" class="fa fa-check font-blue"></span></td>
+											<td class="text-center"><span ng-show="line.isFixed == true" class="fa fa-check font-blue"></span></td>
+											<td class="text-center"><span ng-show="line.cost == true" class="fa fa-check font-blue"></span></td>
+											<td class="text-center"><span ng-show="line.isCoef == true" class="fa fa-check font-blue"></span></td>
+											<td class="text-center"><span ng-show="line.isGlobalDiscount == true" class="fa fa-check font-blue"></span></td>
+											<!--<td><input type="checkbox" class="md-check has-success" ng-model="line.defaultPriceList" disabled ng-checked="line.defaultPriceList"></td>
                                             <td><input type="checkbox" class="md-check has-success" ng-model="line.isFixed" disabled ng-checked="line.isFixed"></td>
                                             <td><input type="checkbox" class="md-check has-success" ng-model="line.cost" disabled ng-checked="line.cost"></td>
                                             <td><input type="checkbox" class="md-check has-success" ng-model="line.isCoef" disabled ng-checked="line.isCoef"></td>
                                             <td><input type="checkbox" class="md-check has-success" ng-model="line.isGlobalDiscount" disabled ng-checked="line.isGlobalDiscount"></td>-->
-																																												<td class="text-center">{{line.discount}} %</td>
-																																												<td class="text-center">{{line.countCustomers}}</td>
-																																												<td>
-																																																<a class="btn green fa fa-pencil" ui-sref="settings.product.pricelists.show({id:line._id})" title="Editer"></a>
-																																																<button ng-if="line.countCustomers == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeletePriceList)" confirmed-click="remove(line)"></button>
-																																												</td>
-																																								</tr>
-																																				</tbody>
-																																</table>
-																												</div>
-																								</div>
-																				</div>
-																</div>
-												</div>
-								</div>
+											<td class="text-center">{{line.discount}} %</td>
+											<td class="text-center">{{line.countCustomers}}</td>
+											<td>
+												<a class="btn green fa fa-pencil" ui-sref="settings.product.pricelists.show({id:line._id})" title="Editer"></a>
+												<button ng-if="line.countCustomers == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeletePriceList)" confirmed-click="remove(line)"></button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
 				</div>
+			</div>
+		</div>
+	</div>
 </div>

@@ -1,41 +1,41 @@
 <div class="portlet portlet light bordered">
-				<div class="portlet-title">
-								<div class="caption">
-												<i class="fa fa-opencart"></i>
-												<span class="caption-subject dark bold uppercase"> {{title}}</span>
-								</div>
-								<div class="actions">
-												<a href="javascript:;" ng-click="tableform.$show()" ng-show="!tableform.$visible && editable" class="btn yellow-crusta">
+	<div class="portlet-title">
+		<div class="caption">
+			<i class="fa fa-opencart"></i>
+			<span class="caption-subject dark bold uppercase"> {{title}}</span>
+		</div>
+		<div class="actions">
+			<a href="javascript:;" ng-click="tableform.$show()" ng-show="!tableform.$visible && editable" class="btn yellow-crusta">
                 <i class="fa fa-pencil"></i> @(Edit) </a>
-								</div>
-				</div>
-				<div class="portlet-body">
-								<form editable-form name="tableform" onaftersave="update()" oncancel="findOne()">
-												<!-- table -->
-												<table class="table table-fixed table-striped table-bordered table-hover no-footer">
-																<thead>
-																				<tr role="row" class="heading">
-																								<th style="width: 140px;">@(products:ProductCode)</th>
-																								<th style="width: 15%;">@(Name)</th>
-																								<th style="width: 80px;">@(QtyOrder)</th>
-																								<!--<th style="width: 100px;">@(QtyFulfilled)</th>
+		</div>
+	</div>
+	<div class="portlet-body">
+		<form editable-form name="tableform" onaftersave="update()" oncancel="findOne()">
+			<!-- table -->
+			<table class="table table-fixed table-striped table-bordered table-hover no-footer">
+				<thead>
+					<tr role="row" class="heading">
+						<th style="width: 140px;">@(products:ProductCode)</th>
+						<th style="width: 15%;">@(Name)</th>
+						<th style="width: 80px;">@(QtyOrder)</th>
+						<!--<th style="width: 100px;">@(QtyFulfilled)</th>
                         <th style="width: 50px;">@(Qty)</th>-->
-																								<th style="width: 50px;">@(Location)</th>
-																								<!--<th style="width: 120px;">@(Reminder)</th>-->
-																								<!--<th style="width: 50px;"><span ng-show="tableform.$visible">@(Action)</span></th>-->
-																				</tr>
-																</thead>
-																<tr ng-repeat="line in linesModel| filter:filterLine" ng-class="{success:line.type == 'SUBTOTAL',bold:line.type == 'SUBTOTAL'}">
-																				<td>
-																								<a ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a>
-																				</td>
-																				<td>
-																								{{ line.product.info.langs[0].name || 'empty' }}
-																				</td>
-																				<td>
-																								{{ line.orderQty || '0' }}
-																				</td>
-																				<!--<td>
+						<th style="width: 50px;">@(Location)</th>
+						<!--<th style="width: 120px;">@(Reminder)</th>-->
+						<!--<th style="width: 50px;"><span ng-show="tableform.$visible">@(Action)</span></th>-->
+					</tr>
+				</thead>
+				<tr ng-repeat="line in linesModel| filter:filterLine" ng-class="{success:line.type == 'SUBTOTAL',bold:line.type == 'SUBTOTAL'}">
+					<td>
+						<a ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a>
+					</td>
+					<td>
+						{{ line.product.info.langs[0].name || 'empty' }}
+					</td>
+					<td>
+						{{ line.orderQty || '0' }}
+					</td>
+					<!--<td>
                         {{ line.deliveryQty || '0' }}
                     </td>
                     <td class="align-right">
@@ -43,14 +43,14 @@
                                                         {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
                                                     </span>
                     </td>-->
-																				<td ng-if="true">
-																								<span editable-select="line.locationsReceived[0].location._id" e-ng-change="line.locationsReceived[0].qty = line.qty" e-form="tableform" e-ng-options="s._id as s.name for s in locations">
+					<td ng-if="true">
+						<span editable-select="line.locationsReceived[0].location._id" e-ng-change="line.locationsReceived[0].qty = line.qty" e-form="tableform" e-ng-options="s._id as s.name for s in locations">
                             <span ng-repeat="location in line.locationsReceived">
                                 <span>{{ location.location.name }}</span>
-																								</span>
-																								</span>
-																				</td>
-																				<!--<td class="center"> 
+						</span>
+						</span>
+					</td>
+					<!--<td class="center"> 
                         {{line.orderQty - line.deliveryQty - line.qty }} 
                     </td>
                     <td>
@@ -60,15 +60,15 @@
                             </div>
                         </div>
                     </td>-->
-																</tr>
-												</table>
-												<!-- buttons -->
+				</tr>
+			</table>
+			<!-- buttons -->
 
-												<div class="btn-form" ng-show="tableform.$visible">
-																<button type="button" ng-disabled="tableform.$waiting || true" ng-click="addLine(linesModel)" class="btn blue "><i class="fa fa-plus"></i> @(AddNewLine)</button>
-																<button type="submit" ng-disabled="tableform.$waiting" class="btn green pull-right"> @(Save) <i class="fa fa-check"></i></button>
-																<button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn red pull-right"><i class="fa fa-angle-left"></i> @(Cancel)</button>
-												</div>
-								</form>
-				</div>
+			<div class="btn-form" ng-show="tableform.$visible">
+				<button type="button" ng-disabled="tableform.$waiting || true" ng-click="addLine(linesModel)" class="btn blue "><i class="fa fa-plus"></i> @(AddNewLine)</button>
+				<button type="submit" ng-disabled="tableform.$waiting" class="btn green pull-right"> @(Save) <i class="fa fa-check"></i></button>
+				<button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn red pull-right"><i class="fa fa-angle-left"></i> @(Cancel)</button>
+			</div>
+		</form>
+	</div>
 </div>

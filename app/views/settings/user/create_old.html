@@ -1,22 +1,22 @@
 <div ng-if="user.isremoved" class="alert alert-danger">
-				<strong>@(users:BeCareful)</strong> @(users:UserHasBeenDeleted)
+	<strong>@(users:BeCareful)</strong> @(users:UserHasBeenDeleted)
 </div>
 
 <div class="page-bar">
-				<ul class="page-breadcrumb">
-								<li>
-												<i class="fa fa-home"></i>
-												<a ui-sref="home">@(Home)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<a ui-sref="user.list">@(users:ListOfUsers)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span>@(users:NewUser) </span>
-								</li>
-				</ul>
+	<ul class="page-breadcrumb">
+		<li>
+			<i class="fa fa-home"></i>
+			<a ui-sref="home">@(Home)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<a ui-sref="user.list">@(users:ListOfUsers)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span>@(users:NewUser) </span>
+		</li>
+	</ul>
 
 </div>
 
@@ -25,67 +25,67 @@
 
 
 <form ng-submit="create()" role="form">
-				<div class="row">
-								<div class="col-md-offset-3 col-md-6 col-sm-12">
+	<div class="row">
+		<div class="col-md-offset-3 col-md-6 col-sm-12">
 
 
-												<div class="portlet portlet light bordered">
-																<div class="portlet-title">
-																				<div class="caption">
-																								<h5 class="page-title font-yellow-crusta">
-																												<i class="fa fa-check-square-o "></i> @(users:NewUser)
-																								</h5>
-																				</div>
-																				<div class="actions">
-																								<button type="submit" ng-disabled="!validLogin || !validEmail" class="btn green">@(Create)</button>
-																								<a ui-sref="user.list" class="btn red btn-sm">@(Cancel)</a>
-																				</div>
-																</div>
-																<div class="portlet-body form">
-																				<div class="form-horizontal">
-																								<div class="form-body">
+			<div class="portlet portlet light bordered">
+				<div class="portlet-title">
+					<div class="caption">
+						<h5 class="page-title font-yellow-crusta">
+							<i class="fa fa-check-square-o "></i> @(users:NewUser)
+						</h5>
+					</div>
+					<div class="actions">
+						<button type="submit" ng-disabled="!validLogin || !validEmail" class="btn green">@(Create)</button>
+						<a ui-sref="user.list" class="btn red btn-sm">@(Cancel)</a>
+					</div>
+				</div>
+				<div class="portlet-body form">
+					<div class="form-horizontal">
+						<div class="form-body">
 
-																												<div class="form-group" ng-class="{'has-error':!validLogin, 'has-success': validLogin}">
-																																<label class="col-md-4 control-label">@(users:Username)</label>
-																																<div class="col-md-8">
-																																				<input class="form-control" ng-change="checkUserExist(user.username)" required ng-model="user.username" placeholder="@(users:Username)" type="text" autocomplete="off">
-																																				<span class="help-block">
+							<div class="form-group" ng-class="{'has-error':!validLogin, 'has-success': validLogin}">
+								<label class="col-md-4 control-label">@(users:Username)</label>
+								<div class="col-md-8">
+									<input class="form-control" ng-change="checkUserExist(user.username)" required ng-model="user.username" placeholder="@(users:Username)" type="text" autocomplete="off">
+									<span class="help-block">
                                         <div class="alert alert-danger" ng-show="user.username.length >= 6 && !validLogin"> @(users:IdentifierAlReadyUsed)</div>
                                         <div class="alert alert-warning" ng-show="user.username.length < 6"> @(users:MoreThanSixCharacters)</div>
                                     </span>
-																																</div>
-																												</div>
+								</div>
+							</div>
 
-																												<div class="form-group">
-																																<label class="col-md-4 control-label">@(users:Password)</label>
-																																<div class="col-md-8">
-																																				<input class="form-control" ng-model="user.password" placeholder="@(users:Password)" type="text" autocomplete="off">
-																																</div>
-																												</div>
+							<div class="form-group">
+								<label class="col-md-4 control-label">@(users:Password)</label>
+								<div class="col-md-8">
+									<input class="form-control" ng-model="user.password" placeholder="@(users:Password)" type="text" autocomplete="off">
+								</div>
+							</div>
 
-																												<div class="form-group" ng-class="{'has-error':!validEmail, 'has-success': validEmail}">
-																																<label class="col-md-4 control-label">@(Email)</label>
-																																<div class="col-md-8">
-																																				<input class="form-control" ng-change="checkEmailExist(user.email)" required ng-model="user.email" placeholder="@(users:Email)" type="email" autocomplete="off">
-																																				<span class="help-block">
+							<div class="form-group" ng-class="{'has-error':!validEmail, 'has-success': validEmail}">
+								<label class="col-md-4 control-label">@(Email)</label>
+								<div class="col-md-8">
+									<input class="form-control" ng-change="checkEmailExist(user.email)" required ng-model="user.email" placeholder="@(users:Email)" type="email" autocomplete="off">
+									<span class="help-block">
                                         <div class="alert alert-warning" ng-show="!user.email"> @(users:EmailAddressNeeded)</div>
                                         <div class="alert alert-danger" ng-show="!validEmail"> @(users:ErrorEmailAlreadyExists)</div>
                                     </span>
-																																</div>
-																												</div>
-																												<div class="form-group">
-																																<label class="col-md-4 control-label">@(users:Group)</label>
-																																<div class="col-md-8">
-																																				<select class="form-control" data-ng-model="user.groupe" data-ng-options="s.id as s.name for s in groups"></select>
-																																</div>
-																												</div>
-																								</div>
-																				</div>
-																</div>
-												</div>
 								</div>
-
+							</div>
+							<div class="form-group">
+								<label class="col-md-4 control-label">@(users:Group)</label>
+								<div class="col-md-8">
+									<select class="form-control" data-ng-model="user.groupe" data-ng-options="s.id as s.name for s in groups"></select>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
+			</div>
+		</div>
 
-				</div>
+	</div>
+
+	</div>
 </form>

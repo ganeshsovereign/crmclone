@@ -1,82 +1,82 @@
 <div class="page-bar">
-				<ul class="page-breadcrumb">
-								<li>
-												<i class="fa fa-home"></i>
-												<a ui-sref="home">@(Home)</a>
-												<i class="fa fa-angle-right"></i></li>
-								<li>
-												<a ui-sref="societe.list">@(companies:Companies)</a>
-												<i class="fa fa-angle-right"></i></li>
-								<li>
-												<li>
-																<span>@(Dashboard)</span>
-												</li>
-				</ul>
-				<div class="page-toolbar">
-								<div report-date-range ng-model="date" class="date pull-right tooltips btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
-				</div>
+	<ul class="page-breadcrumb">
+		<li>
+			<i class="fa fa-home"></i>
+			<a ui-sref="home">@(Home)</a>
+			<i class="fa fa-angle-right"></i></li>
+		<li>
+			<a ui-sref="societe.list">@(companies:Companies)</a>
+			<i class="fa fa-angle-right"></i></li>
+		<li>
+			<li>
+				<span>@(Dashboard)</span>
+			</li>
+	</ul>
+	<div class="page-toolbar">
+		<div report-date-range ng-model="date" class="date pull-right tooltips btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
+	</div>
 </div>
 <h3 class="page-title">
-				@(Dashboard) @(companies:ThirdPartyCustomers)
+	@(Dashboard) @(companies:ThirdPartyCustomers)
 </h3>
 
 <div>
-				<div class="portlet box green">
-								<div class="portlet-title">
-												<div class="caption">
-																<i class="fa fa-random"></i>@(Dashboard) @(companies:ThirdPartyCustomers)
-												</div>
-								</div>
-								<div class="tools">
-								</div>
-								<div class="portlet-body">
-												<div class="table-toolbar">
-																<div class="row">
-																				<div class="col-md-3">
-																								<button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
-																				</div>
-																				<div class="col-md-9">
-																								<div class="col-md-4">
-																												<select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
+	<div class="portlet box green">
+		<div class="portlet-title">
+			<div class="caption">
+				<i class="fa fa-random"></i>@(Dashboard) @(companies:ThirdPartyCustomers)
+			</div>
+		</div>
+		<div class="tools">
+		</div>
+		<div class="portlet-body">
+			<div class="table-toolbar">
+				<div class="row">
+					<div class="col-md-3">
+						<button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
+					</div>
+					<div class="col-md-9">
+						<div class="col-md-4">
+							<select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
                                         find();" ng-options="s.id as s.name for s in entityList" class="form-control">
                                 </select>
-																								</div>
-																								<div class="col-md-4">
-																												<div class="input-group">
-																																<span class="input-group-addon">
+						</div>
+						<div class="col-md-4">
+							<div class="input-group">
+								<span class="input-group-addon">
                                         <i class="icon icon-user"></i>
                                     </span>
-																																<input type="text" data-ng-model="commercial" placeholder="@(commercial:Commercial)" typeahead-on-select="find()" typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}" class="form-control"
-																																    autocomplete="off">
-																												</div>
-																								</div>
-																								<div class="col-md-4">
-																												<div class="btn-group pull-right">
-																																<button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
+								<input type="text" data-ng-model="commercial" placeholder="@(commercial:Commercial)" typeahead-on-select="find()" typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}" class="form-control"
+								 autocomplete="off">
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="btn-group pull-right">
+								<button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
                                 </button>
-																																<ul class="dropdown-menu pull-right">
-																																				<li>
-																																								<a ng-href="/erp/api/stats/DetailsClientCsv?start={{date.start.toISOString()}}&end={{date.end.toISOString()}}&entity={{entity}}">
+								<ul class="dropdown-menu pull-right">
+									<li>
+										<a ng-href="/erp/api/stats/DetailsClientCsv?start={{date.start.toISOString()}}&end={{date.end.toISOString()}}&entity={{entity}}">
                                             <i class="fa fa-download"></i> @(Download) CSV
                                         </a>
-																																				</li>
-																																</ul>
-																												</div>
-																								</div>
-																				</div>
-																</div>
-												</div>
-
-												<div class="margin-bottom-10" ng-repeat="societe in dataClients">
-
-																<hot-table settings="settings" row-headers="rowHeaders" min-spare-rows="minSpareRows" datarows="societe.data">
-																				<hot-column data="name" title="societe.name" width="400" read-only></hot-column>
-
-																				<hot-column ng-repeat="family in societe.family" title="family" read-only data="{{family}}" type="'numeric'" width="120" format="'0,0.00'"></hot-column>
-																				<hot-column class="bg-warning" renderer="colorRenderer" data="total_ht" title="'@(Total)'" type="'numeric'" width="120" format="'0,0.00'" read-only></hot-column>
-																</hot-table>
-
-												</div>
-								</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 				</div>
+			</div>
+
+			<div class="margin-bottom-10" ng-repeat="societe in dataClients">
+
+				<hot-table settings="settings" row-headers="rowHeaders" min-spare-rows="minSpareRows" datarows="societe.data">
+					<hot-column data="name" title="societe.name" width="400" read-only></hot-column>
+
+					<hot-column ng-repeat="family in societe.family" title="family" read-only data="{{family}}" type="'numeric'" width="120" format="'0,0.00'"></hot-column>
+					<hot-column class="bg-warning" renderer="colorRenderer" data="total_ht" title="'@(Total)'" type="'numeric'" width="120" format="'0,0.00'" read-only></hot-column>
+				</hot-table>
+
+			</div>
+		</div>
+	</div>
 </div>

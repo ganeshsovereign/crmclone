@@ -1,57 +1,57 @@
 <div class="page-bar">
-				<ul class="page-breadcrumb">
-								<li>
-												<i class="fa fa-home"></i>
-												<a ui-sref="dashbord">@(Home)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span>@(compta:Estimated)</span>
-								</li>
-				</ul>
+	<ul class="page-breadcrumb">
+		<li>
+			<i class="fa fa-home"></i>
+			<a ui-sref="dashbord">@(Home)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span>@(compta:Estimated)</span>
+		</li>
+	</ul>
 </div>
 <h3 class="page-title">
-				@(compta:Estimated) <small>sur 1 an</small>
+	@(compta:Estimated) <small>sur 1 an</small>
 </h3>
 
 <div>
-				<div class="portlet box green">
-								<div class="portlet-title">
-												<div class="caption">
-																<i class="fa fa-random"></i>@(compta:Estimated)
-												</div>
-								</div>
-								<div class="tools">
-								</div>
-								<div class="portlet-body">
-												<div class="table-toolbar">
-																<div class="row">
-																				<div class="col-md-3">
-																								<button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
-																				</div>
-																				<div class="col-md-6">
-																								<div class="col-md-4">
-																												<!--<select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
+	<div class="portlet box green">
+		<div class="portlet-title">
+			<div class="caption">
+				<i class="fa fa-random"></i>@(compta:Estimated)
+			</div>
+		</div>
+		<div class="tools">
+		</div>
+		<div class="portlet-body">
+			<div class="table-toolbar">
+				<div class="row">
+					<div class="col-md-3">
+						<button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
+					</div>
+					<div class="col-md-6">
+						<div class="col-md-4">
+							<!--<select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
                                     find();" ng-options="s.id as s.name for s in entityList" class="form-control">
                             </select>-->
-																								</div>
-																				</div>
-																				<div class="col-md-3">
-																				</div>
-																</div>
-												</div>
-
-												<hot-table settings="settings" row-headers="rowHeaders" min-spare-rows="minSpareRows" datarows="db.items" height="300">
-																<hot-column data="id" title="'ID'"></hot-column>
-																<hot-column data="name.first" title="'First Name'" type="'text'" read-only></hot-column>
-																<hot-column data="name.last" title="'Last Name'" read-only></hot-column>
-																<hot-column data="address" title="'Address'" width="300"></hot-column>
-																<hot-column data="product.description" title="'Favorite food'" type="'autocomplete'">
-																				<hot-autocomplete datarows="description in product.options"></hot-autocomplete>
-																</hot-column>
-																<hot-column data="price" title="'Price'" type="'numeric'" width="80" format="'$ 0,0.00'"></hot-column>
-																<hot-column data="isActive" title="'Is active'" type="'checkbox'" checked-template="'Yes'" unchecked-template="'No'"></hot-column>
-												</hot-table>
-								</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+					</div>
 				</div>
+			</div>
+
+			<hot-table settings="settings" row-headers="rowHeaders" min-spare-rows="minSpareRows" datarows="db.items" height="300">
+				<hot-column data="id" title="'ID'"></hot-column>
+				<hot-column data="name.first" title="'First Name'" type="'text'" read-only></hot-column>
+				<hot-column data="name.last" title="'Last Name'" read-only></hot-column>
+				<hot-column data="address" title="'Address'" width="300"></hot-column>
+				<hot-column data="product.description" title="'Favorite food'" type="'autocomplete'">
+					<hot-autocomplete datarows="description in product.options"></hot-autocomplete>
+				</hot-column>
+				<hot-column data="price" title="'Price'" type="'numeric'" width="80" format="'$ 0,0.00'"></hot-column>
+				<hot-column data="isActive" title="'Is active'" type="'checkbox'" checked-template="'Yes'" unchecked-template="'No'"></hot-column>
+			</hot-table>
+		</div>
+	</div>
 </div>

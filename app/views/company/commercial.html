@@ -1,99 +1,99 @@
 <div ng-repeat="error in societe.errors" class="alert alert-warning">
-				<strong>Erreur !</strong> {{error}} </div>
+	<strong>Erreur !</strong> {{error}} </div>
 
 <div class="row">
-				<div class="col-md-12">
-								<div class="form-horizontal form-row-seperated">
-												<div class="portlet portlet light bordered">
-																<div class="portlet-title">
-																				<div class="caption">
-																								<i class="icon-basket"></i>
-																								<span class="caption-subject dark bold uppercase"> @(commercial:Commercial)</span>
-																								<span class="caption-helper"> - @(companies:CardCompany)</span>
-																				</div>
-																				<save ng-disabled="!editable" mode="societe._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
-																</div>
+	<div class="col-md-12">
+		<div class="form-horizontal form-row-seperated">
+			<div class="portlet portlet light bordered">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="icon-basket"></i>
+						<span class="caption-subject dark bold uppercase"> @(commercial:Commercial)</span>
+						<span class="caption-helper"> - @(companies:CardCompany)</span>
+					</div>
+					<save ng-disabled="!editable" mode="societe._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
+				</div>
 
-																<div class="portlet-body">
-																				<div class="form-body">
-																								<div class="row">
-																												<div class="col-md-12 col-sm-12">
-																																<div class="portlet light portlet-form bordered">
-																																				<div class="portlet-title">
-																																								<div class="caption">
-																																												<i class="fa fa-cog"></i>@(commercial:CommercialParameters)
-																																								</div>
-																																				</div>
-																																				<div class="portlet-body">
-																																								<div class="form-body">
-																																												<div class="row">
-																																																<div class="col-md-6">
+				<div class="portlet-body">
+					<div class="form-body">
+						<div class="row">
+							<div class="col-md-12 col-sm-12">
+								<div class="portlet light portlet-form bordered">
+									<div class="portlet-title">
+										<div class="caption">
+											<i class="fa fa-cog"></i>@(commercial:CommercialParameters)
+										</div>
+									</div>
+									<div class="portlet-body">
+										<div class="form-body">
+											<div class="row">
+												<div class="col-md-6">
 
-																																																				<div class="form-group form-md-line-input">
-																																																								<select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.salesPerson" ng-options="s._id as s.fullName for s in $dict.employees"></select>
-																																																								<label for="form_control_1">@(commercial:Commercial)</label>
-																																																				</div>
+													<div class="form-group form-md-line-input">
+														<select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.salesPerson" ng-options="s._id as s.fullName for s in $dict.employees"></select>
+														<label for="form_control_1">@(commercial:Commercial)</label>
+													</div>
 
-																																																				<div class="form-group form-md-line-input">
-																																																								<select class="table-group-action-input form-control" required ng-model="societe.companyInfo.category" ng-options="s._id as s.fullName for s in $dict.categories"></select>
-																																																								<label for="form_control_1">@(companies:CustomerSegmentation)</label>
-																																																				</div>
+													<div class="form-group form-md-line-input">
+														<select class="table-group-action-input form-control" required ng-model="societe.companyInfo.category" ng-options="s._id as s.fullName for s in $dict.categories"></select>
+														<label for="form_control_1">@(companies:CustomerSegmentation)</label>
+													</div>
 
-																																																				<div class="form-group form-md-line-input">
-																																																								<select class="table-group-action-input form-control" required ng-model="societe.companyInfo.forme_juridique" ng-options="s.id as s.label for s in dict.fk_forme_juridique.values"></select>
-																																																								<label for="form_control_1">@(companies:JuridicalStatus)</label>
-																																																				</div>
+													<div class="form-group form-md-line-input">
+														<select class="table-group-action-input form-control" required ng-model="societe.companyInfo.forme_juridique" ng-options="s.id as s.label for s in dict.fk_forme_juridique.values"></select>
+														<label for="form_control_1">@(companies:JuridicalStatus)</label>
+													</div>
 
-																																																				<div class="form-group form-md-line-input">
-																																																								<select class="table-group-action-input form-control" required ng-model="societe.companyInfo.size" ng-options="s.id as s.label for s in dict.fk_effectif.values"></select>
-																																																								<label for="form_control_1">@(companies:Staff)</label>
-																																																				</div>
+													<div class="form-group form-md-line-input">
+														<select class="table-group-action-input form-control" required ng-model="societe.companyInfo.size" ng-options="s.id as s.label for s in dict.fk_effectif.values"></select>
+														<label for="form_control_1">@(companies:Staff)</label>
+													</div>
 
-																																																				<div class="form-group form-md-line-input">
-																																																								<input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.rival">
-																																																								<label for="form_control_1">@(companies:RivalShort)</label>
-																																																				</div>
-																																																</div>
+													<div class="form-group form-md-line-input">
+														<input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.rival">
+														<label for="form_control_1">@(companies:RivalShort)</label>
+													</div>
+												</div>
 
-																																																<div class="col-md-6">
-																																																				<div class="form-group form-md-line-input">
-																																																								<input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.idprof2">
-																																																								<label for="form_control_1">@(companies:ProfId2FR) </label>
-																																																				</div>
+												<div class="col-md-6">
+													<div class="form-group form-md-line-input">
+														<input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.idprof2">
+														<label for="form_control_1">@(companies:ProfId2FR) </label>
+													</div>
 
-																																																				<div class="form-group form-md-line-input">
-																																																								<input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.idprof3">
-																																																								<label for="form_control_1">@(companies:ProfId3FR) </label>
-																																																				</div>
+													<div class="form-group form-md-line-input">
+														<input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.idprof3">
+														<label for="form_control_1">@(companies:ProfId3FR) </label>
+													</div>
 
-																																																				<div class="form-group form-md-line-input">
-																																																								<input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.capital">
-																																																								<label for="form_control_1">@(companies:Capital) </label>
-																																																				</div>
+													<div class="form-group form-md-line-input">
+														<input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.capital">
+														<label for="form_control_1">@(companies:Capital) </label>
+													</div>
 
-																																																				<script type="text/ng-template" id="newModalPriceList.html">
-																																																								<div class="modal-header">
-																																																												<h3 class="no-margin-bottom">@(products:NewPrice)</h3>
-																																																								</div>
-																																																								<div class="modal-body">
-																																																												<div class="portlet-body">
-																																																																<div class="form-body" ng-include="'/views/settings/pricelists/new-tpl.html'"></div>
-																																																												</div>
-																																																								</div>
-																																																								<div class="modal-footer">
+													<script type="text/ng-template" id="newModalPriceList.html">
+														<div class="modal-header">
+															<h3 class="no-margin-bottom">@(products:NewPrice)</h3>
+														</div>
+														<div class="modal-body">
+															<div class="portlet-body">
+																<div class="form-body" ng-include="'/views/settings/pricelists/new-tpl.html'"></div>
+															</div>
+														</div>
+														<div class="modal-footer">
 
-																																																												<button type="button" ng-click="ok()" class="btn blue">@(Add)</button>
+															<button type="button" ng-click="ok()" class="btn blue">@(Add)</button>
 
-																																																								</div>
-																																																				</script>
+														</div>
+													</script>
 
-																																																				<div class="form-group form-md-line-input">
-																																																								<div class="input-group">
-																																																												<div class="input-group-control">
-																																																																<select class="form-control" id="priceList" ng-model="societe.salesPurchases.priceList" ng-options="p._id as p.name for p in $dict.pricesLists"></select>
-																																																																<label for="priceList">@(products:PriceLevel) </label>
-																																																												</div>
-																																																												<span class="input-group-btn btn-right">
+													<div class="form-group form-md-line-input">
+														<div class="input-group">
+															<div class="input-group-control">
+																<select class="form-control" id="priceList" ng-model="societe.salesPurchases.priceList" ng-options="p._id as p.name for p in $dict.pricesLists"></select>
+																<label for="priceList">@(products:PriceLevel) </label>
+															</div>
+															<span class="input-group-btn btn-right">
                                                                     <button type="button" class="btn green-haze dropdown-toggle" data-toggle="dropdown" aria-expanded="false"> Action
                                                                         <i class="fa fa-angle-down"></i>
                                                                     </button>
@@ -116,16 +116,16 @@
                                                                         </li>-->
                                                                     </ul>
                                                                 </span>
-																																																								</div>
-																																																				</div>
-																																																</div>
-																																												</div>
-																																								</div>
-																																				</div>
-																																</div>
-																												</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 
-																												<!-- <div class="col-md-4">
+							<!-- <div class="col-md-4">
                                 <div class="portlet light portlet-form bordered">
                                     <div class="portlet-title">
                                         <div class="caption">
@@ -174,60 +174,59 @@
                                 </div>
                             </div>-->
 
-																												<div class="col-md-12 profile-info">
-																																<form editable-form name="editableReport" onaftersave="update()">
-																																				<div class="portlet light portlet-form bordered">
-																																								<div class="portlet-title">
-																																												<div class="caption">
-																																																<i class="fa fa-comments-o"></i> @(commercial:CommercialFollow)
-																																												</div>
-																																												<div class="actions" ng-show="!editableReport.$visible">
-																																																<a href="#" ng-click="editableReport.$show()" ng-show="!editableReport.$visible && editable" class="btn default" data-original-title="" title="@(Edit)"><i class="fa fa-pencil"></i>@(Edit)</a>
-																																																<a href="#" class="btn btn-icon-only btn-default fullscreen" data-original-title="" title="@(FullScreen)"></a>
-																																												</div>
-																																												<div class="actions" ng-show="editableReport.$visible">
-																																																<button type="submit" ng-disabled="editableReport.$waiting" class="btn green"><i class="fa fa-check"></i> @(Save) </button>
-																																																<button type="button" ng-disabled="editableReport.$waiting" ng-click="editableReport.$cancel();
+							<div class="col-md-12 profile-info">
+								<form editable-form name="editableReport" onaftersave="update()">
+									<div class="portlet light portlet-form bordered">
+										<div class="portlet-title">
+											<div class="caption">
+												<i class="fa fa-comments-o"></i> @(commercial:CommercialFollow)
+											</div>
+											<div class="actions" ng-show="!editableReport.$visible">
+												<a href="#" ng-click="editableReport.$show()" ng-show="!editableReport.$visible && editable" class="btn default" data-original-title="" title="@(Edit)"><i class="fa fa-pencil"></i>@(Edit)</a>
+												<a href="#" class="btn btn-icon-only btn-default fullscreen" data-original-title="" title="@(FullScreen)"></a>
+											</div>
+											<div class="actions" ng-show="editableReport.$visible">
+												<button type="submit" ng-disabled="editableReport.$waiting" class="btn green"><i class="fa fa-check"></i> @(Save) </button>
+												<button type="button" ng-disabled="editableReport.$waiting" ng-click="editableReport.$cancel();
                                     findOne();" class="btn red">@(Cancel) <i class="fa fa-angle-right"></i></button>
-																																												</div>
-																																								</div>
-																																								<div class="portlet-body">
-																																												<div ng-hide="editableReport.$visible" ng-if="societe.internalNotes.author.name" class="alert alert-info alert-dismissable">
-																																																<button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button> @(DateLastModification) : <strong>{{societe.internalNotes.datec| date:'@(main:date.format.java.dayhour)'}}</strong> @(By)
-																																																{{societe.internalNotes.author.name}}
-																																												</div>
-																																												<div ng-if="!editableReport.$visible" marked="societe.internalNotes.new"></div>
-																																												<div ng-if="editableReport.$visible" markdown-editor height="300" ng-model="societe.internalNotes"></div>
-																																												<!--<div markdown-diff origin="societe.internalNotes.old" new="societe.internalNotes.new"></div>-->
-																																												<hr>
-																																												<p>
-																																																<a ng-if="societe.url" ng-href="{{societe.url}}" target="_blank"> {{societe.url}}</a>
-																																												</p>
-																																												<ul class="list-inline">
-																																																<li ng-if="societe.familyProduct.length">
-																																																				<i class="fa fa-briefcase"></i> {{societe.familyProduct| tag}}
-																																																</li>
-																																																<li ng-if="societe.email">
-																																																				<a data-ng-href="mailto:{{societe.email}}" target="_blank"><i ng-if="societe.email" class="fa fa-envelope"></i> {{societe.email}}</a>
-																																																</li>
-																																																<li ng-if="societe.phone">
-																																																				<i class="fa fa-phone"></i> {{societe.phone| phone}}
-																																																</li>
-																																																<li ng-if="societe.fax">
-																																																				<i class="fa fa-fax"></i> {{societe.fax| phone}}
-																																																</li>
-																																																<li ng-if="societe.Tag.length">
-																																																				<i class="fa fa-key"></i> {{societe.Tag| tag}}
-																																																</li>
-																																												</ul>
-																																								</div>
-																																				</div>
-																																</form>
-																												</div>
-																								</div>
-																				</div>
-																</div>
-												</div>
-								</div>
+											</div>
+										</div>
+										<div class="portlet-body">
+											<div ng-hide="editableReport.$visible" ng-if="societe.internalNotes.author.name" class="alert alert-info alert-dismissable">
+												<button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button> @(DateLastModification) : <strong>{{societe.internalNotes.datec| date:'@(main:date.format.java.dayhour)'}}</strong> @(By) {{societe.internalNotes.author.name}}
+											</div>
+											<div ng-if="!editableReport.$visible" marked="societe.internalNotes.new"></div>
+											<div ng-if="editableReport.$visible" markdown-editor height="300" ng-model="societe.internalNotes"></div>
+											<!--<div markdown-diff origin="societe.internalNotes.old" new="societe.internalNotes.new"></div>-->
+											<hr>
+											<p>
+												<a ng-if="societe.url" ng-href="{{societe.url}}" target="_blank"> {{societe.url}}</a>
+											</p>
+											<ul class="list-inline">
+												<li ng-if="societe.familyProduct.length">
+													<i class="fa fa-briefcase"></i> {{societe.familyProduct| tag}}
+												</li>
+												<li ng-if="societe.email">
+													<a data-ng-href="mailto:{{societe.email}}" target="_blank"><i ng-if="societe.email" class="fa fa-envelope"></i> {{societe.email}}</a>
+												</li>
+												<li ng-if="societe.phone">
+													<i class="fa fa-phone"></i> {{societe.phone| phone}}
+												</li>
+												<li ng-if="societe.fax">
+													<i class="fa fa-fax"></i> {{societe.fax| phone}}
+												</li>
+												<li ng-if="societe.Tag.length">
+													<i class="fa fa-key"></i> {{societe.Tag| tag}}
+												</li>
+											</ul>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
 				</div>
+			</div>
+		</div>
+	</div>
 </div>

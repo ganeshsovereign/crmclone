@@ -1,22 +1,22 @@
 <div class="row">
-				<div class="col-md-12">
-								<div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
+	<div class="col-md-12">
+		<div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
 
-								<div class="form-horizontal form-row-seperated">
-												<div class="portlet portlet light bordered">
-																<div class="portlet-title">
-																				<div class="caption">
-																								<i class="icon-target"></i>
-																								<span class="caption-subject dark bold uppercase"> @(products:Attributes)</span>
-																								<span class="caption-helper font-yellow-crusta"> -  {{product.sellFamily.name}}</span>
-																				</div>
-																				<save mode="product._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
+		<div class="form-horizontal form-row-seperated">
+			<div class="portlet portlet light bordered">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="icon-target"></i>
+						<span class="caption-subject dark bold uppercase"> @(products:Attributes)</span>
+						<span class="caption-helper font-yellow-crusta"> -  {{product.sellFamily.name}}</span>
+					</div>
+					<save mode="product._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
 
-																</div>
-																<div class="portlet-body">
+				</div>
+				<div class="portlet-body">
 
-																				<!-- end ngIf: product._id -->
-																				<!--<div class="form-group form-md-line-input">
+					<!-- end ngIf: product._id -->
+					<!--<div class="form-group form-md-line-input">
                         <label class="col-md-5 control-label" for="form_control_1">importer une famille d'attributs : <span class="required">* </span></label>
                         <div class="col-md-4">
                             <select class="table-group-action-input form-control" ng-model="product.units" ng-options="s.id as s.label for s in dict.fk_units.values"></select>
@@ -29,202 +29,202 @@
                     </div>
                     <hr>-->
 
-																				<!--<ul ng-repeat="(key, value) in players | groupBy: 'team'">
+					<!--<ul ng-repeat="(key, value) in players | groupBy: 'team'">
                         Group name: {{ key }}
                         <li ng-repeat="player in value">
                             player: {{ player.name }}
                         </li>
                     </ul>-->
 
-																				<div class="mt-element-list">
-																								<div class="mt-list-container list-todo" id="accordion1" role="tablist" aria-multiselectable="true">
-																												<div class="row">
-																																<ul ng-repeat="(key, value) in product.sellFamily.options | groupBy: 'group.langs[0].name'" class="col-md-6">
-																																				<li class="mt-list-item">
-																																								<div class="list-todo-item grey-gallery">
-																																												<a class="list-toggle-container" data-toggle="collapse" data-parent="#accordion1" href="#" aria-expanded="true">
-																																																<div class="list-toggle done uppercase">
-																																																				<div class="list-toggle-title bold">{{key}}</div>
-																																																				<div class="badge badge-default pull-right bold">{{value.length}}</div>
-																																																</div>
-																																												</a>
-																																												<div class="task-list panel-collapse collapse in" id="task-1" aria-expanded="true">
-																																																<ul>
-																																																				<li class="task-list-item" ng-repeat="attribute in value | orderBy:'sequence' ">
-																																																								<!-- Date -->
-																																																								<div ng-if-start="attribute.mode =='date'" class=" task-icon ">
-																																																												<a href="javascript:; ">
+					<div class="mt-element-list">
+						<div class="mt-list-container list-todo" id="accordion1" role="tablist" aria-multiselectable="true">
+							<div class="row">
+								<ul ng-repeat="(key, value) in product.sellFamily.options | groupBy: 'group.langs[0].name'" class="col-md-6">
+									<li class="mt-list-item">
+										<div class="list-todo-item grey-gallery">
+											<a class="list-toggle-container" data-toggle="collapse" data-parent="#accordion1" href="#" aria-expanded="true">
+												<div class="list-toggle done uppercase">
+													<div class="list-toggle-title bold">{{key}}</div>
+													<div class="badge badge-default pull-right bold">{{value.length}}</div>
+												</div>
+											</a>
+											<div class="task-list panel-collapse collapse in" id="task-1" aria-expanded="true">
+												<ul>
+													<li class="task-list-item" ng-repeat="attribute in value | orderBy:'sequence' ">
+														<!-- Date -->
+														<div ng-if-start="attribute.mode =='date'" class=" task-icon ">
+															<a href="javascript:; ">
                                                                 <i class="fa fa-calendar "></i>
                                                             </a>
-																																																								</div>
-																																																								<div ng-if-end class="task-content ">
-																																																												<h4 class="uppercase bold ">
-																																																																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
-																																																												</h4>
-																																																												<div class="row ">
-																																																																<input date-input ng-model="product.attributes[attributeMap[attribute._id]].value" /> </div>
-																																																								</div>
+														</div>
+														<div ng-if-end class="task-content ">
+															<h4 class="uppercase bold ">
+																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
+															</h4>
+															<div class="row ">
+																<input date-input ng-model="product.attributes[attributeMap[attribute._id]].value" /> </div>
+														</div>
 
-																																																								<!-- Number -->
-																																																								<div ng-if-start="attribute.mode =='number'" class="task-icon ">
-																																																												<a href="javascript:; ">
+														<!-- Number -->
+														<div ng-if-start="attribute.mode =='number'" class="task-icon ">
+															<a href="javascript:; ">
                                                                 <i class="fa fa-calculator "></i>
                                                             </a>
-																																																								</div>
-																																																								<div ng-if-end class="task-content ">
-																																																												<h4 class="uppercase bold ">
-																																																																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
-																																																												</h4>
-																																																												<div class="row "><input type="number" min="{{attribute.minNumber}}" step="{{attribute.step}}" max="{{attribute.maxNumber}}" class="form-control" ng-model="product.attributes[attributeMap[attribute._id]].value">
-																																																												</div>
-																																																								</div>
+														</div>
+														<div ng-if-end class="task-content ">
+															<h4 class="uppercase bold ">
+																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
+															</h4>
+															<div class="row "><input type="number" min="{{attribute.minNumber}}" step="{{attribute.step}}" max="{{attribute.maxNumber}}" class="form-control" ng-model="product.attributes[attributeMap[attribute._id]].value">
+															</div>
+														</div>
 
-																																																								<!-- Metric -->
-																																																								<div ng-if-start="attribute.mode =='metric'" class="task-icon ">
-																																																												<a href="javascript:; ">
+														<!-- Metric -->
+														<div ng-if-start="attribute.mode =='metric'" class="task-icon ">
+															<a href="javascript:; ">
                                                                 <i class="fa fa-calculator "></i>
                                                             </a>
-																																																								</div>
+														</div>
 
-																																																								<div ng-if-end class="task-content ">
-																																																												<h4 class="uppercase bold ">
-																																																																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
-																																																												</h4>
-																																																												<div class="row">
-																																																																<div class="col-md-8">
-																																																																				<input type="number" min="{{attribute.minNumber}}" step="{{attribute.steps}}" max="{{attribute.maxNumber}}" class="form-control" ng-model="product.attributes[attributeMap[attribute._id]].value">
-																																																																</div>
-																																																																<div class="col-md-4">
-																																																																				<select class="form-control" ng-model="attribute.metricUnit" disabled ng-options="s.id as s.label for s in dict.fk_units.values"></select>
-																																																																</div>
-																																																												</div>
-																																																								</div>
+														<div ng-if-end class="task-content ">
+															<h4 class="uppercase bold ">
+																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
+															</h4>
+															<div class="row">
+																<div class="col-md-8">
+																	<input type="number" min="{{attribute.minNumber}}" step="{{attribute.steps}}" max="{{attribute.maxNumber}}" class="form-control" ng-model="product.attributes[attributeMap[attribute._id]].value">
+																</div>
+																<div class="col-md-4">
+																	<select class="form-control" ng-model="attribute.metricUnit" disabled ng-options="s.id as s.label for s in dict.fk_units.values"></select>
+																</div>
+															</div>
+														</div>
 
-																																																								<!-- Min-Max -->
-																																																								<div ng-if-start="attribute.mode =='min-max'" class="task-icon ">
-																																																												<a href="javascript:; ">
+														<!-- Min-Max -->
+														<div ng-if-start="attribute.mode =='min-max'" class="task-icon ">
+															<a href="javascript:; ">
                                                                 <i class="fa fa-calculator "></i>
                                                             </a>
-																																																								</div>
+														</div>
 
-																																																								<div ng-if-end class="task-content ">
-																																																												<h4 class="uppercase bold ">
-																																																																<a href="javascript:; ">{{attribute.langs[0].name}}</a> <small>(Min/Max)</small>
-																																																												</h4>
-																																																												<div class="row">
-																																																																<div class="col-md-4">
-																																																																				<input type="number" placeholder="Min" class="form-control" ng-model="product.attributes[attributeMap[attribute._id]].value.min" ng-change="product.attributes[attributeMap[attribute._id]].value.max = product.attributes[attributeMap[attribute._id]].value.min"
-																																																																				/>
-																																																																</div>
-																																																																<div class="col-md-4">
-																																																																				<input type="number" placeholder="Max" class="form-control" min="{{product.attributes[attributeMap[attribute._id]].value.min}}" ng-model="product.attributes[attributeMap[attribute._id]].value.max" />
-																																																																</div>
-																																																																<div class="col-md-4" ng-show="attribute.metricUnit">
-																																																																				<select class="form-control" ng-model="attribute.metricUnit" disabled ng-options="s.id as s.label for s in dict.fk_units.values"></select>
-																																																																</div>
-																																																												</div>
-																																																								</div>
+														<div ng-if-end class="task-content ">
+															<h4 class="uppercase bold ">
+																<a href="javascript:; ">{{attribute.langs[0].name}}</a> <small>(Min/Max)</small>
+															</h4>
+															<div class="row">
+																<div class="col-md-4">
+																	<input type="number" placeholder="Min" class="form-control" ng-model="product.attributes[attributeMap[attribute._id]].value.min" ng-change="product.attributes[attributeMap[attribute._id]].value.max = product.attributes[attributeMap[attribute._id]].value.min"
+																	/>
+																</div>
+																<div class="col-md-4">
+																	<input type="number" placeholder="Max" class="form-control" min="{{product.attributes[attributeMap[attribute._id]].value.min}}" ng-model="product.attributes[attributeMap[attribute._id]].value.max" />
+																</div>
+																<div class="col-md-4" ng-show="attribute.metricUnit">
+																	<select class="form-control" ng-model="attribute.metricUnit" disabled ng-options="s.id as s.label for s in dict.fk_units.values"></select>
+																</div>
+															</div>
+														</div>
 
 
-																																																								<!-- Text -->
-																																																								<div ng-if-start="attribute.mode =='text'" class="task-icon ">
-																																																												<a href="javascript:; ">
+														<!-- Text -->
+														<div ng-if-start="attribute.mode =='text'" class="task-icon ">
+															<a href="javascript:; ">
                                                                 <i class="fa fa-pencil"></i>
                                                             </a>
-																																																								</div>
-																																																								<div ng-if-end class="task-content ">
-																																																												<h4 class="uppercase bold ">
-																																																																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
-																																																												</h4>
-																																																												<div class="row "><input type="text " class="form-control" ng-model="product.attributes[attributeMap[attribute._id]].value" /></div>
-																																																								</div>
+														</div>
+														<div ng-if-end class="task-content ">
+															<h4 class="uppercase bold ">
+																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
+															</h4>
+															<div class="row "><input type="text " class="form-control" ng-model="product.attributes[attributeMap[attribute._id]].value" /></div>
+														</div>
 
-																																																								<!-- TextArea -->
-																																																								<div ng-if-start="attribute.mode =='textarea'" class="task-icon ">
-																																																												<a href="javascript:; ">
+														<!-- TextArea -->
+														<div ng-if-start="attribute.mode =='textarea'" class="task-icon ">
+															<a href="javascript:; ">
                                                                 <i class="fa fa-pencil-square-o "></i>
                                                             </a>
-																																																								</div>
-																																																								<div ng-if-end class="task-content ">
-																																																												<h4 class="uppercase bold ">
-																																																																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
-																																																												</h4>
-																																																												<div class="row "><textarea class="form-control " rows="3 " ng-model="product.attributes[attributeMap[attribute._id]].value"></textarea></div>
-																																																								</div>
+														</div>
+														<div ng-if-end class="task-content ">
+															<h4 class="uppercase bold ">
+																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
+															</h4>
+															<div class="row "><textarea class="form-control " rows="3 " ng-model="product.attributes[attributeMap[attribute._id]].value"></textarea></div>
+														</div>
 
-																																																								<!-- Boolean-->
-																																																								<div ng-if-start="attribute.mode =='boolean'" class="task-icon ">
-																																																												<a href="javascript:; ">
+														<!-- Boolean-->
+														<div ng-if-start="attribute.mode =='boolean'" class="task-icon ">
+															<a href="javascript:; ">
                                                                 <i class="fa fa-toggle-on "></i>
                                                             </a>
-																																																								</div>
-																																																								<div ng-if-end class="task-content ">
-																																																												<h4 class="uppercase bold ">
-																																																																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
-																																																												</h4>
-																																																												<div class="row ">
-																																																																<div class="btn-group " data-toggle="buttons ">
-																																																																				<label class="btn btn-default active ">
+														</div>
+														<div ng-if-end class="task-content ">
+															<h4 class="uppercase bold ">
+																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
+															</h4>
+															<div class="row ">
+																<div class="btn-group " data-toggle="buttons ">
+																	<label class="btn btn-default active ">
                                                                         <input type="radio " class="toggle ">Yes </label>
-																																																																				<label class="btn btn-default ">
+																	<label class="btn btn-default ">
                                                                         <input type="radio " class="toggle "> No </label>
-																																																																</div>
-																																																												</div>
-																																																								</div>
+																</div>
+															</div>
+														</div>
 
-																																																								<!-- Select -->
-																																																								<div ng-if-start="attribute.mode =='select'" class="task-icon ">
-																																																												<a href="javascript:; ">
+														<!-- Select -->
+														<div ng-if-start="attribute.mode =='select'" class="task-icon ">
+															<a href="javascript:; ">
                                                                 <i class="fa fa-check "></i>
                                                             </a>
-																																																								</div>
-																																																								<div ng-if-end class="task-content ">
-																																																												<h4 class="uppercase bold ">
-																																																																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
-																																																												</h4>
+														</div>
+														<div ng-if-end class="task-content ">
+															<h4 class="uppercase bold ">
+																<a href="javascript:; ">{{attribute.langs[0].name}}</a>
+															</h4>
 
-																																																												<div class="row">
-																																																																<div class="col-md-5">
-																																																																				<div class="table-scrollable" style="height:140px;overflow:auto;">
-																																																																								<table class="table table-condensed table-hover">
-																																																																												<tbody>
-																																																																																<tr ng-repeat="value in product.attributes[attributeMap[attribute._id]].values | filterToggleSelection : product.attributes[attributeMap[attribute._id]].options:false | orderBy:'code'">
-																																																																																				<td ng-click="toggleSelection(product.attributes[attributeMap[attribute._id]].options, value._id)">{{value.langs[0].value}} </td>
-																																																																																</tr>
+															<div class="row">
+																<div class="col-md-5">
+																	<div class="table-scrollable" style="height:140px;overflow:auto;">
+																		<table class="table table-condensed table-hover">
+																			<tbody>
+																				<tr ng-repeat="value in product.attributes[attributeMap[attribute._id]].values | filterToggleSelection : product.attributes[attributeMap[attribute._id]].options:false | orderBy:'code'">
+																					<td ng-click="toggleSelection(product.attributes[attributeMap[attribute._id]].options, value._id)">{{value.langs[0].value}} </td>
+																				</tr>
 
-																																																																												</tbody>
-																																																																								</table>
-																																																																				</div>
-																																																																</div>
-																																																																<div class="col-md-2" style="margin-top:50px;">
-																																																																				<a><i class="large fa fa-arrow-left"></i></a>
-																																																																				<a><i class="large fa fa-arrow-right"></i></a>
-																																																																</div>
-																																																																<div class="col-md-5">
-																																																																				<div class="table-scrollable" style="height:140px;overflow:auto;">
-																																																																								<table class="table table-condensed table-hover">
-																																																																												<tbody>
-																																																																																<tr ng-repeat="value in product.attributes[attributeMap[attribute._id]].values | filterToggleSelection : product.attributes[attributeMap[attribute._id]].options:true | orderBy:'code'">
-																																																																																				<td ng-click="toggleSelection(product.attributes[attributeMap[attribute._id]].options, value._id)">{{value.langs[0].value}} </td>
-																																																																																</tr>
+																			</tbody>
+																		</table>
+																	</div>
+																</div>
+																<div class="col-md-2" style="margin-top:50px;">
+																	<a><i class="large fa fa-arrow-left"></i></a>
+																	<a><i class="large fa fa-arrow-right"></i></a>
+																</div>
+																<div class="col-md-5">
+																	<div class="table-scrollable" style="height:140px;overflow:auto;">
+																		<table class="table table-condensed table-hover">
+																			<tbody>
+																				<tr ng-repeat="value in product.attributes[attributeMap[attribute._id]].values | filterToggleSelection : product.attributes[attributeMap[attribute._id]].options:true | orderBy:'code'">
+																					<td ng-click="toggleSelection(product.attributes[attributeMap[attribute._id]].options, value._id)">{{value.langs[0].value}} </td>
+																				</tr>
 
-																																																																												</tbody>
-																																																																								</table>
-																																																																				</div>
-																																																																</div>
-																																																												</div>
-																																																								</div>
-																																																				</li>
-																																																</ul>
-																																																<div class="task-footer bg-grey ">
-																																																				<div class="row ">
-																																																				</div>
-																																																</div>
-																																												</div>
-																																								</div>
-																																				</li>
+																			</tbody>
+																		</table>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</li>
+												</ul>
+												<div class="task-footer bg-grey ">
+													<div class="row ">
+													</div>
+												</div>
+											</div>
+										</div>
+									</li>
 
-																																				<!--<li class="mt-list-item ">
+									<!--<li class="mt-list-item ">
                                     <div class="list-todo-icon bg-white ">
                                         <i class="fa fa-bookmark "></i>
                                     </div>
@@ -363,13 +363,13 @@
                                         </div>
                                     </div>
                                 </li>-->
-																																</ul>
-																												</div>
-																								</div>
-																				</div>
-																				</ul>
-																</div>
-												</div>
-								</div>
+								</ul>
+							</div>
+						</div>
+					</div>
+					</ul>
 				</div>
+			</div>
+		</div>
+	</div>
 </div>

@@ -1,42 +1,42 @@
 <div class="portlet portlet light bordered">
-				<div class="portlet-title">
-								<div class="caption">
-												<i class="fa fa-opencart"></i>
-												<span class="caption-subject dark bold uppercase"> {{title}}</span>
-								</div>
-								<div class="actions">
-												<button ng-click="edit=true" ng-show="!edit && editable" class="btn yellow-crusta">
+	<div class="portlet-title">
+		<div class="caption">
+			<i class="fa fa-opencart"></i>
+			<span class="caption-subject dark bold uppercase"> {{title}}</span>
+		</div>
+		<div class="actions">
+			<button ng-click="edit=true" ng-show="!edit && editable" class="btn yellow-crusta">
                 <i class="fa fa-pencil"></i> @(Edit) </button>
-								</div>
-								<div class="actions">
-												<div class="btn-form" ng-show="edit">
-																<button type="button" ng-click="addLine(linesModel)" class="btn blue"> @(Add) <i class="fa fa-plus"></i></button>
-												</div>
-								</div>
-				</div>
-				<div class="portlet-body">
-								<!-- table -->
-								<table class="table table-fixed table-striped table-bordered table-hover no-footer">
-												<thead>
-																<tr role="row" class="heading">
-																				<th style="width: 30px;">#</th>
-																				<th style="width: 45%;">@(products:ProductCode)</th>
-																				<th ng-style="{width : edit?'110px':'60px'}">@(Qty)</th>
-																				<th style="width: 100px;">@(AmountHT)</th>
-																				<th ng-style="{width : edit?'110px':'60px'}">@(Discount)</th>
-																				<th style="width: 100px;">@(Taxes)</th>
-																				<th style="width: 100px;">@(TotalHT)</th>
-																				<th style="width: 50px;"><span ng-show="tableform.$visible">@(Action)</span></th>
-																</tr>
-												</thead>
-												<tr ng-repeat="line in linesModel| filter:filterLine" ng-model="line" ng-class="{success:line.type == 'SUBTOTAL',bold:line.type == 'SUBTOTAL', info:line.type == 'kit', warning:line.type=='COMMENT'}" ng-include="loadTemplate(line)"></tr>
-								</table>
-								<!-- buttons -->
+		</div>
+		<div class="actions">
+			<div class="btn-form" ng-show="edit">
+				<button type="button" ng-click="addLine(linesModel)" class="btn blue"> @(Add) <i class="fa fa-plus"></i></button>
+			</div>
+		</div>
+	</div>
+	<div class="portlet-body">
+		<!-- table -->
+		<table class="table table-fixed table-striped table-bordered table-hover no-footer">
+			<thead>
+				<tr role="row" class="heading">
+					<th style="width: 30px;">#</th>
+					<th style="width: 45%;">@(products:ProductCode)</th>
+					<th ng-style="{width : edit?'110px':'60px'}">@(Qty)</th>
+					<th style="width: 100px;">@(AmountHT)</th>
+					<th ng-style="{width : edit?'110px':'60px'}">@(Discount)</th>
+					<th style="width: 100px;">@(Taxes)</th>
+					<th style="width: 100px;">@(TotalHT)</th>
+					<th style="width: 50px;"><span ng-show="tableform.$visible">@(Action)</span></th>
+				</tr>
+			</thead>
+			<tr ng-repeat="line in linesModel| filter:filterLine" ng-model="line" ng-class="{success:line.type == 'SUBTOTAL',bold:line.type == 'SUBTOTAL', info:line.type == 'kit', warning:line.type=='COMMENT'}" ng-include="loadTemplate(line)"></tr>
+		</table>
+		<!-- buttons -->
 
-								<div class="btn-form" ng-show="edit">
-												<button type="button" ng-click="addLine(linesModel)" class="btn blue "><i class="fa fa-plus"></i> @(AddNewLine)</button>
-												<button type="button" class="btn green pull-right" ng-click="update()"> @(Save) <i class="fa fa-check"></i></button>
-												<button type="button" ng-click="findOne()" class="btn red pull-right"><i class="fa fa-angle-left"></i> @(Cancel) </button>
-								</div>
-				</div>
+		<div class="btn-form" ng-show="edit">
+			<button type="button" ng-click="addLine(linesModel)" class="btn blue "><i class="fa fa-plus"></i> @(AddNewLine)</button>
+			<button type="button" class="btn green pull-right" ng-click="update()"> @(Save) <i class="fa fa-check"></i></button>
+			<button type="button" ng-click="findOne()" class="btn red pull-right"><i class="fa fa-angle-left"></i> @(Cancel) </button>
+		</div>
+	</div>
 </div>

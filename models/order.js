@@ -2080,7 +2080,7 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
 				});
 
 				//console.log(filterObject.$and[0]);
-				console.log(newQueryObj.$and[0]);
+				//console.log(newQueryObj.$and[0]);
 
 				var query = [{
 								$match: filterObject
@@ -2111,6 +2111,7 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
 										status: 1,
 										_type: 1,
 										forSales: 1,
+										logisticMethod: 1,
 										entity: 1,
 										weight: 1
 								}
@@ -2139,6 +2140,14 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
 										as: 'salesPerson'
 								}
 						},
+						{
+								$lookup: {
+										from: 'logisticMethod',
+										localField: 'logisticMethod',
+										foreignField: '_id',
+										as: 'logisticMethod'
+								}
+						},
 						/* {
 						                           $lookup: {
 						                               from: 'integrations',
@@ -2161,6 +2170,9 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
 										},
 										salesPerson: {
 												$arrayElemAt: ['$salesPerson', 0]
+										},
+										logisticMethod: {
+												$arrayElemAt: ['$logisticMethod', 0]
 										},
 										orderRows: 1,
 										datec: 1,
@@ -2210,6 +2222,7 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
 										Status: 1,
 										ID: 1,
 										salesPerson: 1,
+										logisticMethod: "$logisticMethod.code",
 										ref: 1,
 										isOrder: 1,
 										proformaCounter: 1,
@@ -2239,6 +2252,7 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
 										supplier: 1,
 										datec: 1,
 										ref_client: 1,
+										logisticMethod: 1,
 										datedl: 1,
 										Status: 1,
 										ID: 1,
@@ -2264,6 +2278,7 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
 										supplier: 1,
 										datec: 1,
 										ref_client: 1,
+										logisticMethod: 1,
 										datedl: 1,
 										Status: 1,
 										ID: 1,
@@ -2340,6 +2355,7 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
 										supplier: '$root.supplier',
 										datec: '$root.datec',
 										ref_client: '$root.ref_client',
+										logisticMethod: '$root.logisticMethod',
 										datedl: '$root.datedl',
 										qty: '$root.qty',
 										Status: '$root.Status',
@@ -2391,6 +2407,7 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
 										supplier: '$root.supplier',
 										datec: '$root.datec',
 										ref_client: '$root.ref_client',
+										logisticMethod: '$root.logisticMethod',
 										datedl: '$root.datedl',
 										qty: '$root.qty',
 										Status: '$root.Status',
@@ -2415,6 +2432,7 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
 										supplier: 1,
 										datec: 1,
 										ref_client: 1,
+										logisticMethod: 1,
 										datedl: 1,
 										qty: 1,
 										Status: 1,

@@ -24,7 +24,7 @@ gulp.task('license', function() {
 gulp.task('beautify', function() {
 		gulp.src(['./**/*.css', './**/*.html', './**/*.js', '!./public/js/**', '!./public/assets/**', '!./node_modules/**', '!./tmp/**', '!./**/*.min.js', '!./**/*.min.css'])
 				.pipe(prettify({
-						"indent_size": 4,
+						"indent_size": 1,
 						"indent_char": '\t',
 						// other options
 						"js": {

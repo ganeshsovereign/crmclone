@@ -1,90 +1,90 @@
 <!-- BEGIN PORTLET-->
 <div class="portlet light " ng-if="login.rights.box.ca">
-				<div class="portlet-title">
-								<div class="caption caption-md">
-												<i class="icon-bar-chart font-green-haze hide"></i>
-												<span class="caption-subject font-green-haze bold uppercase">@(orders:SubcontractorDetails)</span>
-												<span class="caption-helper hide">weekly stats...</span>
-								</div>
-								<div class="actions">
-												<div class="btn-group btn-group-devided" data-toggle="buttons">
-																<label class="btn btn-transparent grey-salsa btn-circle btn-sm active">
+	<div class="portlet-title">
+		<div class="caption caption-md">
+			<i class="icon-bar-chart font-green-haze hide"></i>
+			<span class="caption-subject font-green-haze bold uppercase">@(orders:SubcontractorDetails)</span>
+			<span class="caption-helper hide">weekly stats...</span>
+		</div>
+		<div class="actions">
+			<div class="btn-group btn-group-devided" data-toggle="buttons">
+				<label class="btn btn-transparent grey-salsa btn-circle btn-sm active">
                     <input type="radio" name="options" class="toggle" id="option2">@(Dates)</label>
-																<label class="btn btn-transparent grey-salsa btn-circle btn-sm">
+				<label class="btn btn-transparent grey-salsa btn-circle btn-sm">
                     <input type="radio" name="options" class="toggle" id="option2">@(Previsionnel)</label>
-												</div>
-								</div>
+			</div>
+		</div>
+	</div>
+	<div class="portlet-body">
+		<div class="row number-stats margin-bottom-30">
+			<div class="col-md-6 col-sm-6 col-xs-6">
+				<div class="stat-left">
+					<div class="stat-chart">
+						<div id="sparkline_bar"></div>
+					</div>
+					<div class="stat-number">
+						<div class="title">
+							@(TotalHT)
+						</div>
+						<div class="number">
+							{{ dataDebit.subcontractor.total_ht | number:2}}
+						</div>
+					</div>
 				</div>
-				<div class="portlet-body">
-								<div class="row number-stats margin-bottom-30">
-												<div class="col-md-6 col-sm-6 col-xs-6">
-																<div class="stat-left">
-																				<div class="stat-chart">
-																								<div id="sparkline_bar"></div>
-																				</div>
-																				<div class="stat-number">
-																								<div class="title">
-																												@(TotalHT)
-																								</div>
-																								<div class="number">
-																												{{ dataDebit.subcontractor.total_ht | number:2}}
-																								</div>
-																				</div>
-																</div>
-												</div>
-												<div class="col-md-6 col-sm-6 col-xs-6">
-																<div class="stat-right">
-																				<div class="stat-chart">
-																								<div id="sparkline_bar2"></div>
-																				</div>
-																				<div class="stat-number">
-																								<div class="title">
-																												@(Percentage) du CA
-																								</div>
-																								<div class="number">
-																												{{ dataDebit.subcontractor.total_ht / dataCaTotal * 100 | percent:0}}
-																								</div>
-																				</div>
-																</div>
-												</div>
-								</div>
-								<div class="table-scrollable table-scrollable-borderless scroller" scroller style="height:318px;">
-												<table class="table table-hover table-light">
-																<thead>
-																				<tr class="uppercase">
-																								<th colspan="2">
-																												@(companies:Company)
-																								</th>
-																								<th class="text-align-reverse">
-																												Total HT
-																								</th>
-																								<th class="text-align-reverse">
-																												Total N-1 HT
-																								</th>
-																								<th class="text-align-reverse">
-																												Repartition
-																								</th>
-																				</tr>
-																</thead>
-																<tr ng-repeat="user in dataDebit.subcontractor.data| orderBy :'-total_ht'">
-																				<td class="fit">
-																								<!--    <img class="user-pic" src="../../../assets/admin/layout/img/avatar4.jpg">-->
-																				</td>
-																				<td>
-																								<a href="#" ui-sref="societe.show({id:user.supplier._id})" class="primary-link">{{user.supplier.name.last}}</a>
-																				</td>
-																				<td class="text-align-reverse">
-																								{{user.total_ht| currency}}
-																				</td>
-																				<td class="text-align-reverse">
-																								{{user.total_ht_1| currency}} <small>({{(user.total_ht_1 - user.total_ht)*100/user.total_ht_1 | percent:0}})</small>
-																				</td>
-																				<td class="text-align-reverse">
-																								<span class="bold font-green-haze">{{user.total_ht / dataDebit.subcontractor.total_ht * 100| percent:0}}</span>
-																				</td>
-																</tr>
-												</table>
-								</div>
+			</div>
+			<div class="col-md-6 col-sm-6 col-xs-6">
+				<div class="stat-right">
+					<div class="stat-chart">
+						<div id="sparkline_bar2"></div>
+					</div>
+					<div class="stat-number">
+						<div class="title">
+							@(Percentage) du CA
+						</div>
+						<div class="number">
+							{{ dataDebit.subcontractor.total_ht / dataCaTotal * 100 | percent:0}}
+						</div>
+					</div>
 				</div>
+			</div>
+		</div>
+		<div class="table-scrollable table-scrollable-borderless scroller" scroller style="height:318px;">
+			<table class="table table-hover table-light">
+				<thead>
+					<tr class="uppercase">
+						<th colspan="2">
+							@(companies:Company)
+						</th>
+						<th class="text-align-reverse">
+							Total HT
+						</th>
+						<th class="text-align-reverse">
+							Total N-1 HT
+						</th>
+						<th class="text-align-reverse">
+							Repartition
+						</th>
+					</tr>
+				</thead>
+				<tr ng-repeat="user in dataDebit.subcontractor.data| orderBy :'-total_ht'">
+					<td class="fit">
+						<!--    <img class="user-pic" src="../../../assets/admin/layout/img/avatar4.jpg">-->
+					</td>
+					<td>
+						<a href="#" ui-sref="societe.show({id:user.supplier._id})" class="primary-link">{{user.supplier.name.last}}</a>
+					</td>
+					<td class="text-align-reverse">
+						{{user.total_ht| currency}}
+					</td>
+					<td class="text-align-reverse">
+						{{user.total_ht_1| currency}} <small>({{(user.total_ht_1 - user.total_ht)*100/user.total_ht_1 | percent:0}})</small>
+					</td>
+					<td class="text-align-reverse">
+						<span class="bold font-green-haze">{{user.total_ht / dataDebit.subcontractor.total_ht * 100| percent:0}}</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>
 <!-- END PORTLET-->

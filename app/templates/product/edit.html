@@ -1,1483 +1,1483 @@
 <script type="text/ng-template" id="searchproduct.html">
-				<a ng-class="{'list-group-item font-green': match.model.price_level != 'BASE'}">
+	<a ng-class="{'list-group-item font-green': match.model.price_level != 'BASE'}">
         <span ng-bind-html="match.model.product.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.product.label"></span> ({{match.model.price_level}} : {{match.model.pu_ht|currency}})
     </a>
 </script>
 
 <script type="text/ng-template" id="searchsupplierproduct.html">
-				<a>
+	<a>
         <span ng-bind-html="match.model.product.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.product.label"></span> ({{match.model.totalCost |currency}})
     </a>
 </script>
 
 <div class="col-md-12">
-				<div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
+	<div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
 
-				<div class="form-horizontal form-row-seperated">
-								<div class="portlet portlet light bordered">
-												<div class="portlet-title">
-																<div class="caption font-yellow-crusta">
-																				<i class="fa fa-cubes font-yellow-crusta sbold"></i>@(products:ProductServiceCard)
-																</div>
-																<save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
-												</div>
-												<div class="portlet-body">
-																<tabset class="tabbable-line tabbable-full-width">
-																				<tab heading="@(General)">
-																								<div class="form-body">
-																												<div class="row">
-																																<div class="col-md-6">
-																																				<div class="form-group form-md-line-input">
+	<div class="form-horizontal form-row-seperated">
+		<div class="portlet portlet light bordered">
+			<div class="portlet-title">
+				<div class="caption font-yellow-crusta">
+					<i class="fa fa-cubes font-yellow-crusta sbold"></i>@(products:ProductServiceCard)
+				</div>
+				<save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
+			</div>
+			<div class="portlet-body">
+				<tabset class="tabbable-line tabbable-full-width">
+					<tab heading="@(General)">
+						<div class="form-body">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group form-md-line-input">
 
-																																								<label class="col-md-4 control-label" for="form_control_1">@(SKU): <span class="required">
+										<label class="col-md-4 control-label" for="form_control_1">@(SKU): <span class="required">
                                         * </span></label>
-																																								<div class="col-md-8">
-																																												<input class="form-control" ng-model="product.info.SKU" maxlength="13" required placeholder="" type="text">
-																																												<div class="form-control-focus"> </div>
-																																								</div>
-																																				</div>
-																																				<div class="form-group form-md-line-input">
-																																								<label class="col-md-4 control-label" for="form_control_1">@(Status): </label>
-																																								<div class="col-md-8">
-																																												<label class="control-label">
+										<div class="col-md-8">
+											<input class="form-control" ng-model="product.info.SKU" maxlength="13" required placeholder="" type="text">
+											<div class="form-control-focus"> </div>
+										</div>
+									</div>
+									<div class="form-group form-md-line-input">
+										<label class="col-md-4 control-label" for="form_control_1">@(Status): </label>
+										<div class="col-md-8">
+											<label class="control-label">
                                         <input uniform type="checkbox" ng-model="product.info.isActive" ng-checked="product.info.isActive"/> @(Enabled) </label>
-																																								</div>
-																																				</div>
-																																				<div class="form-group form-md-line-input">
+										</div>
+									</div>
+									<div class="form-group form-md-line-input">
 
-																																								<label class="col-md-4 control-label" for="form_control_1">@(Label): <span class="required">
+										<label class="col-md-4 control-label" for="form_control_1">@(Label): <span class="required">
                                         * </span></label>
-																																								<div class="col-md-8">
-																																												<input class="form-control" ng-model="product.info.langs[0].name" maxlength="13" required placeholder="" type="text">
-																																												<div class="form-control-focus"> </div>
-																																								</div>
-																																				</div>
+										<div class="col-md-8">
+											<input class="form-control" ng-model="product.info.langs[0].name" maxlength="13" required placeholder="" type="text">
+											<div class="form-control-focus"> </div>
+										</div>
+									</div>
 
-																																				<div class="form-group form-md-line-input">
-																																								<label class="col-md-4 control-label" for="form_control_1">@(Status2):</label>
-																																								<div class="col-md-8">
-																																												<select class="table-group-action-input form-control" required ng-model="product.Status" ng-options="s.id as s.label for s in dict.fk_product_status.values"></select>
-																																												<div class="form-control-focus"> </div>
-																																								</div>
-																																				</div>
-																																</div>
+									<div class="form-group form-md-line-input">
+										<label class="col-md-4 control-label" for="form_control_1">@(Status2):</label>
+										<div class="col-md-8">
+											<select class="table-group-action-input form-control" required ng-model="product.Status" ng-options="s.id as s.label for s in dict.fk_product_status.values"></select>
+											<div class="form-control-focus"> </div>
+										</div>
+									</div>
+								</div>
 
-																																<div class="col-md-6">
-																																				<div class="form-group form-md-line-input ">
-																																								<select class="table-group-action-input form-control" required ng-model="product.info.productType._id" ng-options="t._id as t.name for t in productTypes"></select>
-																																								<label for="form_control_1">@(Type)</label>
-																																				</div>
-																																</div>
-																												</div>
+								<div class="col-md-6">
+									<div class="form-group form-md-line-input ">
+										<select class="table-group-action-input form-control" required ng-model="product.info.productType._id" ng-options="t._id as t.name for t in productTypes"></select>
+										<label for="form_control_1">@(Type)</label>
+									</div>
+								</div>
+							</div>
 
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label" for="form_control_1">@(Label):</label>
-																																<div class="col-md-10">
-																																				<input class="form-control" ng-model="product.langs[0].name" required placeholder="" type="text">
-																																				<div class="form-control-focus"> </div>
-																																</div>
-																												</div>
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label" for="form_control_1">@(Label):</label>
+								<div class="col-md-10">
+									<input class="form-control" ng-model="product.langs[0].name" required placeholder="" type="text">
+									<div class="form-control-focus"> </div>
+								</div>
+							</div>
 
 
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label" for="form_control_1">@(Description):</label>
-																																<div class="col-md-10">
-																																				<textarea class="form-control" ng-model="product.langs[0].description" rows="5"></textarea>
-																																				<div class="form-control-focus"> </div>
-																																				<span class="help-block">@(products:ShowOnBill).</span>
-																																</div>
-																												</div>
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label" for="form_control_1">@(InternalDescription):</label>
-																																<div class="col-md-10">
-																																				<textarea class="form-control" ng-model="product.notePrivate" rows="5"></textarea>
-																																				<div class="form-control-focus"> </div>
-																																				<span class="help-block">@(products:InternalOnly).</span>
-																																</div>
-																												</div>
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(products:BarCode):
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label" for="form_control_1">@(Description):</label>
+								<div class="col-md-10">
+									<textarea class="form-control" ng-model="product.langs[0].description" rows="5"></textarea>
+									<div class="form-control-focus"> </div>
+									<span class="help-block">@(products:ShowOnBill).</span>
+								</div>
+							</div>
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label" for="form_control_1">@(InternalDescription):</label>
+								<div class="col-md-10">
+									<textarea class="form-control" ng-model="product.notePrivate" rows="5"></textarea>
+									<div class="form-control-focus"> </div>
+									<span class="help-block">@(products:InternalOnly).</span>
+								</div>
+							</div>
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(products:BarCode):
                                 </label>
-																																<div class="col-md-4">
-																																				<div class="col-md-4">
-																																								<label class="control-label">
+								<div class="col-md-4">
+									<div class="col-md-4">
+										<label class="control-label">
                                             <input uniform type="checkbox" ng-model="product.autoBarCode" ng-checked="product.autoBarCode"/> @(Automatic) </label>
-																																				</div>
-																																				<div class="col-md-8">
-																																								<input class="form-control" maxlength="13" ng-model="product.barCode" ng-disabled="product.autoBarCode" placeholder="EAN13" type="text">
-																																				</div>
-																																</div>
-																																<label class="col-md-2 control-label">@(products:AclCode):
+									</div>
+									<div class="col-md-8">
+										<input class="form-control" maxlength="13" ng-model="product.barCode" ng-disabled="product.autoBarCode" placeholder="EAN13" type="text">
+									</div>
+								</div>
+								<label class="col-md-2 control-label">@(products:AclCode):
                                 </label>
-																																<div class="col-md-4">
-																																				<input class="form-control" ng-model="product.aclCode" placeholder="" type="text">
-																																</div>
-																												</div>
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(Keywords):
+								<div class="col-md-4">
+									<input class="form-control" ng-model="product.aclCode" placeholder="" type="text">
+								</div>
+							</div>
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(Keywords):
                                 </label>
-																																<div class="col-md-10">
-																																				<tags-input ng-model="product.Tag" class="ti-input" placeholder="@(Add)">
-																																								<auto-complete source="AutoComplete($query,'/erp/api/product/Tag/autocomplete','')" min-length="1" max-results-to-show="10"></auto-complete>
-																																				</tags-input>
-																																</div>
-																												</div>
+								<div class="col-md-10">
+									<tags-input ng-model="product.Tag" class="ti-input" placeholder="@(Add)">
+										<auto-complete source="AutoComplete($query,'/erp/api/product/Tag/autocomplete','')" min-length="1" max-results-to-show="10"></auto-complete>
+									</tags-input>
+								</div>
+							</div>
 
-																												<div ng-if="product.type == 'DYNAMIC'" class="form-group">
-																																<label class="col-md-2 control-label">@(products:DynamicForm): <span class="required">
+							<div ng-if="product.type == 'DYNAMIC'" class="form-group">
+								<label class="col-md-2 control-label">@(products:DynamicForm): <span class="required">
                                         * </span>
                                 </label>
-																																<div class="col-md-4" ng-init="loadDynForms()">
-																																				<select class="table-group-action-input form-control" ng-model="product.dynForm" ng-options="d.name as d.name for d in dynForms"></select>
-																																</div>
+								<div class="col-md-4" ng-init="loadDynForms()">
+									<select class="table-group-action-input form-control" ng-model="product.dynForm" ng-options="d.name as d.name for d in dynForms"></select>
+								</div>
 
-																												</div>
+							</div>
 
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label" for="form_control_1">@(products:Units): <span class="required">
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label" for="form_control_1">@(products:Units): <span class="required">
                                         * </span>
                                 </label>
-																																<div class="col-md-4">
-																																				<select class="table-group-action-input form-control" ng-model="product.units" ng-options="s.id as s.label for s in dict.fk_units.values"></select>
-																																				<div class="form-control-focus"> </div>
-																																</div>
-																																<label class="col-md-2 control-label">@(products:Weight): 
+								<div class="col-md-4">
+									<select class="table-group-action-input form-control" ng-model="product.units" ng-options="s.id as s.label for s in dict.fk_units.values"></select>
+									<div class="form-control-focus"> </div>
+								</div>
+								<label class="col-md-2 control-label">@(products:Weight): 
                                 </label>
-																																<div class="col-md-4">
-																																				<input type="number" class="form-control" ng-model="product.weight" min="0" step="0.0001" />
-																																				<div class="form-control-focus"> </div>
-																																</div>
-																												</div>
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(DateCreation): </label>
-																																<div class="col-md-4">
-																																				<label class='control-label'> {{product.createdAt|date:'dd/MM/yyyy'}}</label>
-																																</div>
-																																<label class="col-md-2 control-label">@(DateLastModification): </label>
-																																<div class="col-md-4">
-																																				<label class='control-label'> {{product.updatedAt|date:'dd/MM/yyyy HH:mm'}} </label>
-																																</div>
-																												</div>
-																								</div>
-																				</tab>
+								<div class="col-md-4">
+									<input type="number" class="form-control" ng-model="product.weight" min="0" step="0.0001" />
+									<div class="form-control-focus"> </div>
+								</div>
+							</div>
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(DateCreation): </label>
+								<div class="col-md-4">
+									<label class='control-label'> {{product.createdAt|date:'dd/MM/yyyy'}}</label>
+								</div>
+								<label class="col-md-2 control-label">@(DateLastModification): </label>
+								<div class="col-md-4">
+									<label class='control-label'> {{product.updatedAt|date:'dd/MM/yyyy HH:mm'}} </label>
+								</div>
+							</div>
+						</div>
+					</tab>
 
-																				<tab heading="@(products:AssociatedProducts)" ng-if="product._id && product.type == 'PACK'">
-																								<div class="form-body">
-																												<div class="form-group margin-bottom-20">
-																																<div class="col-md-7"></div>
+					<tab heading="@(products:AssociatedProducts)" ng-if="product._id && product.type == 'PACK'">
+						<div class="form-body">
+							<div class="form-group margin-bottom-20">
+								<div class="col-md-7"></div>
 
-																																<label class="col-md-3 control-label">@(products:SumCost):</label>
-																																<span class="col-md-1 control-label bold font-blue-steel">{{product.totalCost| currency}}</span>
+								<label class="col-md-3 control-label">@(products:SumCost):</label>
+								<span class="col-md-1 control-label bold font-blue-steel">{{product.totalCost| currency}}</span>
 
-																												</div>
+							</div>
 
-																												<table class="table dataTable no-footer table-hover">
-																																<thead>
-																																				<tr role="row" class="heading">
-																																								<th>
-																																												@(products:Ref)
-																																								</th>
-																																								<th>
-																																												@(Label)
-																																								</th>
-																																								<th>
-																																												@(Qty)
-																																								</th>
-																																								<th>
-																																												@(products:BuyingPriceHT)
-																																								</th>
-																																								<th>
-																																												@(AmountHT)
-																																								</th>
-																																								<th>
-																																								</th>
-																																				</tr>
-																																</thead>
-																																<tbody>
-																																				<tr>
-																																								<td>
-																																												<input class="form-control" ng-model="newPack.id.name" typeahead="product as product.name for product in productAutoComplete($viewValue, 'name')" typeahead-template-url="searchsupplierproduct.html" typeahead-on-select="addPackProduct($item)" placeholder="@(products:ProductRef)"
-																																												/>
-																																								</td>
-																																								<td>
-																																												{{newPack.id.label}}
-																																								</td>
-																																								<td>
-																																												<input class="form-control" type="number" min="0" step="any" ng-model="newPack.qty" ng-change="changePackQty()" />
-																																								</td>
-																																								<td>
-																																												{{newPack.pu_ht|currency}}
-																																								</td>
-																																								<td>
-																																												{{newPack.total_ht|currency}}
-																																								</td>
-																																								<td>
-																																												<button class="btn btn-circle default" ng-click="addPack()">
+							<table class="table dataTable no-footer table-hover">
+								<thead>
+									<tr role="row" class="heading">
+										<th>
+											@(products:Ref)
+										</th>
+										<th>
+											@(Label)
+										</th>
+										<th>
+											@(Qty)
+										</th>
+										<th>
+											@(products:BuyingPriceHT)
+										</th>
+										<th>
+											@(AmountHT)
+										</th>
+										<th>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>
+											<input class="form-control" ng-model="newPack.id.name" typeahead="product as product.name for product in productAutoComplete($viewValue, 'name')" typeahead-template-url="searchsupplierproduct.html" typeahead-on-select="addPackProduct($item)" placeholder="@(products:ProductRef)"
+											/>
+										</td>
+										<td>
+											{{newPack.id.label}}
+										</td>
+										<td>
+											<input class="form-control" type="number" min="0" step="any" ng-model="newPack.qty" ng-change="changePackQty()" />
+										</td>
+										<td>
+											{{newPack.pu_ht|currency}}
+										</td>
+										<td>
+											{{newPack.total_ht|currency}}
+										</td>
+										<td>
+											<button class="btn btn-circle default" ng-click="addPack()">
                                                 <i class="fa fa-plus"></i> @(Add) </button>
-																																								</td>
-																																				</tr>
-																																				<tr ng-repeat="pack in product.pack">
-																																								<td>
-																																												<a class="with-tooltip" ui-sref="product.show({id: pack.id._id})" data-tooltip-options='{"position":"top"}' title="{{pack.id.ref}}"><span class="fa fa-cubes"></span> {{pack.id.ref}}</a>
-																																								</td>
-																																								<td>
-																																												{{pack.id.label}}
-																																								</td>
-																																								<td>
-																																												<span editable-number="pack.qty" e-min="0" e-step="any" onaftersave="update()">
+										</td>
+									</tr>
+									<tr ng-repeat="pack in product.pack">
+										<td>
+											<a class="with-tooltip" ui-sref="product.show({id: pack.id._id})" data-tooltip-options='{"position":"top"}' title="{{pack.id.ref}}"><span class="fa fa-cubes"></span> {{pack.id.ref}}</a>
+										</td>
+										<td>
+											{{pack.id.label}}
+										</td>
+										<td>
+											<span editable-number="pack.qty" e-min="0" e-step="any" onaftersave="update()">
                                                 {{pack.qty}}
                                             </span>
-																																								</td>
-																																								<td style="text-align: right; ">
-																																												{{pack.id.totalCost| currency}}
-																																								</td>
-																																								<td style="text-align: right; ">
-																																												{{pack.id.totalCost * pack.qty| currency}}
-																																								</td>
-																																								<td>
-																																												<button class="btn btn-circle red" ng-click="deletePack($index)">
+										</td>
+										<td style="text-align: right; ">
+											{{pack.id.totalCost| currency}}
+										</td>
+										<td style="text-align: right; ">
+											{{pack.id.totalCost * pack.qty| currency}}
+										</td>
+										<td>
+											<button class="btn btn-circle red" ng-click="deletePack($index)">
                                                 <i class="fa fa-times"></i> @(Delete) </button>
-																																								</td>
-																																				</tr>
-																																</tbody>
-																																<tfoot>
-																																				<tr>
-																																								<td colspan="4">@(Total)</td>
-																																								<td style="text-align: right; ">{{product.total_pack| currency}}</td>
-																																								<td></td>
-																																				</tr>
-																																</tfoot>
-																												</table>
-																								</div>
-																				</tab>
+										</td>
+									</tr>
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="4">@(Total)</td>
+										<td style="text-align: right; ">{{product.total_pack| currency}}</td>
+										<td></td>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+					</tab>
 
-																				<tab heading="@(Categories)" ng-if="product._id">
-																								<div class="form-body">
-																												<div class="row">
-																																<div class="col-md-12">
-																																				<div class="portlet light bordered">
-																																								<div class="portlet-title">
-																																												<div class="caption">
-																																																<i class="fa fa-share-alt font-yellow-crusta"></i>
-																																																<span class="caption-subject font-yellow-crusta bold uppercase">@(Categories)</span>
-																																												</div>
-																																												<div class="actions">
-																																																<div class="btn-group">
-																																																				<a class="btn btn-circle default" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false"> @(Add)
+					<tab heading="@(Categories)" ng-if="product._id">
+						<div class="form-body">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="portlet light bordered">
+										<div class="portlet-title">
+											<div class="caption">
+												<i class="fa fa-share-alt font-yellow-crusta"></i>
+												<span class="caption-subject font-yellow-crusta bold uppercase">@(Categories)</span>
+											</div>
+											<div class="actions">
+												<div class="btn-group">
+													<a class="btn btn-circle default" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false"> @(Add)
                                                 </a>
-																																																</div>
-																																												</div>
-																																								</div>
-																																								<div class="portlet-body">
-																																												<div id="tree_2" class="tree-demo jstree jstree-2 jstree-default jstree-checkbox-selection" role="tree" aria-multiselectable="true" tabindex="0" aria-activedescendant="j2_4" aria-busy="false">
-																																																<ul class="jstree-container-ul jstree-children jstree-wholerow-ul jstree-no-dots" role="group">
-																																																				<li role="treeitem" aria-selected="false" aria-level="1" aria-labelledby="j2_1_anchor" aria-expanded="true" id="j2_1" class="jstree-node  jstree-open">
-																																																								<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j2_1_anchor"><i class="jstree-icon jstree-checkbox jstree-undetermined" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i>Same but with checkboxes</a>
-																																																								<ul role="group" class="jstree-children">
-																																																												<li role="treeitem" aria-selected="true" aria-level="2" aria-labelledby="j2_2_anchor" id="j2_2" class="jstree-node  jstree-leaf">
-																																																																<div unselectable="on" role="presentation" class="jstree-wholerow jstree-wholerow-clicked">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor  jstree-clicked" href="#" tabindex="-1" id="j2_2_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i>initially selected</a></li>
-																																																												<li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="j2_3_anchor" id="j2_3" class="jstree-node  jstree-leaf">
-																																																																<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j2_3_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-warning icon-state-danger jstree-themeicon-custom" role="presentation"></i>custom icon</a></li>
-																																																												<li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="j2_4_anchor" aria-expanded="true" id="j2_4" class="jstree-node  jstree-open">
-																																																																<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j2_4_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-folder icon-state-default jstree-themeicon-custom" role="presentation"></i>initially open</a>
-																																																																<ul role="group" class="jstree-children">
-																																																																				<li role="treeitem" aria-selected="false" aria-level="3" aria-labelledby="j2_5_anchor" id="j2_5" class="jstree-node  jstree-leaf jstree-last">
-																																																																								<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j2_5_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i>Another node</a></li>
-																																																																</ul>
-																																																												</li>
-																																																												<li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="j2_6_anchor" id="j2_6" class="jstree-node  jstree-leaf">
-																																																																<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j2_6_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-warning icon-state-warning jstree-themeicon-custom" role="presentation"></i>custom icon</a></li>
-																																																												<li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="j2_7_anchor" aria-disabled="true" id="j2_7" class="jstree-node  jstree-leaf jstree-last">
-																																																																<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor  jstree-disabled" href="#" tabindex="-1" id="j2_7_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-check icon-state-success jstree-themeicon-custom" role="presentation"></i>disabled node</a></li>
-																																																								</ul>
-																																																				</li>
-																																																				<li role="treeitem" aria-selected="false" aria-level="1" aria-labelledby="j2_8_anchor" id="j2_8" class="jstree-node  jstree-leaf jstree-last">
-																																																								<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j2_8_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i>And wholerow selection</a></li>
-																																																</ul>
-																																												</div>
-																																								</div>
-																																				</div>
-																																</div>
+												</div>
+											</div>
+										</div>
+										<div class="portlet-body">
+											<div id="tree_2" class="tree-demo jstree jstree-2 jstree-default jstree-checkbox-selection" role="tree" aria-multiselectable="true" tabindex="0" aria-activedescendant="j2_4" aria-busy="false">
+												<ul class="jstree-container-ul jstree-children jstree-wholerow-ul jstree-no-dots" role="group">
+													<li role="treeitem" aria-selected="false" aria-level="1" aria-labelledby="j2_1_anchor" aria-expanded="true" id="j2_1" class="jstree-node  jstree-open">
+														<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j2_1_anchor"><i class="jstree-icon jstree-checkbox jstree-undetermined" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i>Same but with checkboxes</a>
+														<ul role="group" class="jstree-children">
+															<li role="treeitem" aria-selected="true" aria-level="2" aria-labelledby="j2_2_anchor" id="j2_2" class="jstree-node  jstree-leaf">
+																<div unselectable="on" role="presentation" class="jstree-wholerow jstree-wholerow-clicked">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor  jstree-clicked" href="#" tabindex="-1" id="j2_2_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i>initially selected</a></li>
+															<li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="j2_3_anchor" id="j2_3" class="jstree-node  jstree-leaf">
+																<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j2_3_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-warning icon-state-danger jstree-themeicon-custom" role="presentation"></i>custom icon</a></li>
+															<li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="j2_4_anchor" aria-expanded="true" id="j2_4" class="jstree-node  jstree-open">
+																<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j2_4_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-folder icon-state-default jstree-themeicon-custom" role="presentation"></i>initially open</a>
+																<ul role="group" class="jstree-children">
+																	<li role="treeitem" aria-selected="false" aria-level="3" aria-labelledby="j2_5_anchor" id="j2_5" class="jstree-node  jstree-leaf jstree-last">
+																		<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j2_5_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i>Another node</a></li>
+																</ul>
+															</li>
+															<li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="j2_6_anchor" id="j2_6" class="jstree-node  jstree-leaf">
+																<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j2_6_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-warning icon-state-warning jstree-themeicon-custom" role="presentation"></i>custom icon</a></li>
+															<li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="j2_7_anchor" aria-disabled="true" id="j2_7" class="jstree-node  jstree-leaf jstree-last">
+																<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor  jstree-disabled" href="#" tabindex="-1" id="j2_7_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-check icon-state-success jstree-themeicon-custom" role="presentation"></i>disabled node</a></li>
+														</ul>
+													</li>
+													<li role="treeitem" aria-selected="false" aria-level="1" aria-labelledby="j2_8_anchor" id="j2_8" class="jstree-node  jstree-leaf jstree-last">
+														<div unselectable="on" role="presentation" class="jstree-wholerow">&nbsp;</div><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j2_8_anchor"><i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon fa fa-folder icon-state-warning icon-lg jstree-themeicon-custom" role="presentation"></i>And wholerow selection</a></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
 
-																												</div>
-																								</div>
-																				</tab>
+							</div>
+						</div>
+					</tab>
 
-																				<tab select="files = 1" ng-if="product._id">
-																								<tab-heading>
-																												<span ng-if='product.files.length' class='badge badge-success'>{{product.files.length}}</span> @(products:Images/documents)
-																								</tab-heading>
-																								<div ng-if="files" ng-include="'/templates/_gridfs/file.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>
-																				</tab>
+					<tab select="files = 1" ng-if="product._id">
+						<tab-heading>
+							<span ng-if='product.files.length' class='badge badge-success'>{{product.files.length}}</span> @(products:Images/documents)
+						</tab-heading>
+						<div ng-if="files" ng-include="'/templates/_gridfs/file.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>
+					</tab>
 
-																				<tab heading="@(products:OnSell)" ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
-																								<div class="row">
+					<tab heading="@(products:OnSell)" ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
+						<div class="row">
 
-																												<div class="col-md-3">
-																																<div class="portlet light bordered">
-																																				<div class="portlet-title">
-																																								<div class="caption caption-md">
-																																												<i class="fa fa-cart-arrow-down font-yellow-crusta"></i>
-																																												<span class="caption-subject font-yellow-crusta bold uppercase">@(products:SellingPrice)</span>
-																																								</div>
-																																				</div>
-																																				<div class="portlet-body">
-																																								<div class="form-group form-md-line-input">
+							<div class="col-md-3">
+								<div class="portlet light bordered">
+									<div class="portlet-title">
+										<div class="caption caption-md">
+											<i class="fa fa-cart-arrow-down font-yellow-crusta"></i>
+											<span class="caption-subject font-yellow-crusta bold uppercase">@(products:SellingPrice)</span>
+										</div>
+									</div>
+									<div class="portlet-body">
+										<div class="form-group form-md-line-input">
 
-																																												<div class="row">
-																																																<label class="col-md-6 control-label">@(products:Multiplier) : </label>
-																																																<div class="col-md-6">
-																																																				<input type="text" class="form-control" placeholder="">
-																																																				<div class="form-control-focus"> </div>
-																																																</div>
-																																												</div>
-																																												<div class="row">
-																																																<label class="col-md-6 control-label">@(products:SellingPriceHT) :</label>
-																																																<div class="col-md-6">
-																																																				<span class="col-md-1 control-label bold font-dark">{{product.totalCost| currency}}</span>
-																																																				<div class="form-control-focus"> </div>
-																																																</div>
-																																												</div>
-																																												<div class="row">
-																																																<label class="col-md-6 control-label">@(products:SellingPriceTTC) :</label>
-																																																<div class="col-md-6">
-																																																				<span class="col-md-1 control-label bold font-dark">{{price.price * (1 + product.tva_tx / 100) | currency}}</span>
-																																																				<div class="form-control-focus"> </div>
-																																																</div>
-																																												</div>
-																																								</div>
+											<div class="row">
+												<label class="col-md-6 control-label">@(products:Multiplier) : </label>
+												<div class="col-md-6">
+													<input type="text" class="form-control" placeholder="">
+													<div class="form-control-focus"> </div>
+												</div>
+											</div>
+											<div class="row">
+												<label class="col-md-6 control-label">@(products:SellingPriceHT) :</label>
+												<div class="col-md-6">
+													<span class="col-md-1 control-label bold font-dark">{{product.totalCost| currency}}</span>
+													<div class="form-control-focus"> </div>
+												</div>
+											</div>
+											<div class="row">
+												<label class="col-md-6 control-label">@(products:SellingPriceTTC) :</label>
+												<div class="col-md-6">
+													<span class="col-md-1 control-label bold font-dark">{{price.price * (1 + product.tva_tx / 100) | currency}}</span>
+													<div class="form-control-focus"> </div>
+												</div>
+											</div>
+										</div>
 
-																																				</div>
-																																</div>
-
-
-																												</div>
+									</div>
+								</div>
 
 
-																												<div class="col-md-9">
-																																<div class="portlet light bordered">
-																																				<div class="portlet-title">
-																																								<div class="caption caption-md">
-																																												<i class="fa fa-gears font-grey-cascade"></i>
-																																												<span class="caption-subject font-grey-cascade bold uppercase">@(Setting)</span>
-																																								</div>
-																																				</div>
-																																				<div class="portlet-body">
-																																								<div class="form-group form-md-line-input">
-																																												<div class="col-md-6">
+							</div>
 
 
-																																																<div class="caption caption-md">
-																																																				<span class="caption-subject font-grey-cascade bold uppercase">@(products:ProductAccountancySellCode)</span>
-																																																</div>
-																																																<div class="row">
-																																																				<label class="col-md-5 control-label">@(products:VATRate): </label>
-																																																				<div class="col-md-7">
-																																																								<select class="table-group-action-input form-control" ng-model="product.tva_tx" ng-options="c.value as c.value for c in dict.fk_tva.values"></select>
-																																																								<div class="form-control-focus"> </div>
-																																																				</div>
-																																																</div>
-																																																<div class="row">
-																																																				<label class="col-md-5 control-label">@(products:ProductAccountancySellCode) : </label>
-																																																				<div class="col-md-7">
-																																																								<input class="form-control" ng-model="product.compta_sell" placeholder="Normal" type="text">
-																																																								<div class="form-control-focus"> </div>
-																																																				</div>
-																																																</div>
-																																																<div class="row">
-																																																				<label class="col-md-5 control-label">@(products:ProductAccountancySellCode) EU : </label>
-																																																				<div class="col-md-7">
-																																																								<input class="form-control" ng-model="product.compta_sell_eu" placeholder="Export EU" type="text">
-																																																								<div class="form-control-focus"> </div>
-																																																				</div>
-
-																																																</div>
-																																																<div class="row">
-																																																				<label class="col-md-5 control-label">@(products:ProductAccountancySellCode) Export : </label>
-																																																				<div class="col-md-7">
-																																																								<input class="form-control" ng-model="product.compta_sell_exp" placeholder="Export" type="text">
-																																																								<div class="form-control-focus"> </div>
-																																																				</div>
-
-																																																</div>
-																																												</div>
+							<div class="col-md-9">
+								<div class="portlet light bordered">
+									<div class="portlet-title">
+										<div class="caption caption-md">
+											<i class="fa fa-gears font-grey-cascade"></i>
+											<span class="caption-subject font-grey-cascade bold uppercase">@(Setting)</span>
+										</div>
+									</div>
+									<div class="portlet-body">
+										<div class="form-group form-md-line-input">
+											<div class="col-md-6">
 
 
+												<div class="caption caption-md">
+													<span class="caption-subject font-grey-cascade bold uppercase">@(products:ProductAccountancySellCode)</span>
+												</div>
+												<div class="row">
+													<label class="col-md-5 control-label">@(products:VATRate): </label>
+													<div class="col-md-7">
+														<select class="table-group-action-input form-control" ng-model="product.tva_tx" ng-options="c.value as c.value for c in dict.fk_tva.values"></select>
+														<div class="form-control-focus"> </div>
+													</div>
+												</div>
+												<div class="row">
+													<label class="col-md-5 control-label">@(products:ProductAccountancySellCode) : </label>
+													<div class="col-md-7">
+														<input class="form-control" ng-model="product.compta_sell" placeholder="Normal" type="text">
+														<div class="form-control-focus"> </div>
+													</div>
+												</div>
+												<div class="row">
+													<label class="col-md-5 control-label">@(products:ProductAccountancySellCode) EU : </label>
+													<div class="col-md-7">
+														<input class="form-control" ng-model="product.compta_sell_eu" placeholder="Export EU" type="text">
+														<div class="form-control-focus"> </div>
+													</div>
 
-																																												<div class="col-md-6">
-																																																<div class="caption caption-md">
-																																																				<span class="caption-subject font-grey-cascade bold uppercase">@(products:SellSegmentation)</span>
-																																																				<span class="caption-helper"> @(products:UsedForStatistics)</span>
-																																																</div>
-																																																<div class="row">
-																																																				<label class="col-md-4 control-label">@(products:Family):
+												</div>
+												<div class="row">
+													<label class="col-md-5 control-label">@(products:ProductAccountancySellCode) Export : </label>
+													<div class="col-md-7">
+														<input class="form-control" ng-model="product.compta_sell_exp" placeholder="Export" type="text">
+														<div class="form-control-focus"> </div>
+													</div>
+
+												</div>
+											</div>
+
+
+
+											<div class="col-md-6">
+												<div class="caption caption-md">
+													<span class="caption-subject font-grey-cascade bold uppercase">@(products:SellSegmentation)</span>
+													<span class="caption-helper"> @(products:UsedForStatistics)</span>
+												</div>
+												<div class="row">
+													<label class="col-md-4 control-label">@(products:Family):
                                 </label>
-																																																				<div class="col-md-8">
-																																																								<input class="form-control" ng-model="product.costCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'costCenter')" />
-																																																								<div class="form-control-focus"> </div>
-																																																				</div>
-																																																</div>
-																																																<div class="row">
-																																																				<label class="col-md-4 control-label">@(products:SubFamily):
+													<div class="col-md-8">
+														<input class="form-control" ng-model="product.costCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'costCenter')" />
+														<div class="form-control-focus"> </div>
+													</div>
+												</div>
+												<div class="row">
+													<label class="col-md-4 control-label">@(products:SubFamily):
                                 </label>
-																																																				<div class="col-md-8">
-																																																								<input class="form-control" ng-disabled="!product.costCenter" ng-model="product.subCostCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'subCostCenter',{costCenter:product.costCenter})" />
-																																																								<div class="form-control-focus"> </div>
-																																																				</div>
-																																																</div>
-																																																<div class="row">
-																																																				<label class="col-md-4 control-label">@(products:Finition):
+													<div class="col-md-8">
+														<input class="form-control" ng-disabled="!product.costCenter" ng-model="product.subCostCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'subCostCenter',{costCenter:product.costCenter})" />
+														<div class="form-control-focus"> </div>
+													</div>
+												</div>
+												<div class="row">
+													<label class="col-md-4 control-label">@(products:Finition):
                                 </label>
-																																																				<div class="col-md-8">
-																																																								<input class="form-control" ng-disabled="!product.costCenter" ng-model="product.subCostCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'subCostCenter',{costCenter:product.costCenter})" />
-																																																								<div class="form-control-focus"> </div>
-																																																				</div>
-																																																</div>
-																																												</div>
-																																								</div>
+													<div class="col-md-8">
+														<input class="form-control" ng-disabled="!product.costCenter" ng-model="product.subCostCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'subCostCenter',{costCenter:product.costCenter})" />
+														<div class="form-control-focus"> </div>
+													</div>
+												</div>
+											</div>
+										</div>
 
 
 
 
-																																				</div>
-																																</div>
-																												</div>
-																								</div>
+									</div>
+								</div>
+							</div>
+						</div>
 
 
 
-																								<div class="row">
-																												<div class="col-md-12">
+						<div class="row">
+							<div class="col-md-12">
 
-																																<div class="portlet light bordered" ng-if="product._id" ng-init="init(product._id)" ng-controller="ProductPriceLevelController">
-																																				<script type="text/ng-template" id="myModalContent.html">
-																																								<div class="modal-header">
-																																												<h3 class="no-margin-bottom">Nouveau tarif produit / service</h3>
-																																								</div>
-																																								<div class="modal-body">
+								<div class="portlet light bordered" ng-if="product._id" ng-init="init(product._id)" ng-controller="ProductPriceLevelController">
+									<script type="text/ng-template" id="myModalContent.html">
+										<div class="modal-header">
+											<h3 class="no-margin-bottom">Nouveau tarif produit / service</h3>
+										</div>
+										<div class="modal-body">
 
-																																												<p class="button-height inline-medium-label">
-																																																<label for="price_level">Grille de tarifs</label>
-																																																<input id="price_level" required data-ng-model="price.price_level" typeahead="price_level.name as price_level.name for price_level in priceLevelAutoComplete($viewValue)" class="input">
-																																												</p>
-																																												<!--<p class="button-height inline-medium-label">
+											<p class="button-height inline-medium-label">
+												<label for="price_level">Grille de tarifs</label>
+												<input id="price_level" required data-ng-model="price.price_level" typeahead="price_level.name as price_level.name for price_level in priceLevelAutoComplete($viewValue)" class="input">
+											</p>
+											<!--<p class="button-height inline-medium-label">
                                 <label for="datec">Date</label>
                                 <input kendo-date-picker id="datec" data-ng-model="datec" k-on-change="paiement.datec = kendoEvent.sender._value;" class="input">
                                 </p>-->
-																																												<p class="button-height inline-medium-label">
-																																																<label for="pu_ht">Tarif HT</label>
-																																																<input type="number" min="0" step="any" id="pu_ht" data-ng-model="price.prices.pu_ht" class="input">
-																																												</p>
-																																												<p class="button-height inline-medium-label">
-																																																<label for="discount">Remise</label>
-																																																<input type="number" min="0" step="any" id="discount" data-ng-model="price.discount" class="input">
-																																												</p>
+											<p class="button-height inline-medium-label">
+												<label for="pu_ht">Tarif HT</label>
+												<input type="number" min="0" step="any" id="pu_ht" data-ng-model="price.prices.pu_ht" class="input">
+											</p>
+											<p class="button-height inline-medium-label">
+												<label for="discount">Remise</label>
+												<input type="number" min="0" step="any" id="discount" data-ng-model="price.discount" class="input">
+											</p>
 
-																																								</div>
-																																								<div class="modal-footer">
+										</div>
+										<div class="modal-footer">
 
-																																												<button type="button" ng-click="ok()" class="btn btn-circle default">@(Add)</button>
+											<button type="button" ng-click="ok()" class="btn btn-circle default">@(Add)</button>
 
-																																								</div>
-																																				</script>
+										</div>
+									</script>
 
-																																				<script type="text/ng-template" id="myModalPrice.html">
-																																								<div class="modal-header">
-																																												<h4 class="no-margin-bottom">Modifier les prix</h4>
-																																								</div>
-																																								<div class="modal-body">
+									<script type="text/ng-template" id="myModalPrice.html">
+										<div class="modal-header">
+											<h4 class="no-margin-bottom">Modifier les prix</h4>
+										</div>
+										<div class="modal-body">
 
-																																												<p class="button-height inline-medium-label">
-																																																<label for="coef">Coefficient multiplicateur</label>
-																																																<input id="coef" required data-ng-model="coef" type="number" min="0.01" step="any" class="form-control">
-																																												</p>
-																																								</div>
-																																								<div class="modal-footer">
-																																												<button type="button" ng-click="cancel()" class="btn btn-warning btn-sm">@(Cancel)</button>
-																																												<button type="button" ng-click="ok()" class="btn btn-info btn-sm">@(Apply)</button>
+											<p class="button-height inline-medium-label">
+												<label for="coef">Coefficient multiplicateur</label>
+												<input id="coef" required data-ng-model="coef" type="number" min="0.01" step="any" class="form-control">
+											</p>
+										</div>
+										<div class="modal-footer">
+											<button type="button" ng-click="cancel()" class="btn btn-warning btn-sm">@(Cancel)</button>
+											<button type="button" ng-click="ok()" class="btn btn-info btn-sm">@(Apply)</button>
 
-																																								</div>
-																																				</script>
+										</div>
+									</script>
 
-																																				<div class="portlet-title">
-																																								<div class="caption caption-md">
-																																												<i class="fa fa-list font-grey-gallery"></i>
-																																												<span class="caption-subject font-grey-gallery bold uppercase">Liste des prix</span>
-																																								</div>
-																																								<div class="actions">
-																																												<a class="btn btn-circle default" ng-click="addNewPrice()" href="javascript:;">
+									<div class="portlet-title">
+										<div class="caption caption-md">
+											<i class="fa fa-list font-grey-gallery"></i>
+											<span class="caption-subject font-grey-gallery bold uppercase">Liste des prix</span>
+										</div>
+										<div class="actions">
+											<a class="btn btn-circle default" ng-click="addNewPrice()" href="javascript:;">
                                                 <i class="fa fa-plus"></i> @(Add)
                                             </a>
-																																												<a class="btn btn-circle btn-icon-only btn-default" ng-click="find()" href="javascript:;">
+											<a class="btn btn-circle btn-icon-only btn-default" ng-click="find()" href="javascript:;">
                                                 <i class="fa fa-refresh"></i>
                                             </a>
-																																								</div>
-																																				</div>
-																																				<div class="tools">
-																																				</div>
-																																				<div class="portlet-body">
+										</div>
+									</div>
+									<div class="tools">
+									</div>
+									<div class="portlet-body">
 
-																																								<div class="dataTables_wrapper no-footer table-responsive">
-																																												<table class="table table-striped table-bordered table-hover no-footer">
-																																																<thead>
-																																																				<tr role="row" class="heading">
-																																																								<th width="2%">
-																																																												<input type="checkbox" class="group-checkable" />
-																																																								</th>
-																																																								<th>@(Liste de prix)</th>
-																																																								<!--<th>@(Min de commande)</th>-->
-																																																								<th>@(Tarif HT)</th>
-																																																								<th>Remise Suppl.</th>
-																																																								<th>Date MAJ</th>
-																																																								<th>@(Action)</th>
-																																																				</tr>
-																																																</thead>
-																																																<tbody>
-																																																				<tr ng-repeat="line in priceLevel| orderBy : 'product.name'">
-																																																								<td><input type="checkbox" ng-model="grid[line._id]" /></td>
-																																																								<td>{{line.price_level}}</td>
-																																																								<!--<td>{{line.qtyMin}}</td>-->
-																																																								<td>
-																																																												<table class="table-condensed">
-																																																																<tbody>
-																																																																				<tr ng-repeat="price in line.pricesDetails">
-																																																																								<td class="text-info">{{price.range}}</td>
-																																																																								<td><a href="#" editable-number="price.price" e-step="0.001" e-min="0" onaftersave="update(line.product._id, $data, price.rangeQty, line.price_level)">{{price.price}}</a></td>
-																																																																				</tr>
-																																																																</tbody>
-																																																												</table>
+										<div class="dataTables_wrapper no-footer table-responsive">
+											<table class="table table-striped table-bordered table-hover no-footer">
+												<thead>
+													<tr role="row" class="heading">
+														<th width="2%">
+															<input type="checkbox" class="group-checkable" />
+														</th>
+														<th>@(Liste de prix)</th>
+														<!--<th>@(Min de commande)</th>-->
+														<th>@(Tarif HT)</th>
+														<th>Remise Suppl.</th>
+														<th>Date MAJ</th>
+														<th>@(Action)</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr ng-repeat="line in priceLevel| orderBy : 'product.name'">
+														<td><input type="checkbox" ng-model="grid[line._id]" /></td>
+														<td>{{line.price_level}}</td>
+														<!--<td>{{line.qtyMin}}</td>-->
+														<td>
+															<table class="table-condensed">
+																<tbody>
+																	<tr ng-repeat="price in line.pricesDetails">
+																		<td class="text-info">{{price.range}}</td>
+																		<td><a href="#" editable-number="price.price" e-step="0.001" e-min="0" onaftersave="update(line.product._id, $data, price.rangeQty, line.price_level)">{{price.price}}</a></td>
+																	</tr>
+																</tbody>
+															</table>
 
-																																																												<a ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>
+															<a ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>
 
-																																																												<form ng-show="addNewRange" class="form-horizontal">
-																																																																<div class="form-body">
-																																																																				<div class="form-group">
-																																																																								<label class="col-md-3 control-label">@(Qty)</label>
-																																																																								<div class="col-md-9">
-																																																																												<input type="number" class="form-control input-sm" min="0" step='1' ng-model="price.rangeQty" />
-																																																																								</div>
-																																																																				</div>
-																																																																				<div class="form-group">
-																																																																								<label class="col-md-3 control-label">@(Price)</label>
-																																																																								<div class="col-md-9">
-																																																																												<input type="number" class="form-control input-sm" min="0" step="0.001" ng-model="price.price" />
-																																																																								</div>
-																																																																				</div>
-																																																																</div>
-																																																																<div class="form-actions right1">
-																																																																				<button type="button" ng-click="addNewRange = false" class="btn btn-circle red">@(Cancel)</button>
-																																																																				<button type="button" ng-click="update(line.product._id, price.price, price.rangeQty, line.price_level)" class="btn green btn-sm">@(Add)</button>
-																																																																</div>
-																																																												</form>
-																																																								</td>
-																																																								<td><a href="#" editable-number="line.discount" e-step="0.01" e-min="0" onaftersave="updateDiscount(line.product._id, $data, line.price_level)">{{line.discount|| 0 | percent}}</a></td>
-																																																								<td>{{line.updatedAt| date:'dd/MM/yyyy HH:mm'}}</td>
-																																																								<td><button class="btn btn-circle red fa fa-trash" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit {{line.product.name}} ?" confirmed-click="remove(line)"></button></td>
-																																																				</tr>
-																																																</tbody>
-																																												</table>
-																																								</div>
-																																				</div>
-																																</div>
-																												</div>
-																								</div>
+															<form ng-show="addNewRange" class="form-horizontal">
+																<div class="form-body">
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">@(Qty)</label>
+																		<div class="col-md-9">
+																			<input type="number" class="form-control input-sm" min="0" step='1' ng-model="price.rangeQty" />
+																		</div>
+																	</div>
+																	<div class="form-group">
+																		<label class="col-md-3 control-label">@(Price)</label>
+																		<div class="col-md-9">
+																			<input type="number" class="form-control input-sm" min="0" step="0.001" ng-model="price.price" />
+																		</div>
+																	</div>
+																</div>
+																<div class="form-actions right1">
+																	<button type="button" ng-click="addNewRange = false" class="btn btn-circle red">@(Cancel)</button>
+																	<button type="button" ng-click="update(line.product._id, price.price, price.rangeQty, line.price_level)" class="btn green btn-sm">@(Add)</button>
+																</div>
+															</form>
+														</td>
+														<td><a href="#" editable-number="line.discount" e-step="0.01" e-min="0" onaftersave="updateDiscount(line.product._id, $data, line.price_level)">{{line.discount|| 0 | percent}}</a></td>
+														<td>{{line.updatedAt| date:'dd/MM/yyyy HH:mm'}}</td>
+														<td><button class="btn btn-circle red fa fa-trash" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit {{line.product.name}} ?" confirmed-click="remove(line)"></button></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 
-																				</tab>
+					</tab>
 
-																				<tab heading="@(products:Stock)" ng-if="product._id && (product.type == 'PRODUCT' || product.type == 'PACK')">
+					<tab heading="@(products:Stock)" ng-if="product._id && (product.type == 'PRODUCT' || product.type == 'PACK')">
 
-																								<div class="row">
-
-
-																												<div class="col-md-6">
-																																<div class="portlet light bordered">
-																																				<div class="portlet-title">
-																																								<div class="caption caption-md">
-																																												<i class="fa fa-bell font-yellow-crusta"></i>
-																																												<span class="caption-subject font-yellow-crusta bold uppercase">@(stock:StockStatus)</span>
-																																								</div>
-																																				</div>
-																																				<div class="portlet-body">
-
-																																								<div class="form-group form-md-line-input">
-																																												<label class="col-md-4 control-label" for="form_control_1">@(stock:RealStock):</label>
-																																												<div class="col-md-8">
-																																																<input type="text" class="form-control" placeholder="">
-																																																<div class="form-control-focus"> </div>
-																																																<span class="help-block">@(stock:PhysicalStock)</span>
-																																												</div>
-																																								</div>
-
-																																								<div class="form-group form-md-line-input">
-																																												<label class="col-md-4 control-label" for="form_control_1">@(stock:AvailableStock):</label>
-																																												<div class="col-md-8">
-																																																<input type="text" class="form-control" placeholder="">
-																																																<div class="form-control-focus"> </div>
-																																																<span class="help-block">@(stock:AvailableStockDetails)</span>
+						<div class="row">
 
 
-																																												</div>
-																																								</div>
+							<div class="col-md-6">
+								<div class="portlet light bordered">
+									<div class="portlet-title">
+										<div class="caption caption-md">
+											<i class="fa fa-bell font-yellow-crusta"></i>
+											<span class="caption-subject font-yellow-crusta bold uppercase">@(stock:StockStatus)</span>
+										</div>
+									</div>
+									<div class="portlet-body">
+
+										<div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="form_control_1">@(stock:RealStock):</label>
+											<div class="col-md-8">
+												<input type="text" class="form-control" placeholder="">
+												<div class="form-control-focus"> </div>
+												<span class="help-block">@(stock:PhysicalStock)</span>
+											</div>
+										</div>
+
+										<div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="form_control_1">@(stock:AvailableStock):</label>
+											<div class="col-md-8">
+												<input type="text" class="form-control" placeholder="">
+												<div class="form-control-focus"> </div>
+												<span class="help-block">@(stock:AvailableStockDetails)</span>
 
 
-																																								<div class="form-group form-md-line-input">
-																																												<label class="col-md-4 control-label" for="form_control_1">@(stock:VirtualStock):</label>
-																																												<div class="col-md-8">
-																																																<input type="text" class="form-control" placeholder="">
-																																																<div class="form-control-focus"> </div>
-																																																<span class="help-block">@(stock:VirtualStockDetails)</span>
-																																												</div>
-																																								</div>
-
-																																								<div class="form-group form-md-line-input">
-																																												<label class="col-md-4 control-label" for="form_control_1">@(stock:MininumStock):</label>
-																																												<div class="col-md-8">
-																																																<input type="text" class="form-control" placeholder="">
-																																																<div class="form-control-focus"> </div>
-																																												</div>
-																																								</div>
-
-																																								<div class="form-group form-md-line-input">
-																																												<label class="col-md-4 control-label" for="form_control_1">@(stock:StockLimit):</label>
-																																												<div class="col-md-8">
-																																																<input type="text" class="form-control" placeholder="">
-																																																<div class="form-control-focus"> </div>
-																																																<span class="help-block">Niveau de stock entrainant le declenchement de commande</span>
-																																												</div>
-																																								</div>
-																																				</div>
-																																</div>
-																												</div>
-
-																												<div class="col-md-6">
-																																<div class="portlet light bordered">
-																																				<div class="portlet-title">
-																																								<div class="caption caption-md">
-																																												<i class="fa fa-map-signs font-grey-gallery"></i>
-																																												<span class="caption-subject font-grey-gallery bold uppercase">@(stock:StockLocation)</span>
-																																								</div>
-																																				</div>
-																																				<div class="portlet-body">
-
-																																								<div class="form-group form-md-line-input">
-																																												<label class="col-md-3 control-label" for="form_control_1">@(stock:LieuWareHouse):</label>
-																																												<div class="col-md-9">
-																																																<input type="text" class="form-control" placeholder="">
-																																																<div class="form-control-focus"> </div>
-																																												</div>
-																																								</div>
-
-																																								<div class="form-group form-md-line-input">
-																																												<label class="col-md-3 control-label" for="form_control_1">@(products:Zone):</label>
-																																												<div class="col-md-9">
-																																																<input type="text" class="form-control" placeholder="">
-																																																<div class="form-control-focus"> </div>
-																																												</div>
-																																								</div>
-
-																																								<div class="form-group form-md-line-input">
-																																												<label class="col-md-3 control-label" for="form_control_1">@(products:Driveway):</label>
-																																												<div class="col-md-9">
-																																																<input type="text" class="form-control" placeholder="">
-																																																<div class="form-control-focus"> </div>
-																																												</div>
-																																								</div>
+											</div>
+										</div>
 
 
-																																								<div class="form-group form-md-line-input">
-																																												<label class="col-md-3 control-label" for="form_control_1">@(products:Rack):</label>
-																																												<div class="col-md-9">
-																																																<input type="text" class="form-control" placeholder="">
-																																																<div class="form-control-focus"> </div>
-																																												</div>
-																																								</div>
+										<div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="form_control_1">@(stock:VirtualStock):</label>
+											<div class="col-md-8">
+												<input type="text" class="form-control" placeholder="">
+												<div class="form-control-focus"> </div>
+												<span class="help-block">@(stock:VirtualStockDetails)</span>
+											</div>
+										</div>
 
-																																								<div class="form-group form-md-line-input">
-																																												<label class="col-md-3 control-label" for="form_control_1">@(products:Floor):</label>
-																																												<div class="col-md-9">
-																																																<input type="text" class="form-control" placeholder="">
-																																																<div class="form-control-focus"> </div>
-																																												</div>
-																																								</div>
-																																				</div>
-																																</div>
-																												</div>
-																								</div>
+										<div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="form_control_1">@(stock:MininumStock):</label>
+											<div class="col-md-8">
+												<input type="text" class="form-control" placeholder="">
+												<div class="form-control-focus"> </div>
+											</div>
+										</div>
+
+										<div class="form-group form-md-line-input">
+											<label class="col-md-4 control-label" for="form_control_1">@(stock:StockLimit):</label>
+											<div class="col-md-8">
+												<input type="text" class="form-control" placeholder="">
+												<div class="form-control-focus"> </div>
+												<span class="help-block">Niveau de stock entrainant le declenchement de commande</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="portlet light bordered">
+									<div class="portlet-title">
+										<div class="caption caption-md">
+											<i class="fa fa-map-signs font-grey-gallery"></i>
+											<span class="caption-subject font-grey-gallery bold uppercase">@(stock:StockLocation)</span>
+										</div>
+									</div>
+									<div class="portlet-body">
+
+										<div class="form-group form-md-line-input">
+											<label class="col-md-3 control-label" for="form_control_1">@(stock:LieuWareHouse):</label>
+											<div class="col-md-9">
+												<input type="text" class="form-control" placeholder="">
+												<div class="form-control-focus"> </div>
+											</div>
+										</div>
+
+										<div class="form-group form-md-line-input">
+											<label class="col-md-3 control-label" for="form_control_1">@(products:Zone):</label>
+											<div class="col-md-9">
+												<input type="text" class="form-control" placeholder="">
+												<div class="form-control-focus"> </div>
+											</div>
+										</div>
+
+										<div class="form-group form-md-line-input">
+											<label class="col-md-3 control-label" for="form_control_1">@(products:Driveway):</label>
+											<div class="col-md-9">
+												<input type="text" class="form-control" placeholder="">
+												<div class="form-control-focus"> </div>
+											</div>
+										</div>
 
 
-																				</tab>
+										<div class="form-group form-md-line-input">
+											<label class="col-md-3 control-label" for="form_control_1">@(products:Rack):</label>
+											<div class="col-md-9">
+												<input type="text" class="form-control" placeholder="">
+												<div class="form-control-focus"> </div>
+											</div>
+										</div>
 
-																				<tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
-																								<tab-heading>
-																												<span ng-if='product.attributes.length' class='badge badge-success'>{{product.attributes.length}}</span> @(Associations)
-																								</tab-heading>
-																								<div class="row">
-																												<div class="col-md-6">
-																																<div class="portlet light bordered">
-																																				<div class="portlet-title">
-																																								<div class="caption caption-md">
-																																												<i class="fa fa-line-chart font-yellow-crusta"></i>
-																																												<span class="caption-subject font-yellow-crusta bold uppercase">@(products:Cross-Sell)</span>
-																																								</div>
-																																				</div>
-																																				<div class="portlet-body">
+										<div class="form-group form-md-line-input">
+											<label class="col-md-3 control-label" for="form_control_1">@(products:Floor):</label>
+											<div class="col-md-9">
+												<input type="text" class="form-control" placeholder="">
+												<div class="form-control-focus"> </div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 
-																																								<table class="table table-bordered table-hover">
-																																												<thead>
-																																																<tr role="row" class="heading">
-																																																				<th>
-																																																								@(products:Ref)
-																																																				</th>
-																																																				<th>
-																																																								@(Label)
-																																																				</th>
-																																																				<th>
-																																																								@(Qty)
-																																																				</th>
-																																																				<th>
-																																																								@(products:BuyingPriceHT)
-																																																				</th>
-																																																				<th>
-																																																								@(AmountHT)
-																																																				</th>
-																																																				<th>
-																																																				</th>
-																																																</tr>
-																																												</thead>
-																																												<tbody>
-																																																<tr>
-																																																				<td>
-																																																								<input class="form-control" ng-model="newPack.id.name" typeahead="product as product.name for product in productAutoComplete($viewValue, 'name')" typeahead-template-url="searchsupplierproduct.html" typeahead-on-select="addPackProduct($item)" placeholder="@(products:ProductRef)"
-																																																								/>
-																																																				</td>
-																																																				<td>
-																																																								{{newPack.id.label}}
-																																																				</td>
-																																																				<td>
-																																																								<input class="form-control" type="number" min="0" step="any" ng-model="newPack.qty" ng-change="changePackQty()" />
-																																																				</td>
-																																																				<td>
-																																																								{{newPack.pu_ht|currency}}
-																																																				</td>
-																																																				<td>
-																																																								{{newPack.total_ht|currency}}
-																																																				</td>
-																																																				<td>
-																																																								<button class="btn btn-circle default" ng-click="addPack()">
+
+					</tab>
+
+					<tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
+						<tab-heading>
+							<span ng-if='product.attributes.length' class='badge badge-success'>{{product.attributes.length}}</span> @(Associations)
+						</tab-heading>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="portlet light bordered">
+									<div class="portlet-title">
+										<div class="caption caption-md">
+											<i class="fa fa-line-chart font-yellow-crusta"></i>
+											<span class="caption-subject font-yellow-crusta bold uppercase">@(products:Cross-Sell)</span>
+										</div>
+									</div>
+									<div class="portlet-body">
+
+										<table class="table table-bordered table-hover">
+											<thead>
+												<tr role="row" class="heading">
+													<th>
+														@(products:Ref)
+													</th>
+													<th>
+														@(Label)
+													</th>
+													<th>
+														@(Qty)
+													</th>
+													<th>
+														@(products:BuyingPriceHT)
+													</th>
+													<th>
+														@(AmountHT)
+													</th>
+													<th>
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>
+														<input class="form-control" ng-model="newPack.id.name" typeahead="product as product.name for product in productAutoComplete($viewValue, 'name')" typeahead-template-url="searchsupplierproduct.html" typeahead-on-select="addPackProduct($item)" placeholder="@(products:ProductRef)"
+														/>
+													</td>
+													<td>
+														{{newPack.id.label}}
+													</td>
+													<td>
+														<input class="form-control" type="number" min="0" step="any" ng-model="newPack.qty" ng-change="changePackQty()" />
+													</td>
+													<td>
+														{{newPack.pu_ht|currency}}
+													</td>
+													<td>
+														{{newPack.total_ht|currency}}
+													</td>
+													<td>
+														<button class="btn btn-circle default" ng-click="addPack()">
                                                 <i class="fa fa-plus"></i></button>
-																																																				</td>
-																																																</tr>
-																																																<tr ng-repeat="pack in product.pack">
-																																																				<td>
-																																																								<a class="with-tooltip" ui-sref="product.show({id: pack.id._id})" data-tooltip-options='{"position":"top"}' title="{{pack.id.ref}}"><span class="fa fa-cubes"></span> {{pack.id.ref}}</a>
-																																																				</td>
-																																																				<td>
-																																																								{{pack.id.label}}
-																																																				</td>
-																																																				<td>
-																																																								<span editable-number="pack.qty" e-min="0" e-step="any" onaftersave="update()">
+													</td>
+												</tr>
+												<tr ng-repeat="pack in product.pack">
+													<td>
+														<a class="with-tooltip" ui-sref="product.show({id: pack.id._id})" data-tooltip-options='{"position":"top"}' title="{{pack.id.ref}}"><span class="fa fa-cubes"></span> {{pack.id.ref}}</a>
+													</td>
+													<td>
+														{{pack.id.label}}
+													</td>
+													<td>
+														<span editable-number="pack.qty" e-min="0" e-step="any" onaftersave="update()">
                                                 {{pack.qty}}
                                             </span>
-																																																				</td>
-																																																				<td style="text-align: right; ">
-																																																								{{pack.id.totalCost| currency}}
-																																																				</td>
-																																																				<td style="text-align: right; ">
-																																																								{{pack.id.totalCost * pack.qty| currency}}
-																																																				</td>
-																																																				<td>
-																																																								<button class="btn btn-circle red" ng-click="deletePack($index)">
+													</td>
+													<td style="text-align: right; ">
+														{{pack.id.totalCost| currency}}
+													</td>
+													<td style="text-align: right; ">
+														{{pack.id.totalCost * pack.qty| currency}}
+													</td>
+													<td>
+														<button class="btn btn-circle red" ng-click="deletePack($index)">
                                                 <i class="fa fa-trash"></i> </button>
-																																																				</td>
-																																																</tr>
-																																												</tbody>
+													</td>
+												</tr>
+											</tbody>
 
-																																								</table>
-																																				</div>
-																																</div>
-																												</div>
+										</table>
+									</div>
+								</div>
+							</div>
 
-																												<div class="col-md-6">
-																																<div class="portlet light bordered">
-																																				<div class="portlet-title">
-																																								<div class="caption caption-md">
-																																												<i class="fa fa-exchange font-grey-gallery"></i>
-																																												<span class="caption-subject font-grey-gallery bold uppercase">@(products:SubstituteProduct)</span>
-																																								</div>
-																																				</div>
-																																				<div class="portlet-body">
+							<div class="col-md-6">
+								<div class="portlet light bordered">
+									<div class="portlet-title">
+										<div class="caption caption-md">
+											<i class="fa fa-exchange font-grey-gallery"></i>
+											<span class="caption-subject font-grey-gallery bold uppercase">@(products:SubstituteProduct)</span>
+										</div>
+									</div>
+									<div class="portlet-body">
 
-																																								<table class="table table-bordered table-hover">
-																																												<thead>
-																																																<tr role="row" class="heading">
-																																																				<th>
-																																																								@(products:Ref)
-																																																				</th>
-																																																				<th>
-																																																								@(Label)
-																																																				</th>
-																																																				<th>
-																																																								@(Qty)
-																																																				</th>
-																																																				<th>
-																																																								@(products:BuyingPriceHT)
-																																																				</th>
-																																																				<th>
-																																																								@(AmountHT)
-																																																				</th>
-																																																				<th>
-																																																				</th>
-																																																</tr>
-																																												</thead>
-																																												<tbody>
-																																																<tr>
-																																																				<td>
-																																																								<input class="form-control" ng-model="newPack.id.name" typeahead="product as product.name for product in productAutoComplete($viewValue, 'name')" typeahead-template-url="searchsupplierproduct.html" typeahead-on-select="addPackProduct($item)" placeholder="@(products:ProductRef)"
-																																																								/>
-																																																				</td>
-																																																				<td>
-																																																								{{newPack.id.label}}
-																																																				</td>
-																																																				<td>
-																																																								<input class="form-control" type="number" min="0" step="any" ng-model="newPack.qty" ng-change="changePackQty()" />
-																																																				</td>
-																																																				<td>
-																																																								{{newPack.pu_ht|currency}}
-																																																				</td>
-																																																				<td>
-																																																								{{newPack.total_ht|currency}}
-																																																				</td>
-																																																				<td>
-																																																								<button class="btn btn-circle default" ng-click="addPack()">
+										<table class="table table-bordered table-hover">
+											<thead>
+												<tr role="row" class="heading">
+													<th>
+														@(products:Ref)
+													</th>
+													<th>
+														@(Label)
+													</th>
+													<th>
+														@(Qty)
+													</th>
+													<th>
+														@(products:BuyingPriceHT)
+													</th>
+													<th>
+														@(AmountHT)
+													</th>
+													<th>
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>
+														<input class="form-control" ng-model="newPack.id.name" typeahead="product as product.name for product in productAutoComplete($viewValue, 'name')" typeahead-template-url="searchsupplierproduct.html" typeahead-on-select="addPackProduct($item)" placeholder="@(products:ProductRef)"
+														/>
+													</td>
+													<td>
+														{{newPack.id.label}}
+													</td>
+													<td>
+														<input class="form-control" type="number" min="0" step="any" ng-model="newPack.qty" ng-change="changePackQty()" />
+													</td>
+													<td>
+														{{newPack.pu_ht|currency}}
+													</td>
+													<td>
+														{{newPack.total_ht|currency}}
+													</td>
+													<td>
+														<button class="btn btn-circle default" ng-click="addPack()">
                                                 <i class="fa fa-plus"></i></button>
-																																																				</td>
-																																																</tr>
-																																																<tr ng-repeat="pack in product.pack">
-																																																				<td>
-																																																								<a class="with-tooltip" ui-sref="product.show({id: pack.id._id})" data-tooltip-options='{"position":"top"}' title="{{pack.id.ref}}"><span class="fa fa-cubes"></span> {{pack.id.ref}}</a>
-																																																				</td>
-																																																				<td>
-																																																								{{pack.id.label}}
-																																																				</td>
-																																																				<td>
-																																																								<span editable-number="pack.qty" e-min="0" e-step="any" onaftersave="update()">
+													</td>
+												</tr>
+												<tr ng-repeat="pack in product.pack">
+													<td>
+														<a class="with-tooltip" ui-sref="product.show({id: pack.id._id})" data-tooltip-options='{"position":"top"}' title="{{pack.id.ref}}"><span class="fa fa-cubes"></span> {{pack.id.ref}}</a>
+													</td>
+													<td>
+														{{pack.id.label}}
+													</td>
+													<td>
+														<span editable-number="pack.qty" e-min="0" e-step="any" onaftersave="update()">
                                                 {{pack.qty}}
                                             </span>
-																																																				</td>
-																																																				<td style="text-align: right; ">
-																																																								{{pack.id.totalCost| currency}}
-																																																				</td>
-																																																				<td style="text-align: right; ">
-																																																								{{pack.id.totalCost * pack.qty| currency}}
-																																																				</td>
-																																																				<td>
-																																																								<button class="btn btn-circle red" ng-click="deletePack($index)">
+													</td>
+													<td style="text-align: right; ">
+														{{pack.id.totalCost| currency}}
+													</td>
+													<td style="text-align: right; ">
+														{{pack.id.totalCost * pack.qty| currency}}
+													</td>
+													<td>
+														<button class="btn btn-circle red" ng-click="deletePack($index)">
                                                 <i class="fa fa-trash"></i> </button>
-																																																				</td>
-																																																</tr>
-																																												</tbody>
+													</td>
+												</tr>
+											</tbody>
 
-																																								</table>
-																																				</div>
-																																</div>
-																												</div>
-
-
-
-
-
-																								</div>
-																				</tab>
-
-																				<tab heading="@(products:OnBuy)" ng-if="product._id && product.type != 'PACK' && (product.Status == 'BUY' || product.Status == 'SELLBUY')">
-																								<div class="row">
-																												<div class="col-md-3">
-																																<div class="portlet light bordered">
-																																				<div class="portlet-title">
-																																								<div class="caption caption-md">
-																																												<i class="fa fa-cart-arrow-down font-yellow-crusta"></i>
-																																												<span class="caption-subject font-yellow-crusta bold uppercase">@(buy:BuyingPrice)</span>
-																																								</div>
-																																				</div>
-																																				<div class="portlet-body">
-																																								<div class="form-group form-md-line-input">
-
-																																												<div class="row">
-																																																<label class="col-md-6 control-label">@(products:BuyingPriceHT) : </label>
-																																																<div class="col-md-6">
-																																																				<input type="text" class="form-control" placeholder="">
-																																																				<div class="form-control-focus"> </div>
-																																																</div>
-																																												</div>
-																																												<div class="row">
-																																																<label class="col-md-6 control-label">@(products:SumCost) :</label>
-																																																<div class="col-md-6">
-																																																				<span class="col-md-1 control-label bold font-dark">{{product.totalCost| currency}}</span>
-																																																				<div class="form-control-focus"> </div>
-																																																</div>
-																																												</div>
-																																								</div>
-
-																																				</div>
-																																</div>
-
-
-																												</div>
+										</table>
+									</div>
+								</div>
+							</div>
 
 
 
 
 
+						</div>
+					</tab>
 
-																												<div class="col-md-9">
-																																<div class="portlet light bordered">
-																																				<div class="portlet-title">
-																																								<div class="caption caption-md">
-																																												<i class="fa fa-gears font-grey-cascade"></i>
-																																												<span class="caption-subject font-grey-cascade bold uppercase">@(Setting)</span>
-																																								</div>
-																																				</div>
-																																				<div class="portlet-body">
-																																								<div class="form-group form-md-line-input">
-																																												<div class="col-md-6">
+					<tab heading="@(products:OnBuy)" ng-if="product._id && product.type != 'PACK' && (product.Status == 'BUY' || product.Status == 'SELLBUY')">
+						<div class="row">
+							<div class="col-md-3">
+								<div class="portlet light bordered">
+									<div class="portlet-title">
+										<div class="caption caption-md">
+											<i class="fa fa-cart-arrow-down font-yellow-crusta"></i>
+											<span class="caption-subject font-yellow-crusta bold uppercase">@(buy:BuyingPrice)</span>
+										</div>
+									</div>
+									<div class="portlet-body">
+										<div class="form-group form-md-line-input">
+
+											<div class="row">
+												<label class="col-md-6 control-label">@(products:BuyingPriceHT) : </label>
+												<div class="col-md-6">
+													<input type="text" class="form-control" placeholder="">
+													<div class="form-control-focus"> </div>
+												</div>
+											</div>
+											<div class="row">
+												<label class="col-md-6 control-label">@(products:SumCost) :</label>
+												<div class="col-md-6">
+													<span class="col-md-1 control-label bold font-dark">{{product.totalCost| currency}}</span>
+													<div class="form-control-focus"> </div>
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
 
 
-																																																<div class="caption caption-md">
-																																																				<span class="caption-subject font-grey-cascade bold uppercase">@(products:ProductAccountancyBuyCode)</span>
-																																																</div>
-																																																<div class="row">
-																																																				<label class="col-md-5 control-label">@(products:ProductAccountancyBuyCode) : </label>
-																																																				<div class="col-md-7">
-																																																								<input class="form-control" ng-model="product.compta_buy" placeholder="Normal" type="text">
-																																																								<div class="form-control-focus"> </div>
-																																																				</div>
-																																																</div>
-																																																<div class="row">
-																																																				<label class="col-md-5 control-label">@(products:ProductAccountancyBuyCode) EU : </label>
-																																																				<div class="col-md-7">
-																																																								<input class="form-control" ng-model="product.compta_buy_eu" placeholder="Export EU" type="text">
-																																																								<div class="form-control-focus"> </div>
-																																																				</div>
-																																																</div>
-																																																<div class="row">
-																																																				<label class="col-md-5 control-label">@(products:ProductAccountancyBuyCode) Export : </label>
-																																																				<div class="col-md-7">
-																																																								<input class="form-control" ng-model="product.compta_buy_exp" placeholder="Export" type="text">
-																																																								<div class="form-control-focus"> </div>
-																																																				</div>
-																																																</div>
-																																												</div>
+							</div>
 
 
 
-																																												<div class="col-md-6">
-																																																<div class="caption caption-md">
-																																																				<span class="caption-subject font-grey-cascade bold uppercase">@(products:BuySegmentation)</span>
-																																																				<span class="caption-helper"> @(products:UsedForStatistics)</span>
-																																																</div>
-																																																<div class="row">
-																																																				<label class="col-md-4 control-label">@(products:CostCenter):
+
+
+
+							<div class="col-md-9">
+								<div class="portlet light bordered">
+									<div class="portlet-title">
+										<div class="caption caption-md">
+											<i class="fa fa-gears font-grey-cascade"></i>
+											<span class="caption-subject font-grey-cascade bold uppercase">@(Setting)</span>
+										</div>
+									</div>
+									<div class="portlet-body">
+										<div class="form-group form-md-line-input">
+											<div class="col-md-6">
+
+
+												<div class="caption caption-md">
+													<span class="caption-subject font-grey-cascade bold uppercase">@(products:ProductAccountancyBuyCode)</span>
+												</div>
+												<div class="row">
+													<label class="col-md-5 control-label">@(products:ProductAccountancyBuyCode) : </label>
+													<div class="col-md-7">
+														<input class="form-control" ng-model="product.compta_buy" placeholder="Normal" type="text">
+														<div class="form-control-focus"> </div>
+													</div>
+												</div>
+												<div class="row">
+													<label class="col-md-5 control-label">@(products:ProductAccountancyBuyCode) EU : </label>
+													<div class="col-md-7">
+														<input class="form-control" ng-model="product.compta_buy_eu" placeholder="Export EU" type="text">
+														<div class="form-control-focus"> </div>
+													</div>
+												</div>
+												<div class="row">
+													<label class="col-md-5 control-label">@(products:ProductAccountancyBuyCode) Export : </label>
+													<div class="col-md-7">
+														<input class="form-control" ng-model="product.compta_buy_exp" placeholder="Export" type="text">
+														<div class="form-control-focus"> </div>
+													</div>
+												</div>
+											</div>
+
+
+
+											<div class="col-md-6">
+												<div class="caption caption-md">
+													<span class="caption-subject font-grey-cascade bold uppercase">@(products:BuySegmentation)</span>
+													<span class="caption-helper"> @(products:UsedForStatistics)</span>
+												</div>
+												<div class="row">
+													<label class="col-md-4 control-label">@(products:CostCenter):
                                 </label>
-																																																				<div class="col-md-8">
-																																																								<input class="form-control" ng-model="product.costCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'costCenter')" />
-																																																								<div class="form-control-focus"> </div>
-																																																				</div>
-																																																</div>
-																																																<div class="row">
-																																																				<label class="col-md-4 control-label">@(products:SubCostCenter):
+													<div class="col-md-8">
+														<input class="form-control" ng-model="product.costCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'costCenter')" />
+														<div class="form-control-focus"> </div>
+													</div>
+												</div>
+												<div class="row">
+													<label class="col-md-4 control-label">@(products:SubCostCenter):
                                 </label>
-																																																				<div class="col-md-8">
-																																																								<input class="form-control" ng-disabled="!product.costCenter" ng-model="product.subCostCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'subCostCenter',{costCenter:product.costCenter})" />
-																																																								<div class="form-control-focus"> </div>
-																																																				</div>
-																																																</div>
-																																												</div>
-																																								</div>
+													<div class="col-md-8">
+														<input class="form-control" ng-disabled="!product.costCenter" ng-model="product.subCostCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'subCostCenter',{costCenter:product.costCenter})" />
+														<div class="form-control-focus"> </div>
+													</div>
+												</div>
+											</div>
+										</div>
 
 
 
 
-																																				</div>
-																																</div>
-																												</div>
-																								</div>
+									</div>
+								</div>
+							</div>
+						</div>
 
 
 
-																								<div class="row">
-																												<div class="col-md-12">
-																																<div class="portlet light bordered">
-																																				<div class="portlet-title">
-																																								<div class="caption caption-md">
-																																												<i class="fa fa-line-chart font-grey-gallery"></i>
-																																												<span class="caption-subject font-grey-gallery bold uppercase">@(buy:PurchaseTracking)</span>
-																																								</div>
-																																				</div>
-																																				<div class="portlet-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="portlet light bordered">
+									<div class="portlet-title">
+										<div class="caption caption-md">
+											<i class="fa fa-line-chart font-grey-gallery"></i>
+											<span class="caption-subject font-grey-gallery bold uppercase">@(buy:PurchaseTracking)</span>
+										</div>
+									</div>
+									<div class="portlet-body">
 
 
 
-																																								<table class="table table-bordered table-hover">
-																																												<thead>
-																																																<tr role="row" class="heading">
-																																																				<th>
-																																																								@(companies:Supplier)
-																																																				</th>
-																																																				<th>
-																																																								@(products:SupplierRef)
-																																																				</th>
-																																																				<th>
-																																																								@(products:QtyMin)
-																																																				</th>
-																																																				<th>
-																																																								@(products:ReplenishmentTime) (@(d))
-																																																				</th>
-																																																				<th>
-																																																								@(products:Packing)
-																																																				</th>
-																																																				<th>
-																																																								@(products:VATRate)
-																																																				</th>
-																																																				<th>
-																																																								@(products:BuyingPriceHT)
-																																																				</th>
-																																																				<th>
-																																																				</th>
-																																																</tr>
-																																												</thead>
-																																												<tbody>
-																																																<tr>
-																																																				<td>
-																																																								<input class="form-control" ng-model="newSupplierPrice.societe" typeahead="s as s.name for s in AutoComplete($viewValue,'/erp/api/societe/autocomplete?fournisseur=SUPPLIER&fournisseur=SUBCONTRACTOR')" placeholder="@(companies:CompanyName)" />
-																																																				</td>
-																																																				<td>
-																																																								<input class="form-control" type="text" ng-model="newSupplierPrice.ref" />
-																																																				</td>
-																																																				<td>
-																																																								<input class="form-control" type="number" min="0" ng-model="newSupplierPrice.minQty" />
-																																																				</td>
-																																																				<td>
-																																																								<input class="form-control" type="number" step="1" min="0" ng-model="newSupplierPrice.replenishmentTime" />
-																																																				</td>
-																																																				<td>
-																																																								<input class="form-control" ng-model="newSupplierPrice.packing" type="text">
-																																																				</td>
-																																																				<td>
-																																																								<select class="table-group-action-input form-control" ng-model="newSupplierPrice.tva_tx" ng-options="c.value as c.value for c in dict.fk_tva.values"></select>
-																																																				</td>
-																																																				<td>
-																																																								<input class="form-control" type="number" step="0.001" min="0" ng-model="newSupplierPrice.prices.pu_ht" />
-																																																				</td>
-																																																				<td>
-																																																								<button class="btn btn-circle default" ng-click="addSupplier()">
+										<table class="table table-bordered table-hover">
+											<thead>
+												<tr role="row" class="heading">
+													<th>
+														@(companies:Supplier)
+													</th>
+													<th>
+														@(products:SupplierRef)
+													</th>
+													<th>
+														@(products:QtyMin)
+													</th>
+													<th>
+														@(products:ReplenishmentTime) (@(d))
+													</th>
+													<th>
+														@(products:Packing)
+													</th>
+													<th>
+														@(products:VATRate)
+													</th>
+													<th>
+														@(products:BuyingPriceHT)
+													</th>
+													<th>
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>
+														<input class="form-control" ng-model="newSupplierPrice.societe" typeahead="s as s.name for s in AutoComplete($viewValue,'/erp/api/societe/autocomplete?fournisseur=SUPPLIER&fournisseur=SUBCONTRACTOR')" placeholder="@(companies:CompanyName)" />
+													</td>
+													<td>
+														<input class="form-control" type="text" ng-model="newSupplierPrice.ref" />
+													</td>
+													<td>
+														<input class="form-control" type="number" min="0" ng-model="newSupplierPrice.minQty" />
+													</td>
+													<td>
+														<input class="form-control" type="number" step="1" min="0" ng-model="newSupplierPrice.replenishmentTime" />
+													</td>
+													<td>
+														<input class="form-control" ng-model="newSupplierPrice.packing" type="text">
+													</td>
+													<td>
+														<select class="table-group-action-input form-control" ng-model="newSupplierPrice.tva_tx" ng-options="c.value as c.value for c in dict.fk_tva.values"></select>
+													</td>
+													<td>
+														<input class="form-control" type="number" step="0.001" min="0" ng-model="newSupplierPrice.prices.pu_ht" />
+													</td>
+													<td>
+														<button class="btn btn-circle default" ng-click="addSupplier()">
                                         <i class="fa fa-plus"></i> @(Add) </button>
-																																																				</td>
-																																																</tr>
-																																																<tr ng-repeat="supplier in product.suppliers">
-																																																				<td>
-																																																								<a class="with-tooltip" ng-href="#!/societe/{{supplier.societe.id}}" data-tooltip-options='{"position":"top"}' title="{{supplier.societe.name}}"><span class="icon-home"></span> {{supplier.societe.name}}</a>
-																																																				</td>
-																																																				<td>
-																																																								<span editable-text="supplier.ref" onaftersave="update()">
+													</td>
+												</tr>
+												<tr ng-repeat="supplier in product.suppliers">
+													<td>
+														<a class="with-tooltip" ng-href="#!/societe/{{supplier.societe.id}}" data-tooltip-options='{"position":"top"}' title="{{supplier.societe.name}}"><span class="icon-home"></span> {{supplier.societe.name}}</a>
+													</td>
+													<td>
+														<span editable-text="supplier.ref" onaftersave="update()">
                                         {{supplier.ref|| 'empty'}}
                                     </span>
-																																																				</td>
-																																																				<td>
-																																																								<span editable-number="supplier.minQty" e-min="0" onaftersave="update()">
+													</td>
+													<td>
+														<span editable-number="supplier.minQty" e-min="0" onaftersave="update()">
                                         {{supplier.minQty|| 0}}
                                     </span>
-																																																				</td>
-																																																				<td>
-																																																								<span editable-number="supplier.replenishmentTime" e-min="0" onaftersave="update()">
+													</td>
+													<td>
+														<span editable-number="supplier.replenishmentTime" e-min="0" onaftersave="update()">
                                         {{supplier.replenishmentTime|| 0}}
                                     </span>
-																																																				</td>
-																																																				<td>
-																																																								<span editable-text="supplier.packing" onaftersave="update()">
+													</td>
+													<td>
+														<span editable-text="supplier.packing" onaftersave="update()">
                                         {{supplier.packing|| 0}}
                                     </span>
-																																																				</td>
-																																																				<td>
-																																																								<span editable-select="supplier.tva_tx" e-ng-options="c.value as c.value for c in dict.fk_tva.values" onaftersave="update()">
+													</td>
+													<td>
+														<span editable-select="supplier.tva_tx" e-ng-options="c.value as c.value for c in dict.fk_tva.values" onaftersave="update()">
                                         {{ supplier.tva_tx|percent:2}}
                                     </span>
-																																																				</td>
-																																																				<td>
-																																																								<span editable-number="supplier.prices.pu_ht" e-min="0" e-step="0.001" onaftersave="update()">
+													</td>
+													<td>
+														<span editable-number="supplier.prices.pu_ht" e-min="0" e-step="0.001" onaftersave="update()">
                                         {{supplier.prices.pu_ht|| 0}}
                                     </span>
-																																																				</td>
-																																																				<td>
-																																																								<button class="btn btn-circle red" ng-click="deleteSupplier($index)">
+													</td>
+													<td>
+														<button class="btn btn-circle red" ng-click="deleteSupplier($index)">
                                         <i class="fa fa-times"></i> @(Delete) </button>
-																																																				</td>
-																																																</tr>
-																																												</tbody>
-																																								</table>
+													</td>
+												</tr>
+											</tbody>
+										</table>
 
-																																				</div>
-																																</div>
-																												</div>
-																								</div>
-																				</tab>
+									</div>
+								</div>
+							</div>
+						</div>
+					</tab>
 
-																				<tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
-																								<tab-heading>
-																												<span ng-if='product.attributes.length' class='badge badge-success'>{{product.attributes.length}}</span> @(products:Characteristics)
-																								</tab-heading>
-																								<div class="form-body">
-																												<div class="row">
-																																<div class="col-md-4">
-																																				<div class="portlet light bordered">
-																																								<div class="portlet-title">
-																																												<div class="caption caption-md">
-																																																<i class="icon-bar-chart font-yellow-crusta"></i>
-																																																<span class="caption-subject font-yellow-crusta bold uppercase">@(products:AddCharacteristic)</span>
-																																												</div>
-																																								</div>
-																																								<div class="portlet-body">
-																																												<div class="form-group form-md-line-input">
-																																																<label class="col-md-4 control-label">@(products:Attribut) :
+					<tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
+						<tab-heading>
+							<span ng-if='product.attributes.length' class='badge badge-success'>{{product.attributes.length}}</span> @(products:Characteristics)
+						</tab-heading>
+						<div class="form-body">
+							<div class="row">
+								<div class="col-md-4">
+									<div class="portlet light bordered">
+										<div class="portlet-title">
+											<div class="caption caption-md">
+												<i class="icon-bar-chart font-yellow-crusta"></i>
+												<span class="caption-subject font-yellow-crusta bold uppercase">@(products:AddCharacteristic)</span>
+											</div>
+										</div>
+										<div class="portlet-body">
+											<div class="form-group form-md-line-input">
+												<label class="col-md-4 control-label">@(products:Attribut) :
                                                 </label>
-																																																<div class="col-md-8">
-																																																				<input class="form-control" ng-model="attribut.key" placeholder="" type="text" typeahead="a as a for a in productAttributeAutoComplete($viewValue,'attributes.key')" />
-																																																				<div class="form-control-focus"> </div>
-																																																</div>
-																																												</div>
-																																												<div class="form-group form-md-line-input">
-																																																<label class="col-md-4 control-label">@(products:Value) :
+												<div class="col-md-8">
+													<input class="form-control" ng-model="attribut.key" placeholder="" type="text" typeahead="a as a for a in productAttributeAutoComplete($viewValue,'attributes.key')" />
+													<div class="form-control-focus"> </div>
+												</div>
+											</div>
+											<div class="form-group form-md-line-input">
+												<label class="col-md-4 control-label">@(products:Value) :
                                                 </label>
-																																																<div class="col-md-8">
-																																																				<input class="form-control" ng-disabled="!attribut.key" ng-model="attribut.value" placeholder="" type="text" />
-																																																				<div class="form-control-focus"> </div>
-																																																</div>
-																																												</div>
-																																												<div class="form-group form-md-line-input">
-																																																<label class="col-md-4 control-label">@(products:Color) <small>(@(products:Optional))</small> :
+												<div class="col-md-8">
+													<input class="form-control" ng-disabled="!attribut.key" ng-model="attribut.value" placeholder="" type="text" />
+													<div class="form-control-focus"> </div>
+												</div>
+											</div>
+											<div class="form-group form-md-line-input">
+												<label class="col-md-4 control-label">@(products:Color) <small>(@(products:Optional))</small> :
                                                 </label>
-																																																<div class="col-md-8">
-																																																				<input class="form-control" ng-disabled="!attribut.key" ng-model="attribut.css" placeholder="#defdec" type="text" />
-																																																				<div class="form-control-focus"> </div>
-																																																</div>
-																																												</div>
-																																												<div class="form-actions">
-																																																<div class="row">
-																																																				<div class="col-md-offset-8 col-md-12">
-																																																								<button type="submit" ng-disabled="!attribut.value" ng-click="addAttribut(attribut);
+												<div class="col-md-8">
+													<input class="form-control" ng-disabled="!attribut.key" ng-model="attribut.css" placeholder="#defdec" type="text" />
+													<div class="form-control-focus"> </div>
+												</div>
+											</div>
+											<div class="form-actions">
+												<div class="row">
+													<div class="col-md-offset-8 col-md-12">
+														<button type="submit" ng-disabled="!attribut.value" ng-click="addAttribut(attribut);
                                                             attribut = {};" class="btn btn-circle default">@(Add)</button>
-																																																				</div>
-																																																</div>
-																																												</div>
-																																								</div>
-																																				</div>
-																																</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 
-																																<div class="col-md-8">
-																																				<div class="portlet light bordered">
-																																								<div class="portlet-title">
-																																												<div class="caption caption-md">
-																																																<i class="icon-bar-chart font-grey-gallery"></i>
-																																																<span class="caption-subject font-grey-gallery bold uppercase">Liste des attributs</span>
-																																																<span class="caption-helper"> Affiches sur les sites e-commerce</span>
-																																												</div>
-																																								</div>
-																																								<div class="portlet-body">
-																																												<table class="table table-hover">
-																																																<thead>
-																																																				<tr>
-																																																								<th> @(products:Attribut) </th>
-																																																								<th> @(products:Value) </th>
-																																																								<th> @(products:Color) </th>
-																																																								<th width="50px"> @(Actions) </th>
-																																																				</tr>
-																																																</thead>
-																																																<tbody>
-																																																				<tr ng-repeat="attribut in product.attributes">
-																																																								<td> {{attribut.key}} </td>
-																																																								<td> {{attribut.value}} </td>
-																																																								<td> {{attribut.css}} <span ng-if="attribut.css" class="label" style="background-color: {{attribut.css}};"> {{attribut.value}} </span> </td>
-																																																								<td>
-																																																												<button type="button" ng-click="deleteAttribut($index)" class="btn btn-circle red fa fa-trash" title="Supprimer"></button>
-																																																								</td>
-																																																				</tr>
-																																																</tbody>
-																																												</table>
-																																								</div>
-																																				</div>
-																																</div>
-																												</div>
-																								</div>
-																				</tab>
+								<div class="col-md-8">
+									<div class="portlet light bordered">
+										<div class="portlet-title">
+											<div class="caption caption-md">
+												<i class="icon-bar-chart font-grey-gallery"></i>
+												<span class="caption-subject font-grey-gallery bold uppercase">Liste des attributs</span>
+												<span class="caption-helper"> Affiches sur les sites e-commerce</span>
+											</div>
+										</div>
+										<div class="portlet-body">
+											<table class="table table-hover">
+												<thead>
+													<tr>
+														<th> @(products:Attribut) </th>
+														<th> @(products:Value) </th>
+														<th> @(products:Color) </th>
+														<th width="50px"> @(Actions) </th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr ng-repeat="attribut in product.attributes">
+														<td> {{attribut.key}} </td>
+														<td> {{attribut.value}} </td>
+														<td> {{attribut.css}} <span ng-if="attribut.css" class="label" style="background-color: {{attribut.css}};"> {{attribut.value}} </span> </td>
+														<td>
+															<button type="button" ng-click="deleteAttribut($index)" class="btn btn-circle red fa fa-trash" title="Supprimer"></button>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</tab>
 
-																				<tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
-																								<tab-heading>
-																												<span ng-if='product.entity.length' class='badge badge-warning'>{{product.entity.length}}</span> @(eshop:Ecommerce)
-																								</tab-heading>
-																								<div class="form-body">
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(Entities)</label>
-																																<div class="col-md-4">
-																																				<span class="help-inline">
+					<tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
+						<tab-heading>
+							<span ng-if='product.entity.length' class='badge badge-warning'>{{product.entity.length}}</span> @(eshop:Ecommerce)
+						</tab-heading>
+						<div class="form-body">
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(Entities)</label>
+								<div class="col-md-4">
+									<span class="help-inline">
                                         <label class="checkbox" ng-repeat="s in entityList">
                                             <input name="selectedEntities[]" value="{{s.id}}" ng-checked="product.entity.indexOf(s.id) > -1" ng-click="toggleSelection(s)" type="checkbox"/> {{s.name}} ({{s.eshop|| s.url}})
                                         </label>
                                     </span>
-																																</div>
-																																<label class="col-md-2 control-label" for="form_control_1">@(products:PriceLevel)</label>
-																																<div class="col-md-4">
-																																				<input type="text" class="form-control" readonly="" value="Some value" id="form_control_1" placeholder="Placeholder...">
-																																				<div class="form-control-focus"> </div>
-																																</div>
-																												</div>
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(Label): <span class="required">
+								</div>
+								<label class="col-md-2 control-label" for="form_control_1">@(products:PriceLevel)</label>
+								<div class="col-md-4">
+									<input type="text" class="form-control" readonly="" value="Some value" id="form_control_1" placeholder="Placeholder...">
+									<div class="form-control-focus"> </div>
+								</div>
+							</div>
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(Label): <span class="required">
                                         * </span>
                                 </label>
-																																<div class="col-md-10">
-																																				<input class="form-control" ng-model="product.label" required placeholder="" type="text">
-																																</div>
-																												</div>
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(Url): <span class="required">
+								<div class="col-md-10">
+									<input class="form-control" ng-model="product.label" required placeholder="" type="text">
+								</div>
+							</div>
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(Url): <span class="required">
                                         * </span>
                                 </label>
-																																<div class="form-control-focus"> </div>
-																																<div class="col-md-10">
-																																				<input class="form-control" ng-model="product.linker" required placeholder="nom-du-produit" type="text">
-																																</div>
-																																<div class="form-control-focus"> </div>
-																												</div>
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(Options): <span class="required">
+								<div class="form-control-focus"> </div>
+								<div class="col-md-10">
+									<input class="form-control" ng-model="product.linker" required placeholder="nom-du-produit" type="text">
+								</div>
+								<div class="form-control-focus"> </div>
+							</div>
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(Options): <span class="required">
                                         * </span>
                                 </label>
-																																<div class="col-md-10">
-																																				<div class="md-checkbox-inline">
-																																								<div class="md-checkbox">
-																																												<label class="control-label">
+								<div class="col-md-10">
+									<div class="md-checkbox-inline">
+										<div class="md-checkbox">
+											<label class="control-label">
                                         <input uniform type="checkbox" ng-model="product.sale" ng-checked="product.sale"/> @(eshop:AvailableSale) </label>
-																																								</div>
-																																								<div class="md-checkbox">
-																																												<label class="control-label">
+										</div>
+										<div class="md-checkbox">
+											<label class="control-label">
                                         <input uniform type="checkbox" ng-model="product.sale" ng-checked="product.sale"/> @(eshop:WebExclusivity) </label>
-																																								</div>
-																																								<div class="md-checkbox">
-																																												<label class="control-label">
+										</div>
+										<div class="md-checkbox">
+											<label class="control-label">
                                         <input uniform type="checkbox" ng-model="product.ischat" ng-checked="product.ischat"/> @(eshop:ShowPrice) </label>
-																																								</div>
-																																								<div class="md-checkbox">
-																																												<label class="control-label">
+										</div>
+										<div class="md-checkbox">
+											<label class="control-label">
                                         <input uniform type="checkbox" ng-model="product.istop" ng-checked="product.istop"/> @(products:OnTop) </label>
-																																								</div>
-																																								<div class="md-checkbox">
-																																												<label class="control-label">
+										</div>
+										<div class="md-checkbox">
+											<label class="control-label">
                                         <input uniform type="checkbox" ng-model="product.ischat" ng-checked="product.ischat"/> @(Chat) </label>
-																																								</div>
+										</div>
 
-																																				</div>
+									</div>
 
-																																</div>
-																												</div>
-
-
+								</div>
+							</div>
 
 
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(eshop:abstract) : <span class="required">
+
+
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(eshop:abstract) : <span class="required">
                                         * </span>
                                 </label>
-																																<div class="col-md-10">
-																																				<summernote height="100" ng-model="product.body"></summernote>
-																																				<div class="form-control-focus"> </div>
-																																				<span class="help-block">
+								<div class="col-md-10">
+									<summernote height="100" ng-model="product.body"></summernote>
+									<div class="form-control-focus"> </div>
+									<span class="help-block">
                                         Description pour les sites e-commerce SEO. </span>
-																																</div>
-																												</div>
+								</div>
+							</div>
 
 
 
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(Description) : <span class="required">
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(Description) : <span class="required">
                                         * </span>
                                 </label>
-																																<div class="col-md-10">
-																																				<summernote height="500" ng-model="product.body"></summernote>
-																																				<div class="form-control-focus"> </div>
-																																				<span class="help-block">
+								<div class="col-md-10">
+									<summernote height="500" ng-model="product.body"></summernote>
+									<div class="form-control-focus"> </div>
+									<span class="help-block">
                                         Description pour les sites e-commerce SEO. </span>
-																																</div>
-																												</div>
-																								</div>
-																				</tab>
+								</div>
+							</div>
+						</div>
+					</tab>
 
-																				<tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
-																								<tab-heading>
-																												<span ng-if='product.variants.length' class='badge badge-success'>{{product.variants.length}}</span> @(products:EditVariants)
-																								</tab-heading>
-																								<div class="form-body">
-																												<tabset class="tabbable-line tabbable-full-width">
-																																<tab heading="@(products:CreateVariants)">
-																																				<div class="form-body">
-																																								<div class="row">
-																																												<div class="col-md-6">
+					<tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
+						<tab-heading>
+							<span ng-if='product.variants.length' class='badge badge-success'>{{product.variants.length}}</span> @(products:EditVariants)
+						</tab-heading>
+						<div class="form-body">
+							<tabset class="tabbable-line tabbable-full-width">
+								<tab heading="@(products:CreateVariants)">
+									<div class="form-body">
+										<div class="row">
+											<div class="col-md-6">
 
-																																												</div>
-																																								</div>
-																																								<div class="row">
-																																												<div ng-if="(changedProductType && changedProductType.opts && changedProductType.opts.length)" class="col-md-12">
-																																																<div ng-repeat="option in changedProductType.opts" class="form-group form-md-line-input">
-																																																				<label class="col-md-2 control-label">{{option.name}} : </label>
-																																																				<div class="col-md-10">
-																																																								<div class="md-checkbox-inline">
-																																																												<div class="md-checkbox" ng-repeat="value in option.values">
-																																																																<label class="control-label">
+											</div>
+										</div>
+										<div class="row">
+											<div ng-if="(changedProductType && changedProductType.opts && changedProductType.opts.length)" class="col-md-12">
+												<div ng-repeat="option in changedProductType.opts" class="form-group form-md-line-input">
+													<label class="col-md-2 control-label">{{option.name}} : </label>
+													<div class="col-md-10">
+														<div class="md-checkbox-inline">
+															<div class="md-checkbox" ng-repeat="value in option.values">
+																<label class="control-label">
                                                                     <input uniform type="checkbox" ng-model="product.sale" ng-checked="(optionsArray.length && checkedObj && checkedObj[option._id] && checkedObj[option._id].indexOf(value._id) >= 0)"  ng-disabled="!checkedObj[option._id]"/> {{value.value}} </label>
-																																																												</div>
-																																																								</div>
+															</div>
+														</div>
 
-																																																				</div>
-																																																</div>
+													</div>
+												</div>
 
-																																																<div>
-																																																				<button class="btn blue">@(Create)</button>
-																																																</div>
+												<div>
+													<button class="btn blue">@(Create)</button>
+												</div>
 
 
-																																																<% var optionsArray = Object.keys(checkedObj); %>
-																																																				<% var index; %>
-																																																								<% _.each(changedProductType.opts, function (option) { %>
-																																																												<% index = optionsArray.indexOf(option._id) %>
-																																																																<% if ((option._id) && (index >= 0 || !optionsArray.length)) { %>
-																																																																				<div ng-repeat="option in changedProductType.opts" class="editPanel _prodOptPanel">
-																																																																								<div class="_mainCheckbox">
-																																																																												<label class="_animatedCheckbox">
+												<% var optionsArray = Object.keys(checkedObj); %>
+													<% var index; %>
+														<% _.each(changedProductType.opts, function (option) { %>
+															<% index = optionsArray.indexOf(option._id) %>
+																<% if ((option._id) && (index >= 0 || !optionsArray.length)) { %>
+																	<div ng-repeat="option in changedProductType.opts" class="editPanel _prodOptPanel">
+																		<div class="_mainCheckbox">
+																			<label class="_animatedCheckbox">
                                                                                 <input class="optionsForVariants" id="{{option._id}}" ng-checked="optionsArray.length" data-id="{{option._id}}" type="checkbox" value="{{option.name}}">
                                                                                  <span></span>
                                                                             </label>
-																																																																												<label class="fontBold" for="{{option._id}}">{{option.name}}</label>
-																																																																								</div>
-																																																																								<div class="_prodOptCheckWrap">
-																																																																												<label ng-repeat="values in option.values" class="_prodOptCheckItem" data-id="{{value._id}}">
+																			<label class="fontBold" for="{{option._id}}">{{option.name}}</label>
+																		</div>
+																		<div class="_prodOptCheckWrap">
+																			<label ng-repeat="values in option.values" class="_prodOptCheckItem" data-id="{{value._id}}">
             <label class="_customCHeckbox">
                 <input class="optionValue"  data-id="<%= value._id %>" type="checkbox" value="<%= value.value%>" />
                 <span></span>
             </label>
-																																																																												<span class="_checklabel">{{value.value}}</span>
-																																																																												</label>
-																																																																								</div>
+																			<span class="_checklabel">{{value.value}}</span>
+																			</label>
+																		</div>
 
-																																																																				</div>
-																																												</div>
-																																								</div>
-																																				</div>
-																																</tab>
-																																<tab heading="@(products:CreateSKUs)">
-																																				<div class="form-body">
-																																								<div class="row">
-																																												<div class="col-md-6"></div>
-																																								</div>
-																																				</div>
-																																</tab>
-																												</tabset>
+																	</div>
+											</div>
+										</div>
+									</div>
+								</tab>
+								<tab heading="@(products:CreateSKUs)">
+									<div class="form-body">
+										<div class="row">
+											<div class="col-md-6"></div>
+										</div>
+									</div>
+								</tab>
+							</tabset>
 
 
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(Entities)</label>
-																																<div class="col-md-4">
-																																				<span class="help-inline">
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(Entities)</label>
+								<div class="col-md-4">
+									<span class="help-inline">
                                         <label class="checkbox" ng-repeat="s in entityList">
                                             <input name="selectedEntities[]" value="{{s.id}}" ng-checked="product.entity.indexOf(s.id) > -1" ng-click="toggleSelection(s)" type="checkbox"/> {{s.name}} ({{s.eshop|| s.url}})
                                         </label>
                                     </span>
-																																</div>
-																																<label class="col-md-2 control-label" for="form_control_1">@(products:PriceLevel)</label>
-																																<div class="col-md-4">
-																																				<input type="text" class="form-control" readonly="" value="Some value" id="form_control_1" placeholder="Placeholder...">
-																																				<div class="form-control-focus"> </div>
-																																</div>
-																												</div>
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(Label): <span class="required">
-                                        * </span>
-                                </label>
-																																<div class="col-md-10">
-																																				<input class="form-control" ng-model="product.label" required placeholder="" type="text">
-																																</div>
-																												</div>
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(Url): <span class="required">
-                                        * </span>
-                                </label>
-																																<div class="form-control-focus"> </div>
-																																<div class="col-md-10">
-																																				<input class="form-control" ng-model="product.linker" required placeholder="nom-du-produit" type="text">
-																																</div>
-																																<div class="form-control-focus"> </div>
-																												</div>
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(Options): <span class="required">
-                                        * </span>
-                                </label>
-																																<div class="col-md-10">
-																																				<div class="md-checkbox-inline">
-																																								<div class="md-checkbox">
-																																												<label class="control-label">
-                                        <input uniform type="checkbox" ng-model="product.sale" ng-checked="product.sale"/> @(eshop:AvailableSale) </label>
-																																								</div>
-																																								<div class="md-checkbox">
-																																												<label class="control-label">
-                                        <input uniform type="checkbox" ng-model="product.sale" ng-checked="product.sale"/> @(eshop:WebExclusivity) </label>
-																																								</div>
-																																								<div class="md-checkbox">
-																																												<label class="control-label">
-                                        <input uniform type="checkbox" ng-model="product.ischat" ng-checked="product.ischat"/> @(eshop:ShowPrice) </label>
-																																								</div>
-																																								<div class="md-checkbox">
-																																												<label class="control-label">
-                                        <input uniform type="checkbox" ng-model="product.istop" ng-checked="product.istop"/> @(products:OnTop) </label>
-																																								</div>
-																																								<div class="md-checkbox">
-																																												<label class="control-label">
-                                        <input uniform type="checkbox" ng-model="product.ischat" ng-checked="product.ischat"/> @(Chat) </label>
-																																								</div>
-
-																																				</div>
-
-																																</div>
-																												</div>
-
-
-
-
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(eshop:abstract) : <span class="required">
-                                        * </span>
-                                </label>
-																																<div class="col-md-10">
-																																				<summernote height="100" ng-model="product.body"></summernote>
-																																				<div class="form-control-focus"> </div>
-																																				<span class="help-block">
-                                        Description pour les sites e-commerce SEO. </span>
-																																</div>
-																												</div>
-
-
-
-																												<div class="form-group form-md-line-input">
-																																<label class="col-md-2 control-label">@(Description) : <span class="required">
-                                        * </span>
-                                </label>
-																																<div class="col-md-10">
-																																				<summernote height="500" ng-model="product.body"></summernote>
-																																				<div class="form-control-focus"> </div>
-																																				<span class="help-block">
-                                        Description pour les sites e-commerce SEO. </span>
-																																</div>
-																												</div>
-																								</div>
-																				</tab>
-																</tabset>
-												</div>
 								</div>
-				</div>
+								<label class="col-md-2 control-label" for="form_control_1">@(products:PriceLevel)</label>
+								<div class="col-md-4">
+									<input type="text" class="form-control" readonly="" value="Some value" id="form_control_1" placeholder="Placeholder...">
+									<div class="form-control-focus"> </div>
+								</div>
+							</div>
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(Label): <span class="required">
+                                        * </span>
+                                </label>
+								<div class="col-md-10">
+									<input class="form-control" ng-model="product.label" required placeholder="" type="text">
+								</div>
+							</div>
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(Url): <span class="required">
+                                        * </span>
+                                </label>
+								<div class="form-control-focus"> </div>
+								<div class="col-md-10">
+									<input class="form-control" ng-model="product.linker" required placeholder="nom-du-produit" type="text">
+								</div>
+								<div class="form-control-focus"> </div>
+							</div>
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(Options): <span class="required">
+                                        * </span>
+                                </label>
+								<div class="col-md-10">
+									<div class="md-checkbox-inline">
+										<div class="md-checkbox">
+											<label class="control-label">
+                                        <input uniform type="checkbox" ng-model="product.sale" ng-checked="product.sale"/> @(eshop:AvailableSale) </label>
+										</div>
+										<div class="md-checkbox">
+											<label class="control-label">
+                                        <input uniform type="checkbox" ng-model="product.sale" ng-checked="product.sale"/> @(eshop:WebExclusivity) </label>
+										</div>
+										<div class="md-checkbox">
+											<label class="control-label">
+                                        <input uniform type="checkbox" ng-model="product.ischat" ng-checked="product.ischat"/> @(eshop:ShowPrice) </label>
+										</div>
+										<div class="md-checkbox">
+											<label class="control-label">
+                                        <input uniform type="checkbox" ng-model="product.istop" ng-checked="product.istop"/> @(products:OnTop) </label>
+										</div>
+										<div class="md-checkbox">
+											<label class="control-label">
+                                        <input uniform type="checkbox" ng-model="product.ischat" ng-checked="product.ischat"/> @(Chat) </label>
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+
+
+
+
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(eshop:abstract) : <span class="required">
+                                        * </span>
+                                </label>
+								<div class="col-md-10">
+									<summernote height="100" ng-model="product.body"></summernote>
+									<div class="form-control-focus"> </div>
+									<span class="help-block">
+                                        Description pour les sites e-commerce SEO. </span>
+								</div>
+							</div>
+
+
+
+							<div class="form-group form-md-line-input">
+								<label class="col-md-2 control-label">@(Description) : <span class="required">
+                                        * </span>
+                                </label>
+								<div class="col-md-10">
+									<summernote height="500" ng-model="product.body"></summernote>
+									<div class="form-control-focus"> </div>
+									<span class="help-block">
+                                        Description pour les sites e-commerce SEO. </span>
+								</div>
+							</div>
+						</div>
+					</tab>
+				</tabset>
+			</div>
+		</div>
+	</div>
 </div>

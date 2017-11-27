@@ -1,89 +1,89 @@
 <div class="page-bar" ng-init="findOne()">
-				<ul class="page-breadcrumb">
-								<li>
-												<i class="fa fa-home"></i>
-												<a ui-sref="home">@(Home)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span>@(products:ProductsAndServices)</span>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<a ui-sref="product.family.list">@(products:FamilyProducts) </a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span> @(products:Family)  : {{object.langs[_language].name}} </span>
-								</li>
-				</ul>
-				<div class="page-toolbar">
-								<div class="btn-group">
-												<a class="btn purple-sharp dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+	<ul class="page-breadcrumb">
+		<li>
+			<i class="fa fa-home"></i>
+			<a ui-sref="home">@(Home)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span>@(products:ProductsAndServices)</span>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<a ui-sref="product.family.list">@(products:FamilyProducts) </a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span> @(products:Family)  : {{object.langs[_language].name}} </span>
+		</li>
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group">
+			<a class="btn purple-sharp dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
                 <i class="fa fa-flag"></i> {{languages[_language].name}} <i class="fa fa-angle-down"></i>
             </a>
-												<ul class="dropdown-menu pull-right">
-																<li ng-repeat="s in languages">
-																				<a href="#" ng-click="setLanguage(s.idx)">
+			<ul class="dropdown-menu pull-right">
+				<li ng-repeat="s in languages">
+					<a href="#" ng-click="setLanguage(s.idx)">
                         <i class="fa fa-copy"></i> {{s.name}}
                     </a>
 
-																</li>
-												</ul>
-								</div>
-								<div class="btn-group">
-												<a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+				</li>
+			</ul>
+		</div>
+		<div class="btn-group">
+			<a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
                 <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
             </a>
-												<ul class="dropdown-menu pull-right">
-																<li>
-																				<a href="#" ng-click="refreshDirectory()">
+			<ul class="dropdown-menu pull-right">
+				<li>
+					<a href="#" ng-click="refreshDirectory()">
                         <i class="fa fa-refresh"></i> @(Refresh)
                     </a>
-																</li>
-																<li>
-																				<a href="#" ng-click="clone()">
+				</li>
+				<li>
+					<a href="#" ng-click="clone()">
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
-																</li>
-																<li>
-																				<a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+				</li>
+				<li>
+					<a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
-																</li>
-												</ul>
-								</div>
-				</div>
+				</li>
+			</ul>
+		</div>
+	</div>
 </div>
 
 <div class="form-horizontal form-row-seperated">
-				<div class="portlet light bordered">
-								<div class="portlet-title">
-												<div class="caption">
-																<i class="icon-magic-wand"></i>
-																<span class="caption-subject dark bold uppercase"> @(products:Family) : {{object.langs[_language].name}}</span>
-												</div>
-												<save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+	<div class="portlet light bordered">
+		<div class="portlet-title">
+			<div class="caption">
+				<i class="icon-magic-wand"></i>
+				<span class="caption-subject dark bold uppercase"> @(products:Family) : {{object.langs[_language].name}}</span>
+			</div>
+			<save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+		</div>
+		<div class="portlet-body">
+			<div class="form-body">
+				<div class="row">
+					<div class="col-md-5">
+						<div class="portlet light bordered">
+							<div class="form-group form-md-line-input">
+								<input type="number" min="0" class="form-control" id="form_control_1" ng-model="object.sequence">
+								<label for="form_control_1">@(products:Sequence)</label>
+							</div>
+							<div class="form-group form-md-line-input">
+								<div class="input-icon right">
+									<input type="text" class="form-control" id="form_control_1" ng-model="object.langs[_language].name">
+									<label for="form_control_1">@(Name)</label>
+									<i class="fa fa-flag"></i>
 								</div>
-								<div class="portlet-body">
-												<div class="form-body">
-																<div class="row">
-																				<div class="col-md-5">
-																								<div class="portlet light bordered">
-																												<div class="form-group form-md-line-input">
-																																<input type="number" min="0" class="form-control" id="form_control_1" ng-model="object.sequence">
-																																<label for="form_control_1">@(products:Sequence)</label>
-																												</div>
-																												<div class="form-group form-md-line-input">
-																																<div class="input-icon right">
-																																				<input type="text" class="form-control" id="form_control_1" ng-model="object.langs[_language].name">
-																																				<label for="form_control_1">@(Name)</label>
-																																				<i class="fa fa-flag"></i>
-																																</div>
-																												</div>
-																								</div>
-																								<div class="portlet light bordered">
-																												<!--<div class="md-checkbox-inline">
+							</div>
+						</div>
+						<div class="portlet light bordered">
+							<!--<div class="md-checkbox-inline">
                                         <div class="md-checkbox">
                                             <input type="checkbox" id="isCoef" class="md-check" ng-model="object.isCoef" ng-checked="object.isCoef">
                                             <label for="isCoef">
@@ -92,195 +92,195 @@
                                 <span class="box"></span> @(products:SellByCoef)</label>
                                         </div>
                                     </div>-->
-																												<div class="md-checkbox-inline">
-																																<div class="md-checkbox">
-																																				<input type="checkbox" id="isCost" class="md-check" ng-model="object.isCost" ng-checked="object.isCost">
-																																				<label for="isCost">
+							<div class="md-checkbox-inline">
+								<div class="md-checkbox">
+									<input type="checkbox" id="isCost" class="md-check" ng-model="object.isCost" ng-checked="object.isCost">
+									<label for="isCost">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(products:FamilyCost)</label>
-																																</div>
-																												</div>
-																												<div class="form-group form-md-line-input" ng-hide="object.isCost">
-																																<input type="number" class="form-control" id="indirectCostRate" min="0" max="100" step="0.01" ng-model="object.indirectCostRate">
-																																<label for="indirectCostRate">@(products:indirectCostRate)</label>
-																												</div>
-																												<div class="form-group form-md-line-input" ng-hide="object.isCost">
-																																<input type="number" class="form-control" id="minMargin" min="0" max="100" step="1" ng-model="object.minMargin">
-																																<label for="minMargin">@(products:MinMargin)</label>
-																												</div>
-																								</div>
+								</div>
+							</div>
+							<div class="form-group form-md-line-input" ng-hide="object.isCost">
+								<input type="number" class="form-control" id="indirectCostRate" min="0" max="100" step="0.01" ng-model="object.indirectCostRate">
+								<label for="indirectCostRate">@(products:indirectCostRate)</label>
+							</div>
+							<div class="form-group form-md-line-input" ng-hide="object.isCost">
+								<input type="number" class="form-control" id="minMargin" min="0" max="100" step="1" ng-model="object.minMargin">
+								<label for="minMargin">@(products:MinMargin)</label>
+							</div>
+						</div>
 
-																								<div class="portlet light bordered" ng-if="object._id" ng-hide="object.isCost">
-																												<div class="form-group form-md-line-input ">
-																																<input class="form-control" ng-model="object.accounts[0].account" placeholder="Normal" type="text">
-																																<label for="ProductAccountancySellCode">@(products:ProductAccountancySellCode)</label>
-																												</div>
-																												<div class="form-group form-md-line-input ">
-																																<input class="form-control" ng-model="object.accounts[1].account" placeholder="Export EU" type="text">
-																																<label for="ProductAccountancySellCodeEU">@(products:ProductAccountancySellCode) EU</label>
-																												</div>
+						<div class="portlet light bordered" ng-if="object._id" ng-hide="object.isCost">
+							<div class="form-group form-md-line-input ">
+								<input class="form-control" ng-model="object.accounts[0].account" placeholder="Normal" type="text">
+								<label for="ProductAccountancySellCode">@(products:ProductAccountancySellCode)</label>
+							</div>
+							<div class="form-group form-md-line-input ">
+								<input class="form-control" ng-model="object.accounts[1].account" placeholder="Export EU" type="text">
+								<label for="ProductAccountancySellCodeEU">@(products:ProductAccountancySellCode) EU</label>
+							</div>
 
-																												<div class="form-group form-md-line-input ">
-																																<input class="form-control" ng-model="object.accounts[2].account" placeholder="Export" type="text">
-																																<label for="ProductAccountancySellCodeEX">@(products:ProductAccountancySellCode) Export</label>
-																												</div>
-																												<div class="form-group form-md-line-input ">
-																																<input class="form-control" ng-model="object.accounts[3].account" placeholder="DOM-TOM" type="text">
-																																<label for="ProductAccountancySellCodeDOMTOM">@(products:ProductAccountancySellCode) DOM-TOM</label>
-																												</div>
-																								</div>
+							<div class="form-group form-md-line-input ">
+								<input class="form-control" ng-model="object.accounts[2].account" placeholder="Export" type="text">
+								<label for="ProductAccountancySellCodeEX">@(products:ProductAccountancySellCode) Export</label>
+							</div>
+							<div class="form-group form-md-line-input ">
+								<input class="form-control" ng-model="object.accounts[3].account" placeholder="DOM-TOM" type="text">
+								<label for="ProductAccountancySellCodeDOMTOM">@(products:ProductAccountancySellCode) DOM-TOM</label>
+							</div>
+						</div>
 
-																								<div class="portlet light bordered" ng-if="object._id" ng-show="object.isCost">
-																												<div class="form-group form-md-line-input ">
-																																<input class="form-control" ng-model="object.accounts[0].account" placeholder="Normal" type="text">
-																																<label for="ProductAccountancySellCode">@(products:ProductAccountancyBuyCode)</label>
-																												</div>
-																												<div class="form-group form-md-line-input ">
-																																<input class="form-control" ng-model="object.accounts[1].account" placeholder="Export EU" type="text">
-																																<label for="ProductAccountancySellCodeEU">@(products:ProductAccountancyBuyCode) EU</label>
-																												</div>
+						<div class="portlet light bordered" ng-if="object._id" ng-show="object.isCost">
+							<div class="form-group form-md-line-input ">
+								<input class="form-control" ng-model="object.accounts[0].account" placeholder="Normal" type="text">
+								<label for="ProductAccountancySellCode">@(products:ProductAccountancyBuyCode)</label>
+							</div>
+							<div class="form-group form-md-line-input ">
+								<input class="form-control" ng-model="object.accounts[1].account" placeholder="Export EU" type="text">
+								<label for="ProductAccountancySellCodeEU">@(products:ProductAccountancyBuyCode) EU</label>
+							</div>
 
-																												<div class="form-group form-md-line-input ">
-																																<input class="form-control" ng-model="object.accounts[2].account" placeholder="Export" type="text">
-																																<label for="ProductAccountancySellCodeEX">@(products:ProductAccountancyBuyCode) Export</label>
-																												</div>
-																												<div class="form-group form-md-line-input ">
-																																<input class="form-control" ng-model="object.accounts[3].account" placeholder="DOM-TOM" type="text">
-																																<label for="ProductAccountancySellCodeDOMTOM">@(products:ProductAccountancyBuyCode) DOM-TOM</label>
-																												</div>
-																								</div>
+							<div class="form-group form-md-line-input ">
+								<input class="form-control" ng-model="object.accounts[2].account" placeholder="Export" type="text">
+								<label for="ProductAccountancySellCodeEX">@(products:ProductAccountancyBuyCode) Export</label>
+							</div>
+							<div class="form-group form-md-line-input ">
+								<input class="form-control" ng-model="object.accounts[3].account" placeholder="DOM-TOM" type="text">
+								<label for="ProductAccountancySellCodeDOMTOM">@(products:ProductAccountancyBuyCode) DOM-TOM</label>
+							</div>
+						</div>
 
-																								<div class="portlet light bordered" ng-if="object._id" ng-hide="object.isCost">
-																												<div class="portlet-title">
-																																<div class="caption">
-																																				<span class="caption-subject font-grey-gallery bold uppercase">@(ordersDiscountOnQty)</span>
-																																</div>
+						<div class="portlet light bordered" ng-if="object._id" ng-hide="object.isCost">
+							<div class="portlet-title">
+								<div class="caption">
+									<span class="caption-subject font-grey-gallery bold uppercase">@(ordersDiscountOnQty)</span>
+								</div>
 
-																																<div class="actions btn-set">
-																																				<button class="btn green" ng-hide="addNewRange" ng-click="addNewRange = true">+</button>
-																																</div>
-																												</div>
+								<div class="actions btn-set">
+									<button class="btn green" ng-hide="addNewRange" ng-click="addNewRange = true">+</button>
+								</div>
+							</div>
 
-																												<table class="table-condensed">
-																																<tbody>
-																																				<tr ng-repeat="line in object.discounts">
-																																								<td class="text-info">{{line.count||1}}+</td>
-																																								<td><a href="#" editable-number="line.discount" e-step="0.001" e-min="0" onaftersave="update(true)">{{line.discount || 0 | number:3}} %</a></td>
-																																				</tr>
-																																</tbody>
-																												</table>
-																												<form ng-show="addNewRange" class="form-horizontal">
-																																<div class="form-body">
-																																				<div class="form-group">
-																																								<label class="col-md-3 control-label">@(Qty)</label>
-																																								<div class="col-md-9">
-																																												<input type="number" class="form-control input-sm" min="0" step='0.01' ng-model="newline.count" />
-																																								</div>
-																																				</div>
-																																				<div class="form-group">
-																																								<label class="col-md-3 control-label">@(products:Discount)</label>
-																																								<div class="col-md-9">
-																																												<input type="number" class="form-control input-sm" min="0" step="0.001" ng-model="newline.discount" />
-																																								</div>
-																																				</div>
+							<table class="table-condensed">
+								<tbody>
+									<tr ng-repeat="line in object.discounts">
+										<td class="text-info">{{line.count||1}}+</td>
+										<td><a href="#" editable-number="line.discount" e-step="0.001" e-min="0" onaftersave="update(true)">{{line.discount || 0 | number:3}} %</a></td>
+									</tr>
+								</tbody>
+							</table>
+							<form ng-show="addNewRange" class="form-horizontal">
+								<div class="form-body">
+									<div class="form-group">
+										<label class="col-md-3 control-label">@(Qty)</label>
+										<div class="col-md-9">
+											<input type="number" class="form-control input-sm" min="0" step='0.01' ng-model="newline.count" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-3 control-label">@(products:Discount)</label>
+										<div class="col-md-9">
+											<input type="number" class="form-control input-sm" min="0" step="0.001" ng-model="newline.discount" />
+										</div>
+									</div>
 
-																																				<div class="actions btn-set">
-																																								<button type="button" ng-click="addNewRange = false" class="btn red btn-sm">@(Cancel)</button>
-																																								<button type="button" ng-click="object.discounts.push(newline); addNewRange = false; update(true);" class="btn blue btn-sm">@(Add)</button>
-																																				</div>
-																																</div>
-																												</form>
-																								</div>
-																								<div class="portlet light bordered" ng-if="object._id" ng-hide="object.isCost">
-																												<div class="portlet-title">
-																																<div class="caption">
-																																				<span class="caption-subject font-grey-gallery bold uppercase">@(products:FamilyCoef)</span>
-																																</div>
+									<div class="actions btn-set">
+										<button type="button" ng-click="addNewRange = false" class="btn red btn-sm">@(Cancel)</button>
+										<button type="button" ng-click="object.discounts.push(newline); addNewRange = false; update(true);" class="btn blue btn-sm">@(Add)</button>
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="portlet light bordered" ng-if="object._id" ng-hide="object.isCost">
+							<div class="portlet-title">
+								<div class="caption">
+									<span class="caption-subject font-grey-gallery bold uppercase">@(products:FamilyCoef)</span>
+								</div>
 
-																																<!--<div class="actions btn-set">
+								<!--<div class="actions btn-set">
                                 <button class="btn green" ng-hide="addNewRange" ng-click="addNewRange = true">+</button>
                             </div>-->
-																												</div>
+							</div>
 
-																												<table class="table table-striped table-bordered no-footer">
-																																<thead>
-																																				<th width="400px">@(products:PriceLevel) (@(products:BasedOnCoef))</th>
-																																				<th>@(products:Coef)</th>
-																																				<!--<th>@(products:Discount)</th>-->
-																																</thead>
-																																<tbody>
-																																				<tr ng-repeat="line in object.familyCoef">
-																																								<td class="">{{line.priceLists.name}}</td>
-																																								<td><a ng-if="line.priceLists.isCoef" href="#" editable-number="line.coef" e-step="0.001" e-min="0" onaftersave="update(true)">{{line.coef || 1 | number:3}}</a><span ng-if="line.priceLists.isCoef == false">{{line.coef || 0 | number:3}}</span></td>
-																																								<!--<td><span ng-if="line.priceLists.discount">-{{line.priceLists.discount || 0 | number:2}} %</span></td>-->
-																																				</tr>
-																																</tbody>
-																												</table>
-																								</div>
-																				</div>
-																				<div class="col-md-7" ng-if="object._id" ng-hide="object.isCost">
-																								<div class="form-horizontal form-row-seperated">
-																												<div class="portlet light bordered">
-																																<div class="portlet-title">
-																																				<div class="caption">
-																																								<i class="fa fa-list font-grey-gallery"></i>
-																																								<span class="caption-subject font-grey-gallery bold uppercase">@(products:ListOfAttributes)</span>
-																																				</div>
-																																				<div class="tools">
-																																								<a href="" class="collapse" data-original-title="" title=""> </a>
-																																				</div>
-																																				<!--<div class="actions btn-set">
+							<table class="table table-striped table-bordered no-footer">
+								<thead>
+									<th width="400px">@(products:PriceLevel) (@(products:BasedOnCoef))</th>
+									<th>@(products:Coef)</th>
+									<!--<th>@(products:Discount)</th>-->
+								</thead>
+								<tbody>
+									<tr ng-repeat="line in object.familyCoef">
+										<td class="">{{line.priceLists.name}}</td>
+										<td><a ng-if="line.priceLists.isCoef" href="#" editable-number="line.coef" e-step="0.001" e-min="0" onaftersave="update(true)">{{line.coef || 1 | number:3}}</a><span ng-if="line.priceLists.isCoef == false">{{line.coef || 0 | number:3}}</span></td>
+										<!--<td><span ng-if="line.priceLists.discount">-{{line.priceLists.discount || 0 | number:2}} %</span></td>-->
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="col-md-7" ng-if="object._id" ng-hide="object.isCost">
+						<div class="form-horizontal form-row-seperated">
+							<div class="portlet light bordered">
+								<div class="portlet-title">
+									<div class="caption">
+										<i class="fa fa-list font-grey-gallery"></i>
+										<span class="caption-subject font-grey-gallery bold uppercase">@(products:ListOfAttributes)</span>
+									</div>
+									<div class="tools">
+										<a href="" class="collapse" data-original-title="" title=""> </a>
+									</div>
+									<!--<div class="actions btn-set">
                                         <button class="btn green" ng-click="object.opts.unshift({optionId : object._id,code: 'New',langs : [{value:'New'}]});edit[0]=true;" title="@(Create)">@(Create)</button>
                                     </div>-->
-																																</div>
-																																<div class="portlet-body">
-																																				<div class="form-group form-md-line-input ">
-																																								<div class="input-group">
-																																												<div class="input-group-control">
-																																																<select class="table-group-action-input form-control" required ng-model="familyId" ng-options="s._id as (s.langs[_language].name + ' ('+s.group.langs[_language].name+')')  for s in attributes"></select>
-																																																<label for="FamilyProducts">@(products:AddAttributesToFamily)</label>
-																																												</div>
-																																												<span class="input-group-btn btn-right"><button ng-click="object.options.push(familyId);update(true);" class="btn yellow" type="button">@(Add)</button></span>
-																																								</div>
-																																				</div>
-
-																																				<div class="dataTables_wrapper no-footer table-responsive">
-																																								<table class="table table-striped table-bordered table-hover no-footer">
-																																												<thead>
-																																																<tr role="row" class="heading">
-																																																				<th>@(Name)</th>
-																																																				<th>@(Type)</th>
-																																																				<th>@(products:Variants)</th>
-																																																				<th>@(Action)</th>
-																																																</tr>
-																																												</thead>
-																																												<tbody>
-																																																<tr ng-repeat="line in object.opts">
-																																																				<td>{{line.langs[_language].name}}</td>
-																																																				<td>{{line.mode}} <span ng-if="line.values.length">({{line.values.length}})</span></td>
-																																																				<td>
-																																																								<div class="md-checkbox-inline">
-																																																												<div class="md-checkbox">
-																																																																<input type="checkbox" ng-disabled="!line.values.length" class="md-check" name="checkedObj[]" id="{{line._id}}" ng-click="toggleSelection(object.variants, line._id)" ng-checked="object.variants.indexOf(line._id)>=0">
-																																																																<label for="{{line._id}}"><span></span><span class="check"></span><span class="box"></span></label>
-																																																												</div>
-																																																								</div>
-																																																				</td>
-																																																				<td>
-																																																								<a class="btn green fa fa-pencil" ui-sref="product.attributes.show({id:line._id})" title="Editer"></a>
-																																																								<button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmUnSelecAttribute)" confirmed-click="object.options.splice(object.options.indexOf(line._id),1);update(true);"></button>
-																																																				</td>
-																																																</tr>
-																																												</tbody>
-																																								</table>
-																																				</div>
-																																</div>
-																												</div>
-																								</div>
-																				</div>
-																</div>
-												</div>
 								</div>
+								<div class="portlet-body">
+									<div class="form-group form-md-line-input ">
+										<div class="input-group">
+											<div class="input-group-control">
+												<select class="table-group-action-input form-control" required ng-model="familyId" ng-options="s._id as (s.langs[_language].name + ' ('+s.group.langs[_language].name+')')  for s in attributes"></select>
+												<label for="FamilyProducts">@(products:AddAttributesToFamily)</label>
+											</div>
+											<span class="input-group-btn btn-right"><button ng-click="object.options.push(familyId);update(true);" class="btn yellow" type="button">@(Add)</button></span>
+										</div>
+									</div>
+
+									<div class="dataTables_wrapper no-footer table-responsive">
+										<table class="table table-striped table-bordered table-hover no-footer">
+											<thead>
+												<tr role="row" class="heading">
+													<th>@(Name)</th>
+													<th>@(Type)</th>
+													<th>@(products:Variants)</th>
+													<th>@(Action)</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr ng-repeat="line in object.opts">
+													<td>{{line.langs[_language].name}}</td>
+													<td>{{line.mode}} <span ng-if="line.values.length">({{line.values.length}})</span></td>
+													<td>
+														<div class="md-checkbox-inline">
+															<div class="md-checkbox">
+																<input type="checkbox" ng-disabled="!line.values.length" class="md-check" name="checkedObj[]" id="{{line._id}}" ng-click="toggleSelection(object.variants, line._id)" ng-checked="object.variants.indexOf(line._id)>=0">
+																<label for="{{line._id}}"><span></span><span class="check"></span><span class="box"></span></label>
+															</div>
+														</div>
+													</td>
+													<td>
+														<a class="btn green fa fa-pencil" ui-sref="product.attributes.show({id:line._id})" title="Editer"></a>
+														<button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmUnSelecAttribute)" confirmed-click="object.options.splice(object.options.indexOf(line._id),1);update(true);"></button>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
+			</div>
+		</div>
+	</div>
 </div>

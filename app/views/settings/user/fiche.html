@@ -1,170 +1,170 @@
 <div ng-if="user.isremoved" class="alert alert-danger">
-				<strong>@(users:BeCareful)</strong>&nbsp;@(users:UserHasBeenDeleted)
+	<strong>@(users:BeCareful)</strong>&nbsp;@(users:UserHasBeenDeleted)
 </div>
 
 <div class="page-bar" ng-init="findOne()">
-				<ul class="page-breadcrumb">
-								<li>
-												<i class="fa fa-home"></i>
-												<a ui-sref="home">@(Home)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span>@(Parameters)</span>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span> @(users:Collaborators)</span>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<a ui-sref="user.list">@(users:ListOfUsers)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span>@(users:UserCard) :</span>
-								</li>
-								<li>
-												<span class="font-green-jungle sbold">{{user.username}}</span>
-								</li>
-				</ul>
-				<div class="page-toolbar" ng-hide="user.isremoved">
-								<div class="btn-group pull-right">
-												<button type="button" class="btn yellow-lemon dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+	<ul class="page-breadcrumb">
+		<li>
+			<i class="fa fa-home"></i>
+			<a ui-sref="home">@(Home)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span>@(Parameters)</span>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span> @(users:Collaborators)</span>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<a ui-sref="user.list">@(users:ListOfUsers)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span>@(users:UserCard) :</span>
+		</li>
+		<li>
+			<span class="font-green-jungle sbold">{{user.username}}</span>
+		</li>
+	</ul>
+	<div class="page-toolbar" ng-hide="user.isremoved">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn yellow-lemon dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                 @(Tools) <i class="fa fa-angle-down"></i>
             </button>
-												<ul class="dropdown-menu pull-right" role="menu">
-																<li>
-																				<a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(user)" ng-confirm-click="@(users:ConfirmDeleteUser)" title="Delete Users ?">
+			<ul class="dropdown-menu pull-right" role="menu">
+				<li>
+					<a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(user)" ng-confirm-click="@(users:ConfirmDeleteUser)" title="Delete Users ?">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
-																</li>
-												</ul>
-								</div>
-				</div>
+				</li>
+			</ul>
+		</div>
+	</div>
 </div>
 <div ng-if="user.isremoved" class="alert alert-danger"><strong>@(users:BeCareful) !</strong> @(users:UserHasBeenDeleted) </div>
 <div class="row">
-				<div class="col-md-offset-2 col-md-8">
-								<div class="row">
-												<div class="col-md-12">
-																<div class="col-md-5 col-sm-12">
-																				<div class="portlet light portlet bordered">
-																								<div class="portlet-body">
-																												<div class="row">
-																																<div class="row list-separated profile-stat ">
-																																				<div class="col-md-12">
-																																								<div class="col-md-6">
-																																												<div class="profile">
-																																																<img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
-																																												</div>
-																																								</div>
-																																								<div class="col-md-6">
-																																												<div class="profile-usertitle">
-																																																<div class="row">
-																																																				<div class="col-md-12">
-																																																								<h5 class="page-title" ng-class="{'font-red':!user.isEnable}">
-																																																												<i class="fa fa-user"></i> {{user.username}}
-																																																				</div>
-																																																</div>
-																																																<hr>
-																																																<div class="row">
-																																																				<div class="col-md-12">
-																																																								<div class="md-checkbox-inline">
-																																																												<div class="md-checkbox has-success">
-																																																																<input type="checkbox" id="isEnable" class="md-check" ng-model="user.isEnable" ng-checked="user.isEnable">
-																																																																<label for="isEnable">
+	<div class="col-md-offset-2 col-md-8">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-5 col-sm-12">
+					<div class="portlet light portlet bordered">
+						<div class="portlet-body">
+							<div class="row">
+								<div class="row list-separated profile-stat ">
+									<div class="col-md-12">
+										<div class="col-md-6">
+											<div class="profile">
+												<img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="profile-usertitle">
+												<div class="row">
+													<div class="col-md-12">
+														<h5 class="page-title" ng-class="{'font-red':!user.isEnable}">
+															<i class="fa fa-user"></i> {{user.username}}
+													</div>
+												</div>
+												<hr>
+												<div class="row">
+													<div class="col-md-12">
+														<div class="md-checkbox-inline">
+															<div class="md-checkbox has-success">
+																<input type="checkbox" id="isEnable" class="md-check" ng-model="user.isEnable" ng-checked="user.isEnable">
+																<label for="isEnable">
                                                                 <span></span>
                                                                 <span class="check"></span>
                                                                 <span class="box"></span> @(Activated)</label>
-																																																												</div>
-																																																								</div>
-																																																				</div>
-																																																</div>
-
-																																												</div>
-																																								</div>
-																																				</div>
-																																</div>
-																												</div>
-																												<div class="row">
-																																<div class="col-md-offset-1 col-md-10">
-																																				<div class="row list-separated profile-stat ">
-																																								<div class=" col-md-6 col-sm-6 col-xs-6 ">
-																																												<div class="uppercase profile-stat-title "> <i class="icon-calendar font-yellow-crusta "></i> {{user.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
-																																								</div>
-																																								<div class="col-md-6 col-sm-6 col-xs-6 ">
-																																												<div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{user.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
-																																								</div>
-																																								<div>
-																																												<div class="col-md-6 col-sm-6 col-xs-6 ">
-																																																<div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{user.createdBy.username}}</a> </div>
-																																																<!--<div class="uppercase profile-stat-text "> @(CreatedBy)</div>-->
-																																												</div>
-																																												<div class="col-md-6 col-sm-6 col-xs-6 ">
-																																																<div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{user.editedBy.username}}</a> </div>
-																																																<!-- <div class="uppercase profile-stat-text "> @(EditedBy) </div>-->
-																																												</div>
-																																								</div>
-																																				</div>
-																																				<div class="row list-separated profile-stat ">
-																																								<div class="col-md-12 ">
-																																												<div class="uppercase profile-stat-title "> <i class="icon-key font-yellow-crusta "></i> {{user.lastConnection | date:'dd/MM/yyyy'}} </div>
-
-																																								</div>
-																																				</div>
-																																</div>
-																												</div>
-																								</div>
-																				</div>
-																</div>
-																<div class="col-md-7 col-sm-12">
-																				<div class="portlet light portlet bordered">
-																								<div class="portlet-title">
-																												<div class="caption">
-																																<i class="icon-info"></i>
-																																<span class="caption-subject dark bold uppercase"> @(users:Main)</span>
-																												</div>
-																												<save ng-disabled="!editable" mode="user._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
-																								</div>
-																								<div class="portlet-body">
-																												<div class="form-body">
-																																<div class="row">
-																																				<div class="col-md-offset-1 col-md-10">
-
-																																								<div class="form-group form-md-line-input has-success">
-																																												<input type="text" class="form-control" id="UserName" onbeforesave="checkUserExist($data)" ng-model="user.username">
-																																												<label for="UserName">@(users:UserName)<span class="required">
-                                        * </span></label>
-																																								</div>
-																																								<div class="form-group form-md-line-input has-success">
-																																												<input type="text" class="form-control" id="Password" required ng-model="user.password">
-																																												<label for="Password">@(users:Password)<span class="required">
-                                        * </span></label>
-																																								</div>
-																																								<div class="form-group form-md-line-input has-success">
-																																												<input type="text" class="form-control" id="Email" ng-change="checkEmailExist" ng-model="user.email">
-																																												<label for="Email">@(Email)</label>
-																																								</div>
-																																								<div class="form-group form-md-line-input has-success">
-																																												<select type="text" class="form-control" id="Group" ng-model="user.groupe" ng-options="g.id as g.name for g in groups"></select>
-																																												<label for="Group">@(users:Group)</label>
-																																								</div>
-
-																																								<div class="form-group form-md-line-input has-success">
-																																												<select type="text" class="form-control" id="Entity" ng-model="user.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
-																																												<label for="Entity">@(companies:Entity)<span class="required">
-                                              *  </label>
-																																								</div>
-																																				</div>
-																																</div>
-																												</div>
-																								</div>
-																				</div>
-																</div>
+															</div>
+														</div>
+													</div>
 												</div>
+
+											</div>
+										</div>
+									</div>
 								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-offset-1 col-md-10">
+									<div class="row list-separated profile-stat ">
+										<div class=" col-md-6 col-sm-6 col-xs-6 ">
+											<div class="uppercase profile-stat-title "> <i class="icon-calendar font-yellow-crusta "></i> {{user.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
+										</div>
+										<div class="col-md-6 col-sm-6 col-xs-6 ">
+											<div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{user.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+										</div>
+										<div>
+											<div class="col-md-6 col-sm-6 col-xs-6 ">
+												<div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{user.createdBy.username}}</a> </div>
+												<!--<div class="uppercase profile-stat-text "> @(CreatedBy)</div>-->
+											</div>
+											<div class="col-md-6 col-sm-6 col-xs-6 ">
+												<div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{user.editedBy.username}}</a> </div>
+												<!-- <div class="uppercase profile-stat-text "> @(EditedBy) </div>-->
+											</div>
+										</div>
+									</div>
+									<div class="row list-separated profile-stat ">
+										<div class="col-md-12 ">
+											<div class="uppercase profile-stat-title "> <i class="icon-key font-yellow-crusta "></i> {{user.lastConnection | date:'dd/MM/yyyy'}} </div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
+				<div class="col-md-7 col-sm-12">
+					<div class="portlet light portlet bordered">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="icon-info"></i>
+								<span class="caption-subject dark bold uppercase"> @(users:Main)</span>
+							</div>
+							<save ng-disabled="!editable" mode="user._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+						</div>
+						<div class="portlet-body">
+							<div class="form-body">
+								<div class="row">
+									<div class="col-md-offset-1 col-md-10">
+
+										<div class="form-group form-md-line-input has-success">
+											<input type="text" class="form-control" id="UserName" onbeforesave="checkUserExist($data)" ng-model="user.username">
+											<label for="UserName">@(users:UserName)<span class="required">
+                                        * </span></label>
+										</div>
+										<div class="form-group form-md-line-input has-success">
+											<input type="text" class="form-control" id="Password" required ng-model="user.password">
+											<label for="Password">@(users:Password)<span class="required">
+                                        * </span></label>
+										</div>
+										<div class="form-group form-md-line-input has-success">
+											<input type="text" class="form-control" id="Email" ng-change="checkEmailExist" ng-model="user.email">
+											<label for="Email">@(Email)</label>
+										</div>
+										<div class="form-group form-md-line-input has-success">
+											<select type="text" class="form-control" id="Group" ng-model="user.groupe" ng-options="g.id as g.name for g in groups"></select>
+											<label for="Group">@(users:Group)</label>
+										</div>
+
+										<div class="form-group form-md-line-input has-success">
+											<select type="text" class="form-control" id="Entity" ng-model="user.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
+											<label for="Entity">@(companies:Entity)<span class="required">
+                                              *  </label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 

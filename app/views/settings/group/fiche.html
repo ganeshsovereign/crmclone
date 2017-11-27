@@ -1,126 +1,126 @@
 <h3 class="page-title" ng-init="findOne()">
-				<i class="fa fa-user font-blue-madison"></i> @(users:GroupCard) {{group.name}} <small> @(From) {{group.createdAt| date:'@(main:date.format.java.dayhour)'}}</small>
+	<i class="fa fa-user font-blue-madison"></i> @(users:GroupCard) {{group.name}} <small> @(From) {{group.createdAt| date:'@(main:date.format.java.dayhour)'}}</small>
 </h3>
 
 <div ng-if="group.isremoved" class="alert alert-danger"><strong>@(users:BeCareful)</strong>&nbsp;@(users:GroupHasBeenDeleted)</div>
 
 <div class="page-bar">
-				<ul class="page-breadcrumb">
-								<li>
-												<i class="fa fa-home"></i>
-												<a ui-sref="home">@(Home)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span>@(users:GroupManagement)</span>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<a ui-sref="group.list">@(users:GroupList)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span>{{group.name}}</span>
-								</li>
-				</ul>
-				<div class="page-toolbar" ng-hide="group.isremoved">
-								<div class="btn-group pull-right">
-												<button type="button" class="btn btn-fit-height grey-salt dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+	<ul class="page-breadcrumb">
+		<li>
+			<i class="fa fa-home"></i>
+			<a ui-sref="home">@(Home)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span>@(users:GroupManagement)</span>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<a ui-sref="group.list">@(users:GroupList)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span>{{group.name}}</span>
+		</li>
+	</ul>
+	<div class="page-toolbar" ng-hide="group.isremoved">
+		<div class="btn-group pull-right">
+			<button type="button" class="btn btn-fit-height grey-salt dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                 @(Tools) <i class="fa fa-angle-down"></i>
             </button>
-												<ul class="dropdown-menu pull-right" role="menu">
-																<li>
-																				<a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(group)" ng-confirm-click="@(Delete)" title="Delete Group ?">
+			<ul class="dropdown-menu pull-right" role="menu">
+				<li>
+					<a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(group)" ng-confirm-click="@(Delete)" title="Delete Group ?">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
-																</li>
-												</ul>
-								</div>
-				</div>
+				</li>
+			</ul>
+		</div>
+	</div>
 </div>
 
 
 
 
 <div class="row">
-				<div class="col-md-4 col-sm-12">
-								<form editable-form name="editableNameGroup" onaftersave="update()">
-												<div class="portlet blue-madison box">
-																<div class="portlet-title">
-																				<div class="caption">
-																								<i class="fa fa-user"></i>@(users:GroupCard)
-																				</div>
-																				<div class="actions">
-																								<a href="javascript:;" ng-click="editableNameGroup.$show()" ng-hide="user.isremoved" ng-show="!editableNameGroup.$visible && editable" class="btn btn-default btn-sm">
+	<div class="col-md-4 col-sm-12">
+		<form editable-form name="editableNameGroup" onaftersave="update()">
+			<div class="portlet blue-madison box">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="fa fa-user"></i>@(users:GroupCard)
+					</div>
+					<div class="actions">
+						<a href="javascript:;" ng-click="editableNameGroup.$show()" ng-hide="user.isremoved" ng-show="!editableNameGroup.$visible && editable" class="btn btn-default btn-sm">
                             <i class="fa fa-pencil"></i> @(Edit) </a>
-																				</div>
-																				<div class="actions" ng-show="editableNameGroup.$visible">
-																								<button type="submit" ng-disabled="editableNameGroup.$waiting" class="btn btn-default btn-sm">@(Save)</button>
-																								<button type="button" ng-disabled="editableNameGroup.$waiting" ng-click="editableNameGroup.$cancel();
+					</div>
+					<div class="actions" ng-show="editableNameGroup.$visible">
+						<button type="submit" ng-disabled="editableNameGroup.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+						<button type="button" ng-disabled="editableNameGroup.$waiting" ng-click="editableNameGroup.$cancel();
                             findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
-																				</div>
+					</div>
 
-																</div>
-																<div class="portlet-body">
-
-																				<div class="row static-info">
-																								<div class="col-md-4 name">@(users:NameGroup) :</div>
-																								<div class="col-md-8 value">
-																												<span class="blue h5" editable-text="group.name"> {{group.name}} </span>
-																								</div>
-																				</div>
-
-																				<div class="row static-info">
-																								<div class="col-md-4 name">@(NumberOfEmployeesAssigned) :</div>
-																								<div class="col-md-8 value">
-																												<span class="blue h5"> ... </span>
-																								</div>
-																				</div>
-
-																				<div class="row static-info">
-																								<div class="col-md-4 name">@(DateModification) :</div>
-																								<div class="col-md-8 value">
-																												<span class="blue h5"> {{(group.updatedAt| date:"dd/MM/yyyy")}} </span>
-																								</div>
-																				</div>
-
-
-																</div>
-												</div>
-								</form>
 				</div>
+				<div class="portlet-body">
 
-				<!--
+					<div class="row static-info">
+						<div class="col-md-4 name">@(users:NameGroup) :</div>
+						<div class="col-md-8 value">
+							<span class="blue h5" editable-text="group.name"> {{group.name}} </span>
+						</div>
+					</div>
+
+					<div class="row static-info">
+						<div class="col-md-4 name">@(NumberOfEmployeesAssigned) :</div>
+						<div class="col-md-8 value">
+							<span class="blue h5"> ... </span>
+						</div>
+					</div>
+
+					<div class="row static-info">
+						<div class="col-md-4 name">@(DateModification) :</div>
+						<div class="col-md-8 value">
+							<span class="blue h5"> {{(group.updatedAt| date:"dd/MM/yyyy")}} </span>
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<!--
     <label class="checkbox">
         <input type="checkbox" ng-model="oneAtATime">
         Un seul menu à la fois
     </label>
     -->
-				<div class="col-md-4 col-sm-12">
+	<div class="col-md-4 col-sm-12">
 
-								<accordion>
-												<accordion-group heading="{{module.desc}}" ng-repeat="module in modules">
-																{{module.name}}
-																<div class="table-scrollable table-scrollable-borderless">
-																				<table class="table table-hover table-light" ng-repeat="(name,rights) in module.rights">
+		<accordion>
+			<accordion-group heading="{{module.desc}}" ng-repeat="module in modules">
+				{{module.name}}
+				<div class="table-scrollable table-scrollable-borderless">
+					<table class="table table-hover table-light" ng-repeat="(name,rights) in module.rights">
 
-																								<tbody>
-																												<tr ng-repeat="right in rights">
-																																<td> {{right.desc}} </td>
-																																<td ng-repeat="(key,perm) in right.perm">
-																																				<input type="checkbox" ng-checked="group.rights[name][key]" ng-disabled="!groupRightsCreate" ng-model="group.rights[name][key]" ng-change="update()">
-																																</td>
-																												</tr>
+						<tbody>
+							<tr ng-repeat="right in rights">
+								<td> {{right.desc}} </td>
+								<td ng-repeat="(key,perm) in right.perm">
+									<input type="checkbox" ng-checked="group.rights[name][key]" ng-disabled="!groupRightsCreate" ng-model="group.rights[name][key]" ng-change="update()">
+								</td>
+							</tr>
 
-																								</tbody>
-																				</table>
-																</div>
-												</accordion-group>
-
-								</accordion>
+						</tbody>
+					</table>
 				</div>
+			</accordion-group>
 
-				<!--
+		</accordion>
+	</div>
+
+	<!--
      <div class="col-md-8 col-sm-12">
          <form editable-form name="userNotes" onaftersave="update()">
              <div class="portlet light">

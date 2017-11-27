@@ -1,49 +1,49 @@
 @{layout('layout_email')}
 <!--content 1 -->
 <tr>
-				<td align="center" bgcolor="#f8f8f8">
-								<table border="0" cellpadding="0" cellspacing="0" width="90%">
+	<td align="center" bgcolor="#f8f8f8">
+		<table border="0" cellpadding="0" cellspacing="0" width="90%">
 
-												<td style="padding-left:20px; padding-bottom:88px" valign="bottom" align="left">
-																<div style="line-height: 30px;">
-																				<font color="#4db3a4" face="Arial, Helvetica, sans-serif" size="5" style="font-size: 17px;"> <span style="color: #0066CC; font-family: Arial, Helvetica, sans-serif; font-size: 24px;"> @{model.ref_client}</span></font>
-																</div>
-																<br>
-																<div style="line-height: 30px;">
-																				<font color="#4db3a4" face="Arial, Helvetica, sans-serif" size="5" style="font-size: 17px;"> <span style="color: #0066CC; font-family: Arial, Helvetica, sans-serif; font-size: 24px;"> @{model.subtitle}</span></font>
-																</div>
-																<br>
-																<div style="line-height: 24px;">
-																				<font color="#9c9c9c" face="Arial, Helvetica, sans-serif" size="4" style="font-size: 15px;"> <span style="color: #9c9c9c; font-family: Arial, Helvetica, sans-serif; font-size: 15px;"> @{!model.message}</span></font>
-																</div>
-																<br>
-																<div style="line-height: 24px;">
-																				<a href="#" style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 13px;" target="_blank">
-																								<font color="#596167" face="Arial, Helvetica, sans-seri; font-size: 13px;" size="3">
-																												<a href="@{model.url}" class="btn btn-danger" style="background-color: #6b6b6b; background-image: none; border: 1px solid transparent; border-color: #ffffff; border-radius: 4px; cursor: pointer; display: inline-block; font-size: 14px; font-weight: 400; color : #ffffff; line-height: 1.42857143; margin-bottom: 0; padding: 6px 12px; text-align: center; touch-action: manipulation; user-select: none; vertical-align: middle; white-space: nowrap;">@(Open) / @(DownloadPDF)
+			<td style="padding-left:20px; padding-bottom:88px" valign="bottom" align="left">
+				<div style="line-height: 30px;">
+					<font color="#4db3a4" face="Arial, Helvetica, sans-serif" size="5" style="font-size: 17px;"> <span style="color: #0066CC; font-family: Arial, Helvetica, sans-serif; font-size: 24px;"> @{model.ref_client}</span></font>
+				</div>
+				<br>
+				<div style="line-height: 30px;">
+					<font color="#4db3a4" face="Arial, Helvetica, sans-serif" size="5" style="font-size: 17px;"> <span style="color: #0066CC; font-family: Arial, Helvetica, sans-serif; font-size: 24px;"> @{model.subtitle}</span></font>
+				</div>
+				<br>
+				<div style="line-height: 24px;">
+					<font color="#9c9c9c" face="Arial, Helvetica, sans-serif" size="4" style="font-size: 15px;"> <span style="color: #9c9c9c; font-family: Arial, Helvetica, sans-serif; font-size: 15px;"> @{!model.message}</span></font>
+				</div>
+				<br>
+				<div style="line-height: 24px;">
+					<a href="#" style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 13px;" target="_blank">
+						<font color="#596167" face="Arial, Helvetica, sans-seri; font-size: 13px;" size="3">
+							<a href="@{model.url}" class="btn btn-danger" style="background-color: #6b6b6b; background-image: none; border: 1px solid transparent; border-color: #ffffff; border-radius: 4px; cursor: pointer; display: inline-block; font-size: 14px; font-weight: 400; color : #ffffff; line-height: 1.42857143; margin-bottom: 0; padding: 6px 12px; text-align: center; touch-action: manipulation; user-select: none; vertical-align: middle; white-space: nowrap;">@(Open) / @(DownloadPDF)
                             </a>
-																								</font>
-																				</a>
-																</div>
-												</td>
-												<td style="padding-right:20px; padding-top:35px;" width="220px" valign="bottom" align="right">
-																<img src="https://www.tomanage.fr/images/logiciel-ERP-open-source-connecte-ToManage-fbrowser.png" alt="ToManage" width="450px" height="294px">
-												</td>
-												<!-- padding -->
-												<div style="font-size: 10px; height: 10px; line-height: 10px;">&nbsp;</div>
-												<tr>
-																<div style="line-height: 44px;">
-																				<font color="#6b6b6b" face="Arial, Helvetica, sans-serif" size="5" style="font-size: 28px;"> <span style="color: #6b6b6b; font-family: Arial, Helvetica, sans-serif; font-size: 28px; text-decoration:underline;">@{model.title}</span></font>
-																</div>
-												</tr>
-								</table>
-				</td>
+						</font>
+					</a>
+				</div>
+			</td>
+			<td style="padding-right:20px; padding-top:35px;" width="220px" valign="bottom" align="right">
+				<img src="https://www.tomanage.fr/images/logiciel-ERP-open-source-connecte-ToManage-fbrowser.png" alt="ToManage" width="450px" height="294px">
+			</td>
+			<!-- padding -->
+			<div style="font-size: 10px; height: 10px; line-height: 10px;">&nbsp;</div>
+			<tr>
+				<div style="line-height: 44px;">
+					<font color="#6b6b6b" face="Arial, Helvetica, sans-serif" size="5" style="font-size: 28px;"> <span style="color: #6b6b6b; font-family: Arial, Helvetica, sans-serif; font-size: 28px; text-decoration:underline;">@{model.title}</span></font>
+				</div>
+			</tr>
+		</table>
+	</td>
 </tr>
 <!--content 1 END-->
 <!--content 2-1 -->
 <tr>
-				<td align="center" bgcolor="#ffffff" style="border-bottom-color: #eff2f4; border-bottom-style: solid; border-bottom-width: 1px;">
+	<td align="center" bgcolor="#ffffff" style="border-bottom-color: #eff2f4; border-bottom-style: solid; border-bottom-width: 1px;">
 
-				</td>
+	</td>
 </tr>
 <!--content 2-1 END-->

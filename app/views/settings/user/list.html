@@ -1,35 +1,35 @@
 <div>
-				<div class="page-bar">
-								<ul class="page-breadcrumb">
-												<li>
-																<i class="fa fa-home"></i>
-																<a ui-sref="home">@(Home)</a>
-																<i class="fa fa-angle-right"></i>
-												</li>
-												<li>
-																<span>@(Parameters)</span>
-																<i class="fa fa-angle-right"></i>
-												</li>
-												<li>
-																<span> @(users:Collaborators)</span>
-												</li>
-								</ul>
-								<div class="page-toolbar">
-												<div class="btn-group pull-right">
-																<a class="btn yellow-lemon dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
+	<div class="page-bar">
+		<ul class="page-breadcrumb">
+			<li>
+				<i class="fa fa-home"></i>
+				<a ui-sref="home">@(Home)</a>
+				<i class="fa fa-angle-right"></i>
+			</li>
+			<li>
+				<span>@(Parameters)</span>
+				<i class="fa fa-angle-right"></i>
+			</li>
+			<li>
+				<span> @(users:Collaborators)</span>
+			</li>
+		</ul>
+		<div class="page-toolbar">
+			<div class="btn-group pull-right">
+				<a class="btn yellow-lemon dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
                      <i class="fa fa-angle-down"></i>
                 </a>
-																<ul class="dropdown-menu pull-right">
-																				<li>
-																								<a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
+				<ul class="dropdown-menu pull-right">
+					<li>
+						<a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
                                         @(PrintList) </a>
-																				</li>
-																				<li>
-																								<a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove()" ng-confirm-click="@(users:ConfirmDeleteUser)">
+					</li>
+					<li>
+						<a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove()" ng-confirm-click="@(users:ConfirmDeleteUser)">
                             <i class="fa fa-trash-o font-red"></i> @(Delete)
                         </a>
-																				</li>
-																				<!--    <li>
+					</li>
+					<!--    <li>
                                         <a href="#">
                                             @(Delete) </a>
                                     </li>
@@ -37,38 +37,38 @@
                                         <a href="#">
                                             @(BuildPDF) </a>
                                     </li>-->
-																</ul>
-												</div>
-								</div>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+	<div>
+		<div class="portlet light portlet-form bordered">
+			<div class="portlet-title">
+				<div class="caption">
+					<i class="fa fa-user"></i>
+					<span class="caption-subject dark bold uppercase">@(users:ListOfUsers)</span>
 				</div>
-
-
-				<div>
-								<div class="portlet light portlet-form bordered">
-												<div class="portlet-title">
-																<div class="caption">
-																				<i class="fa fa-user"></i>
-																				<span class="caption-subject dark bold uppercase">@(users:ListOfUsers)</span>
-																</div>
-																<!--<div class="caption">
+				<!--<div class="caption">
                 <i class="fa fa-user font-blue"></i>
                 <span class="caption-subject font-blue sbold uppercase">@(users:ListOfUsers)</span>
             </div>-->
 
-																<div class="actions">
-																				<button class="btn green" ui-sref="user.create">@(Add) <i class="fa fa-plus"></i></button>
-																				<button title="@(Refresh)" class="btn btn-circle btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
-																</div>
-												</div>
-												<div class="portlet-body">
+				<div class="actions">
+					<button class="btn green" ui-sref="user.create">@(Add) <i class="fa fa-plus"></i></button>
+					<button title="@(Refresh)" class="btn btn-circle btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+				</div>
+			</div>
+			<div class="portlet-body">
 
-																<div class="col-md-3">
-																				<div class="form-group form-md-line-input ">
-																								<select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity); find();" ng-options="s.id as s.name for s in entityList" class="form-control"></select>
-																								<label for="Status">@(companies:Entity)</label>
-																				</div>
-																</div>
-																<!-- <div class="form-group form-md-line-input">
+				<div class="col-md-3">
+					<div class="form-group form-md-line-input ">
+						<select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity); find();" ng-options="s.id as s.name for s in entityList" class="form-control"></select>
+						<label for="Status">@(companies:Entity)</label>
+					</div>
+				</div>
+				<!-- <div class="form-group form-md-line-input">
                 <div class="row hidden-print">
                     <div class="form-group form-md-line-input">
 
@@ -92,26 +92,26 @@
                     </div>
                 </div>
             </div>-->
-																<div class="dataTables_wrapper table-responsive">
-																				<div class="col-md-12">
-																								<table class="table dataTable table-hover" id="userList">
-																												<thead>
-																																<tr role="row" class="heading">
-																																				<th width="2%">
-																																								<input type="checkbox" class="group-checkable" />
-																																				</th>
-																																				<th>@(users:UserName)</th>
-																																				<th>@(Email)</th>
-																																				<th>@(users:Group)</th>
-																																				<th>@(users:LastConnection)</th>
-																																				<th width="100px">@(users:CreatedAt)</th>
-																																				<th width="80px">@(Status)</th>
-																																</tr>
-																												</thead>
-																								</table>
-																				</div>
-																</div>
-												</div>
-								</div>
+				<div class="dataTables_wrapper table-responsive">
+					<div class="col-md-12">
+						<table class="table dataTable table-hover" id="userList">
+							<thead>
+								<tr role="row" class="heading">
+									<th width="2%">
+										<input type="checkbox" class="group-checkable" />
+									</th>
+									<th>@(users:UserName)</th>
+									<th>@(Email)</th>
+									<th>@(users:Group)</th>
+									<th>@(users:LastConnection)</th>
+									<th width="100px">@(users:CreatedAt)</th>
+									<th width="80px">@(Status)</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
 				</div>
+			</div>
+		</div>
+	</div>
 </div>

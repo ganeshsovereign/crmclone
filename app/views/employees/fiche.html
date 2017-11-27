@@ -1,48 +1,48 @@
 <div ng-if="employee.isremoved" class="alert alert-danger">
-				<strong>@(BeCareful)</strong>&nbsp;@(users:EmployeeUserHasBeenDeleted)</div>
+	<strong>@(BeCareful)</strong>&nbsp;@(users:EmployeeUserHasBeenDeleted)</div>
 
 <div class="page-bar" ng-init="findOne()">
-				<ul class="page-breadcrumb">
-								<li>
-												<i class="fa fa-home"></i>
-												<a ui-sref="home">@(Home)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span> @(ManagementEmployees)</span>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<a ui-sref="employee.list"> @(users:ListOfEmployees)</a>
-												<i class="fa fa-angle-right"></i>
-								</li>
-								<li>
-												<span>@(users:EmployeesCardOf) {{employee.fullName}}</span>
-								</li>
-				</ul>
-				<div class="page-toolbar">
-								<div class="btn-group">
-												<a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+	<ul class="page-breadcrumb">
+		<li>
+			<i class="fa fa-home"></i>
+			<a ui-sref="home">@(Home)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span> @(ManagementEmployees)</span>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<a ui-sref="employee.list"> @(users:ListOfEmployees)</a>
+			<i class="fa fa-angle-right"></i>
+		</li>
+		<li>
+			<span>@(users:EmployeesCardOf) {{employee.fullName}}</span>
+		</li>
+	</ul>
+	<div class="page-toolbar">
+		<div class="btn-group">
+			<a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
                 <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
             </a>
-												<ul class="dropdown-menu pull-right">
-																<li>
-																				<a href="#" ng-click="clone()">
+			<ul class="dropdown-menu pull-right">
+				<li>
+					<a href="#" ng-click="clone()">
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
-																</li>
+				</li>
 
-																<!-- /!\ -->
-																<li>
-																				<a href="#" class="font-red" ng-show="login.rights.employee.delete" confirmed-click="remove(employee)" ng-confirm-click="@(users:ConfirmDeleteEmployee)" title="@(ConfirmDeleteEmployee) ?">
+				<!-- /!\ -->
+				<li>
+					<a href="#" class="font-red" ng-show="login.rights.employee.delete" confirmed-click="remove(employee)" ng-confirm-click="@(users:ConfirmDeleteEmployee)" title="@(ConfirmDeleteEmployee) ?">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
-																</li>
+				</li>
 
-												</ul>
-								</div>
-				</div>
-				<!-- <div class="page-toolbar" ng-hide="employee.isremoved">
+			</ul>
+		</div>
+	</div>
+	<!-- <div class="page-toolbar" ng-hide="employee.isremoved">
         <div class="btn-group pull-right">
             <button type="button" class="btn btn-fit-height yellow-lemon dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                 @(Tools) <i class="fa fa-angle-down"></i>
@@ -67,31 +67,31 @@
 
 
 <div class="row">
-				<div class="col-md-12 col-sm-12">
-								<div class="profile-sidebar">
-												<div class="portlet light profile-sidebar-portlet">
-																<div class="profile-userpic">
-																				<img ng-src="{{getImage('employee', employee.imageSrc)}}" class="img-responsive" alt="Employee" />
-																</div>
-																<div class="profile-usertitle">
-																				<div class="profile-usertitle-name"> {{employee.name.first}} {{employee.name.last}}</div>
-																</div>
+	<div class="col-md-12 col-sm-12">
+		<div class="profile-sidebar">
+			<div class="portlet light profile-sidebar-portlet">
+				<div class="profile-userpic">
+					<img ng-src="{{getImage('employee', employee.imageSrc)}}" class="img-responsive" alt="Employee" />
+				</div>
+				<div class="profile-usertitle">
+					<div class="profile-usertitle-name"> {{employee.name.first}} {{employee.name.last}}</div>
+				</div>
 
-																<div class="profile-usermenu">
-																				<ul class="nav">
-																								<li ng-class="{active: $state.includes('employee.show.main')}">
-																												<a ui-sref="employee.show.main">
+				<div class="profile-usermenu">
+					<ul class="nav">
+						<li ng-class="{active: $state.includes('employee.show.main')}">
+							<a ui-sref="employee.show.main">
                                 <i class="icon-info" class="selected"></i> @(users:Main) </a>
-																								</li>
-																								<li ng-class="{active: $state.includes('employee.show.personnalinformation')}">
-																												<a ui-sref="employee.show.personnalinformation">
+						</li>
+						<li ng-class="{active: $state.includes('employee.show.personnalinformation')}">
+							<a ui-sref="employee.show.personnalinformation">
                                 <i class="icon-speech"></i> @(users:PersonalInformation) </a>
-																								</li>
-																								<li ng-class="{active: $state.includes('employee.show.files')}">
-																												<a ui-sref="employee.show.files">
+						</li>
+						<li ng-class="{active: $state.includes('employee.show.files')}">
+							<a ui-sref="employee.show.files">
                                 <i class="icon-picture"></i> @(products:Images/documents) </a>
-																								</li>
-																								<!--<li ng-class="{active: $state.includes('employee.show.job')}">
+						</li>
+						<!--<li ng-class="{active: $state.includes('employee.show.job')}">
                             <a ui-sref="employee.show.job">
                                 <i class="icon-basket"></i> @(users:Job) </a>
                         </li>
@@ -100,32 +100,32 @@
                                 <i class="icon-share"></i> @(users:Assignees) </a>
                         </li>-->
 
-																				</ul>
-																</div>
-												</div>
-												<div class="portlet light">
-																<div class="row list-separated profile-stat ">
-																				<div class=" col-md-6 col-sm-6 col-xs-6 ">
-																								<div class="uppercase profile-stat-title "> <i class="icon-calendar font-yellow-crusta "></i> {{employee.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
-																				</div>
-																				<div class="col-md-6 col-sm-6 col-xs-6 ">
-																								<div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{employee.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
-																				</div>
-
-																				<div>
-																								<div class="col-md-6 col-sm-6 col-xs-6 ">
-																												<div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{employee.createdBy.username}}</a> </div>
-																												<!--<div class="uppercase profile-stat-text "> @(CreatedBy)</div>-->
-																								</div>
-																								<div class="col-md-6 col-sm-6 col-xs-6 ">
-																												<div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{employee.editedBy.username}}</a> </div>
-																												<!-- <div class="uppercase profile-stat-text "> @(EditedBy) </div>-->
-																								</div>
-																				</div>
-																</div>
-												</div>
-								</div>
-
-								<div ui-view class="profile-content fade-in-up"></div>
+					</ul>
 				</div>
+			</div>
+			<div class="portlet light">
+				<div class="row list-separated profile-stat ">
+					<div class=" col-md-6 col-sm-6 col-xs-6 ">
+						<div class="uppercase profile-stat-title "> <i class="icon-calendar font-yellow-crusta "></i> {{employee.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
+					</div>
+					<div class="col-md-6 col-sm-6 col-xs-6 ">
+						<div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{employee.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+					</div>
+
+					<div>
+						<div class="col-md-6 col-sm-6 col-xs-6 ">
+							<div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{employee.createdBy.username}}</a> </div>
+							<!--<div class="uppercase profile-stat-text "> @(CreatedBy)</div>-->
+						</div>
+						<div class="col-md-6 col-sm-6 col-xs-6 ">
+							<div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{employee.editedBy.username}}</a> </div>
+							<!-- <div class="uppercase profile-stat-text "> @(EditedBy) </div>-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div ui-view class="profile-content fade-in-up"></div>
+	</div>
 </div>

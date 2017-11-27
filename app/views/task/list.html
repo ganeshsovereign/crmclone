@@ -1,34 +1,34 @@
 <div>
-				<div class="page-bar">
-								<ul class="page-breadcrumb">
-												<li>
-																<i class="fa fa-home"></i>
-																<a ui-sref="home">@(Home)</a>
-																<i class="fa fa-angle-right"></i>
-												</li>
-												<li>
-																<span>@(tasks:TasksList)</span>
-																<i class="fa fa-angle-right"></i>
-												</li>
-												<li>
-																<a ui-sref="task.todo">@(tasks:Todo)</a>
-												</li>
-								</ul>
-								<div class="page-toolbar">
-												<div class="btn-group pull-right">
-																<button class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
+	<div class="page-bar">
+		<ul class="page-breadcrumb">
+			<li>
+				<i class="fa fa-home"></i>
+				<a ui-sref="home">@(Home)</a>
+				<i class="fa fa-angle-right"></i>
+			</li>
+			<li>
+				<span>@(tasks:TasksList)</span>
+				<i class="fa fa-angle-right"></i>
+			</li>
+			<li>
+				<a ui-sref="task.todo">@(tasks:Todo)</a>
+			</li>
+		</ul>
+		<div class="page-toolbar">
+			<div class="btn-group pull-right">
+				<button class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
                                 </button>
-																<ul class="dropdown-menu pull-right">
-																				<!--    <li>
+				<ul class="dropdown-menu pull-right">
+					<!--    <li>
                                             <a href="#">
                                                 @(Update) </a>
                                         </li>-->
 
-																				<!--<li>
+					<!--<li>
                                         <a href="#">
                                             @(BuildPDF) </a>
                                     </li>-->
-																				<!--<li>
+					<!--<li>
                                         <a ng-show="login.rights.delivery.createBills" ng-confirm-click="@(orders:ConfirmCloseDelivery)" ng-confirm-title="@(orders:CloseDelivery)" confirmed-click="createBills()">
                                             <i class="fa fa-money"></i>
                                             @(orders:CreateBills)
@@ -36,16 +36,16 @@
                                     </li>
                                     <li class="divider">
                                     </li>-->
-																				<li>
-																								<a href="#" class="font-red" ng-show="login.rights.task.delete" confirmed-click="remove()" ng-confirm-click="Supprimer les taches ?">
+					<li>
+						<a href="#" class="font-red" ng-show="login.rights.task.delete" confirmed-click="remove()" ng-confirm-click="Supprimer les taches ?">
                             <i class="fa fa-trash-o font-red"></i> @(Delete)
                         </a>
-																				</li>
-																</ul>
-												</div>
-								</div>
-				</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 
-				<div ng-include="'/templates/task/list.html'" ng-controller="TaskController" onload="ngIncludeInit({type:'MYTASK'}, 25)"></div>
+	<div ng-include="'/templates/task/list.html'" ng-controller="TaskController" onload="ngIncludeInit({type:'MYTASK'}, 25)"></div>
 
 </div>

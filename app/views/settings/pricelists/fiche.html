@@ -1,19 +1,19 @@
 <div class="row">
-				<div class="col-md-offset-2 col-md-8">
-								<div class="form-horizontal form-row-seperated">
-												<div class="portlet light bordered">
-																<div class="portlet-title">
-																				<div class="caption">
-																								<i class="icon-magic-wand"></i>
-																								<span ng-if="object._id" class="caption-subject dark bold uppercase"> @(products:PriceLists)</span>
-																								<span ng-if="!object._id" class="caption-subject dark bold uppercase"> @(products:NewPriceLists)</span>
-																				</div>
-																				<save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
-																</div>
-																<div class="portlet-body">
-																				<div class="form-body" ng-include="'/views/settings/pricelists/new-tpl.html'"></div>
-																</div>
-												</div>
-								</div>
+	<div class="col-md-offset-2 col-md-8">
+		<div class="form-horizontal form-row-seperated">
+			<div class="portlet light bordered">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="icon-magic-wand"></i>
+						<span ng-if="object._id" class="caption-subject dark bold uppercase"> @(products:PriceLists)</span>
+						<span ng-if="!object._id" class="caption-subject dark bold uppercase"> @(products:NewPriceLists)</span>
+					</div>
+					<save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
 				</div>
+				<div class="portlet-body">
+					<div class="form-body" ng-include="'/views/settings/pricelists/new-tpl.html'"></div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

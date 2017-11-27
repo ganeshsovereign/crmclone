@@ -5,62 +5,62 @@
 </script>-->
 
 <div class="alert alert-info" ng-if="object.tracking">
-				<strong>Info!</strong> @(ordersTrackingNumber) : <strong>{{object.tracking}}</strong></div>
+	<strong>Info!</strong> @(ordersTrackingNumber) : <strong>{{object.tracking}}</strong></div>
 
 <div class="row">
-				<div class="col-md-12">
-								<div class="form-horizontal form-row-seperated">
-												<div class="portlet portlet light bordered">
-																<div class="portlet-title">
-																				<div class="caption">
-																								<i class="icon-info"></i>
-																								<span ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:OrderFab) - {{object.ref}}</span>
-																								<span ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewOrderFab) </span>
-																				</div>
-																				<save ng-disabled="object.Status == 'VALIDATED'|| object.Status == 'CLOSED' ||object.Status == 'SIGNED' || object.Status == 'SEND' || object.Status == 'NOTSIGNED' || object.Status == 'CLOSED'" mode="object._id" ng-create="create()" ng-update="update()"
-																				    back-to="backTo" class="actions btn-set"></save>
-																</div>
-
-																<div class="portlet-body">
-																				<div class="form-body">
-																								<div class="row">
-																												<div class="col-md-7">
-																																<div class="portlet light bordered">
-																																				<div class="row">
-																																								<div class=" col-md-6 col-sm-12">
-																																												<div class="form-group form-md-line-input">
-																																																<select class="form-control" id="entity" ng-model="object.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
-																																																<label for="entity">@(companies:Entity)</label>
-																																												</div>
-																																												<div class="form-group form-md-line-input">
-																																																<input type="text" class="form-control" id="dateLivraison" date-input ng-model="object.datedl">
-																																																<label for="dateLivraison">@(DeliveryDate)</label>
-																																												</div>
-																																								</div>
-
-																																								<div class="col-md-6 col-sm-12">
-																																												<div class="form-group form-md-line-input">
-																																																<select class="form-control" id="warehouse" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse">
-                                                        </select>
-																																																<label for="warehouse">@(products:Warehouse)</label>
-																																												</div>
-																																								</div>
-																																				</div>
-																																</div>
-																												</div>
-																												<div class="col-md-5 ">
-																																<crm-notes ng-model="object.notes[0]" ng-change="update()"></crm-notes>
-																												</div>
-																								</div>
-																				</div>
-																</div>
-												</div>
-								</div>
+	<div class="col-md-12">
+		<div class="form-horizontal form-row-seperated">
+			<div class="portlet portlet light bordered">
+				<div class="portlet-title">
+					<div class="caption">
+						<i class="icon-info"></i>
+						<span ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:OrderFab) - {{object.ref}}</span>
+						<span ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewOrderFab) </span>
+					</div>
+					<save ng-disabled="object.Status == 'VALIDATED'|| object.Status == 'CLOSED' ||object.Status == 'SIGNED' || object.Status == 'SEND' || object.Status == 'NOTSIGNED' || object.Status == 'CLOSED'" mode="object._id" ng-create="create()" ng-update="update()"
+					 back-to="backTo" class="actions btn-set"></save>
 				</div>
+
+				<div class="portlet-body">
+					<div class="form-body">
+						<div class="row">
+							<div class="col-md-7">
+								<div class="portlet light bordered">
+									<div class="row">
+										<div class=" col-md-6 col-sm-12">
+											<div class="form-group form-md-line-input">
+												<select class="form-control" id="entity" ng-model="object.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
+												<label for="entity">@(companies:Entity)</label>
+											</div>
+											<div class="form-group form-md-line-input">
+												<input type="text" class="form-control" id="dateLivraison" date-input ng-model="object.datedl">
+												<label for="dateLivraison">@(DeliveryDate)</label>
+											</div>
+										</div>
+
+										<div class="col-md-6 col-sm-12">
+											<div class="form-group form-md-line-input">
+												<select class="form-control" id="warehouse" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse">
+                                                        </select>
+												<label for="warehouse">@(products:Warehouse)</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-5 ">
+								<crm-notes ng-model="object.notes[0]" ng-change="update()"></crm-notes>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div ng-hide="!object._id" class="row">
-				<div class="col-md-12">
-								<product-lines ng-model="object.lines" title="'@(products:Conditionning)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productOrderFabLine.html" ng-change="update()"></product-lines>
-				</div>
+	<div class="col-md-12">
+		<product-lines ng-model="object.lines" title="'@(products:Conditionning)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productOrderFabLine.html" ng-change="update()"></product-lines>
+	</div>
 </div>
