@@ -1,59 +1,59 @@
 <div class="portlet light portlet-form bordered" ng-if="product._id">
-    <div class="portlet-title">
-        <div class="caption">
-            <i class=" icon-layers font-green"></i>
-            <span class="caption-subject font-green bold uppercase">@(Pictures)</span>
-        </div>
-        <save mode="product._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
-    </div>
-    <div class="portlet-body" ng-controller="ProductImagesController" ng-init="init()">
+				<div class="portlet-title">
+								<div class="caption">
+												<i class=" icon-layers font-green"></i>
+												<span class="caption-subject font-green bold uppercase">@(Pictures)</span>
+								</div>
+								<save mode="product._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
+				</div>
+				<div class="portlet-body" ng-controller="ProductImagesController" ng-init="init()">
 
-        <button ng-click="addImages()" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i> @(AddPictures) </button>
+								<button ng-click="addImages()" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i> @(AddPictures) </button>
 
-        <div class="mt-element-card mt-element-overlay">
-            <div class="row">
-                <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12" ng-repeat="image in images">
-                    <div class="mt-card-item">
-                        <div class="mt-card-avatar mt-overlay-1">
-                            <img ng-src="/erp/api/images/bank/l/{{image.image.imageSrc}}">
-                            <div class="mt-overlay">
-                                <ul class="mt-info">
-                                    <li>
-                                        <a class="btn default btn-outline" href="javascript:;">
+								<div class="mt-element-card mt-element-overlay">
+												<div class="row">
+																<div class="col-lg-2 col-md-3 col-sm-6 col-xs-12" ng-repeat="image in images">
+																				<div class="mt-card-item">
+																								<div class="mt-card-avatar mt-overlay-1">
+																												<img ng-src="/erp/api/images/bank/l/{{image.image.imageSrc}}">
+																												<div class="mt-overlay">
+																																<ul class="mt-info">
+																																				<li>
+																																								<a class="btn default btn-outline" href="javascript:;">
                                             <i class="icon-magnifier"></i>
                                         </a>
-                                    </li>
-                                    <li>
-                                        <a class="btn default btn-outline" href="javascript:;">
+																																				</li>
+																																				<li>
+																																								<a class="btn default btn-outline" href="javascript:;">
                                             <i class="icon-link"></i>
                                         </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="mt-card-content">
-                            <h3 class="mt-card-name">{{image.image.langs[0].name}}</h3>
-                            <p class="mt-card-desc font-grey-mint">{{image.image.imageSrc}}</p>
-                            <p class="mt-card-desc font-grey-mint">{{image.image.langs[0].description}}</p>
-                            <p class="mt-card-desc font-grey-mint">{{image.image.size.width}} x {{image.image.size.height}} ({{image.image.length | number:2}} MB)</p>
-                            <div class="mt-card-social">
-                                <ul>
-                                    <li>
-                                        <a href="javascript:;" ng-click="addProductAsTop(image)">
+																																				</li>
+																																</ul>
+																												</div>
+																								</div>
+																								<div class="mt-card-content">
+																												<h3 class="mt-card-name">{{image.image.langs[0].name}}</h3>
+																												<p class="mt-card-desc font-grey-mint">{{image.image.imageSrc}}</p>
+																												<p class="mt-card-desc font-grey-mint">{{image.image.langs[0].description}}</p>
+																												<p class="mt-card-desc font-grey-mint">{{image.image.size.width}} x {{image.image.size.height}} ({{image.image.length | number:2}} MB)</p>
+																												<div class="mt-card-social">
+																																<ul>
+																																				<li>
+																																								<a href="javascript:;" ng-click="addProductAsTop(image)">
                                             <i class="fa fa-check"></i>
                                         </a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:;" confirmed-click="delete(image, $index)" ng-confirm-click="Retier l'image {{image.image.imageSrc}} du produit {{product.info.SKU}} ?">
+																																				</li>
+																																				<li>
+																																								<a href="javascript:;" confirmed-click="delete(image, $index)" ng-confirm-click="Retier l'image {{image.image.imageSrc}} du produit {{product.info.SKU}} ?">
                                             <i class="fa fa-trash"></i>
                                         </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+																																				</li>
+																																</ul>
+																												</div>
+																								</div>
+																				</div>
+																</div>
+												</div>
+								</div>
+				</div>
 </div>

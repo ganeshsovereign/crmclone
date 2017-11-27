@@ -1,219 +1,219 @@
 <div>
-    <div class="page-bar">
-        <ul class="page-breadcrumb">
-            <li>
-                <i class="fa fa-home"></i>
-                <a ui-sref="home">@(Home)</a>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span>@(products:ProductsAndServices)</span>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span>@(products:PriceLevel)</span>
-            </li>
-        </ul>
-        <div class="page-toolbar">
-            <div class="btn-group pull-right">
-                <a class="btn yellow-crusta dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
+				<div class="page-bar">
+								<ul class="page-breadcrumb">
+												<li>
+																<i class="fa fa-home"></i>
+																<a ui-sref="home">@(Home)</a>
+																<i class="fa fa-angle-right"></i>
+												</li>
+												<li>
+																<span>@(products:ProductsAndServices)</span>
+																<i class="fa fa-angle-right"></i>
+												</li>
+												<li>
+																<span>@(products:PriceLevel)</span>
+												</li>
+								</ul>
+								<div class="page-toolbar">
+												<div class="btn-group pull-right">
+																<a class="btn yellow-crusta dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
                                                     <i class="fa fa-angle-down"></i>
                                                 </a>
-                <ul class="dropdown-menu pull-right">
-                    <li ng-if="priceList">
-                        <a ng-href="/erp/api/product/prices/priceslist/export/{{priceList._id}}">
+																<ul class="dropdown-menu pull-right">
+																				<li ng-if="priceList">
+																								<a ng-href="/erp/api/product/prices/priceslist/export/{{priceList._id}}">
                             <i class="fa fa-download"></i> @(Download) XLS </a>
-                    </li>
-                    <li>
-                        <a ng-href="/erp/api/product/familyCoef/export/">
+																				</li>
+																				<li>
+																								<a ng-href="/erp/api/product/familyCoef/export/">
                             <i class="fa fa-download"></i> @(Download) XLS Famille Coef </a>
-                    </li>
-                    <li ng-if="priceList.isCoef">
-                        <a ng-confirm-click="Tous les tarifs de la liste de prix  {{priceList.name}} vont etre recalcules." confirmed-click="refreshCoefPrices(priceList, null)">
+																				</li>
+																				<li ng-if="priceList.isCoef">
+																								<a ng-confirm-click="Tous les tarifs de la liste de prix  {{priceList.name}} vont etre recalcules." confirmed-click="refreshCoefPrices(priceList, null)">
                             <i class="fa fa-refresh"></i> @(Recalculer la liste de prix)</a>
-                    </li>
-                    <!--<li ng-if="priceList.isFixed">
+																				</li>
+																				<!--<li ng-if="priceList.isFixed">
                         <a href="#" ng-click="clone()">
                             <i class="fa fa-copy"></i> @(Clone) </a>
                     </li>-->
-                    <li ng-if="priceList.isFixed">
-                        <a href="#" ng-show="login.rights.product.create" ng-click="updatePrices()">
+																				<li ng-if="priceList.isFixed">
+																								<a href="#" ng-show="login.rights.product.create" ng-click="updatePrices()">
                             <i class="fa fa-mail-forward"></i> @(products:UpdatePrice)
                         </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+																				</li>
+																</ul>
+												</div>
+								</div>
+				</div>
 
-    <script type="text/ng-template" id="newModalPrice.html">
-        <div class="modal-header">
-            <h3 class="no-margin-bottom">@(products:NewPriceLevelProductService)</h3>
-        </div>
-        <div class="modal-body">
+				<script type="text/ng-template" id="newModalPrice.html">
+								<div class="modal-header">
+												<h3 class="no-margin-bottom">@(products:NewPriceLevelProductService)</h3>
+								</div>
+								<div class="modal-body">
 
-            <p class="button-height inline-medium-label">
-                <label for="product">@(products:RefProductService)</label>
-                <input id="product" required data-ng-model="price.product" typeahead="product as product.ref for product in productAutoComplete($viewValue) | filter:{name:$viewValue}" class="input">
-            </p>
-            <p class="button-height inline-medium-label">
-                <label>Libellé</label> {{price.product.info.langs[0].name}}
-            </p>
-            <p class="button-height inline-medium-label">
-                <label for="pu_ht">@(products:RateHT)</label>
-                <input type="number" min="0" step="any" id="pu_ht" data-ng-model="price.prices[0].price" class="input">
-            </p>
-            <!--<p class="button-height inline-medium-label">
+												<p class="button-height inline-medium-label">
+																<label for="product">@(products:RefProductService)</label>
+																<input id="product" required data-ng-model="price.product" typeahead="product as product.ref for product in productAutoComplete($viewValue) | filter:{name:$viewValue}" class="input">
+												</p>
+												<p class="button-height inline-medium-label">
+																<label>Libellé</label> {{price.product.info.langs[0].name}}
+												</p>
+												<p class="button-height inline-medium-label">
+																<label for="pu_ht">@(products:RateHT)</label>
+																<input type="number" min="0" step="any" id="pu_ht" data-ng-model="price.prices[0].price" class="input">
+												</p>
+												<!--<p class="button-height inline-medium-label">
                 <label for="discount">@(products:Discount)</label>
                 <input type="number" min="0" step="any" id="discount" data-ng-model="price.discount" class="input">
             </p>-->
 
-        </div>
-        <div class="modal-footer">
+								</div>
+								<div class="modal-footer">
 
-            <button type="button" ng-click="ok()" class="btn blue btn-sm">@(Add)</button>
+												<button type="button" ng-click="ok()" class="btn blue btn-sm">@(Add)</button>
 
-        </div>
-    </script>
+								</div>
+				</script>
 
-    <script type="text/ng-template" id="cloneContent.html">
-        <div class="modal-header">
-            <h3 class="no-margin-bottom">@(products:DuplicatePriceList)</h3>
-        </div>
-        <div class="modal-body">
+				<script type="text/ng-template" id="cloneContent.html">
+								<div class="modal-header">
+												<h3 class="no-margin-bottom">@(products:DuplicatePriceList)</h3>
+								</div>
+								<div class="modal-body">
 
-            <p class="button-height inline-medium-label">
-                <label>@(products:PriceLevel)</label> {{price.price_level}}
-            </p>
-            <p class="button-height inline-medium-label">
-                <label for="price_level">@(products:NewPriceLevel)</label>
-                <input id="price_level" required data-ng-model="price.dest" class="input">
-            </p>
-        </div>
-        <div class="modal-footer">
+												<p class="button-height inline-medium-label">
+																<label>@(products:PriceLevel)</label> {{price.price_level}}
+												</p>
+												<p class="button-height inline-medium-label">
+																<label for="price_level">@(products:NewPriceLevel)</label>
+																<input id="price_level" required data-ng-model="price.dest" class="input">
+												</p>
+								</div>
+								<div class="modal-footer">
 
-            <button type="button" ng-click="ok()" class="btn blue btn-sm">@(Clone)</button>
+												<button type="button" ng-click="ok()" class="btn blue btn-sm">@(Clone)</button>
 
-        </div>
-    </script>
+								</div>
+				</script>
 
-    <script type="text/ng-template" id="myModalPrice.html">
-        <div class="modal-header">
-            <h4 class="no-margin-bottom">@(products:ChangePrice)</h4>
-        </div>
-        <div class="modal-body">
+				<script type="text/ng-template" id="myModalPrice.html">
+								<div class="modal-header">
+												<h4 class="no-margin-bottom">@(products:ChangePrice)</h4>
+								</div>
+								<div class="modal-body">
 
-            <p class="button-height inline-medium-label">
-                <label for="coef">@(products:MultiplierLong)</label>
-                <input id="coef" required data-ng-model="coef" type="number" min="0.01" step="any" class="form-control">
-            </p>
-        </div>
-        <div class="modal-footer">
-            <button type="button" ng-click="cancel()" class="btn btn-warning btn-sm">@(Cancel)</button>
-            <button type="button" ng-click="ok()" class="btn btn-info btn-sm">@(Apply)</button>
+												<p class="button-height inline-medium-label">
+																<label for="coef">@(products:MultiplierLong)</label>
+																<input id="coef" required data-ng-model="coef" type="number" min="0.01" step="any" class="form-control">
+												</p>
+								</div>
+								<div class="modal-footer">
+												<button type="button" ng-click="cancel()" class="btn btn-warning btn-sm">@(Cancel)</button>
+												<button type="button" ng-click="ok()" class="btn btn-info btn-sm">@(Apply)</button>
 
-        </div>
-    </script>
+								</div>
+				</script>
 
-    <div class="portlet light bordered waiting" ng-init="init()">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-list-ol"></i>
-                <span class="caption-subject dark sbold uppercase">@(products:PriceLevel)</span>
-            </div>
-            <div class="actions">
-                <button class="btn blue" ng-show="priceList.isFixed" ng-click="addNewPrice()">@(Add) <i class="fa fa-plus"></i></button>
-                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
-            </div>
-        </div>
-        <div class="portlet-body">
-            <div class="form-group form-md-line-input">
-                <div class="row hidden-print">
-                    <div class="col-md-12">
-                        <div class="col-md-3">
-                        </div>
-                        <div class="col-md-4">
-                            <select ng-model="priceList" ng-options="c as c.name for c in pricesLists" ng-change="find()" class="form-control"></select>
-                        </div>
-                        <div class="col-md-5">
-                        </div>
-                    </div>
-                </div>
-            </div>
+				<div class="portlet light bordered waiting" ng-init="init()">
+								<div class="portlet-title">
+												<div class="caption">
+																<i class="fa fa-list-ol"></i>
+																<span class="caption-subject dark sbold uppercase">@(products:PriceLevel)</span>
+												</div>
+												<div class="actions">
+																<button class="btn blue" ng-show="priceList.isFixed" ng-click="addNewPrice()">@(Add) <i class="fa fa-plus"></i></button>
+																<button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+												</div>
+								</div>
+								<div class="portlet-body">
+												<div class="form-group form-md-line-input">
+																<div class="row hidden-print">
+																				<div class="col-md-12">
+																								<div class="col-md-3">
+																								</div>
+																								<div class="col-md-4">
+																												<select ng-model="priceList" ng-options="c as c.name for c in pricesLists" ng-change="find()" class="form-control"></select>
+																								</div>
+																								<div class="col-md-5">
+																								</div>
+																				</div>
+																</div>
+												</div>
 
-            <table-pagination ng-model="page"></table-pagination>
+												<table-pagination ng-model="page"></table-pagination>
 
-            <div class="no-footer table-responsive" ng-if="priceList.cost == false">
-                <table class="table table-striped table-hover table-condensed no-footer">
-                    <colgroup>
-                        <col width="42px">
-                        <col width="20%">
-                        <col width="14%">
-                        <col width="8%">
-                        <col width="10%">
-                        <col width="12%">
-                        <col width="13%">
-                        <col width="13%">
-                        <col width="10%">
-                        <col width="10%">
-                        <col width="10%">
-                    </colgroup>
-                    <thead>
-                        <tr role="row" class="heading">
-                            <th class="text-center">
-                                <input uniform type="checkbox" ng-model="checkAll" ng-checked="checkAll" />
-                            </th>
-                            <th table-sort='product.info.SKU' ng-model="sort" name="@(RefOrLabel)"></th>
-                            <th>@(Coef.) @(Qty)</th>
-                            <th table-sort='product.totalCost' ng-model="sort" name="@(products:CostPriceHT)"></th>
-                            <th>@(products:QtyMinBasket)</th>
-                            <th>@(products:QtyMaxBasket)</th>
-                            <th>@(products:SellingPriceHT)</th>
-                            <th>@(products:SellingPriceTTC)</th>
-                            <th>@(products:MarginHT)</th>
-                            <th>@(UpdateMAJ)</th>
-                            <th>@(Action)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="line in prices">
-                            <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
-                            <td><a ui-sref="product.show({id:line.product._id})" class="fa fa-cubes"> {{line.product.info.SKU}}</a></td>
-                            <td>
-                                <table class="table-condensed" ng-if="line.priceLists.isCoef">
-                                    <tbody>
-                                        <tr ng-repeat="price in line.prices">
-                                            <td class="text-info">{{price.count ||1}}+</td>
-                                            <td>{{price.coef || 0 | number:3}}</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                            <td>
-                                {{line.product.totalCost | currency}}
-                            </td>
-                            <td>
-                                <a ng-if="line.priceLists.isFixed || line.priceLists.isCoef" href="#" editable-number="line.qtyMin" e-step="1" e-min="0" onaftersave="updateQty(line)">{{(line.qtyMin === 0 ? 0 : line.qtyMin || "@(Empty)")}}</a>
-                                <span ng-hide="line.priceLists.isFixed || line.priceLists.isCoef">{{(line.qtyMin === 0 ? 0 : line.qtyMin || "@(Empty)")}}</span>
-                            </td>
-                            <td>
-                                <a ng-if="line.priceLists.isFixed || line.priceLists.isCoef" href="#" editable-number="line.qtyMax" e-step="1" e-min="0" onaftersave="updateQty(line)">{{(line.qtyMax === 0 ? 0 : line.qtyMax || "@(Empty)")}}</a>
-                                <span ng-hide="line.priceLists.isFixed || line.priceLists.isCoef">{{(line.qtyMax === 0 ? 0 : line.qtyMax || "@(Empty)")}}</span>
-                            </td>
-                            <td>
-                                <table class="table-condensed">
-                                    <tbody>
-                                        <tr ng-repeat="price in line.prices">
-                                            <td class="text-info">{{price.count || 1}}+</td>
-                                            <td ng-if="line.priceLists.isFixed || line.priceLists.isCoef"><a href="#" editable-number="price.price" e-step="0.001" e-min="0" onaftersave="updatePrice(line, price, 'price')">{{price.price | currency}}</a></td>
-                                            <td ng-hide="line.priceLists.isFixed || line.priceLists.isCoef">{{price.price | currency}}</td>
-                                            <td ng-if="$index != 0">{{(price.price / line.prices[0].price -1) * 100 | percent }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+												<div class="no-footer table-responsive" ng-if="priceList.cost == false">
+																<table class="table table-striped table-hover table-condensed no-footer">
+																				<colgroup>
+																								<col width="42px">
+																								<col width="20%">
+																								<col width="14%">
+																								<col width="8%">
+																								<col width="10%">
+																								<col width="12%">
+																								<col width="13%">
+																								<col width="13%">
+																								<col width="10%">
+																								<col width="10%">
+																								<col width="10%">
+																				</colgroup>
+																				<thead>
+																								<tr role="row" class="heading">
+																												<th class="text-center">
+																																<input uniform type="checkbox" ng-model="checkAll" ng-checked="checkAll" />
+																												</th>
+																												<th table-sort='product.info.SKU' ng-model="sort" name="@(RefOrLabel)"></th>
+																												<th>@(Coef.) @(Qty)</th>
+																												<th table-sort='product.totalCost' ng-model="sort" name="@(products:CostPriceHT)"></th>
+																												<th>@(products:QtyMinBasket)</th>
+																												<th>@(products:QtyMaxBasket)</th>
+																												<th>@(products:SellingPriceHT)</th>
+																												<th>@(products:SellingPriceTTC)</th>
+																												<th>@(products:MarginHT)</th>
+																												<th>@(UpdateMAJ)</th>
+																												<th>@(Action)</th>
+																								</tr>
+																				</thead>
+																				<tbody>
+																								<tr ng-repeat="line in prices">
+																												<td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
+																												<td><a ui-sref="product.show({id:line.product._id})" class="fa fa-cubes"> {{line.product.info.SKU}}</a></td>
+																												<td>
+																																<table class="table-condensed" ng-if="line.priceLists.isCoef">
+																																				<tbody>
+																																								<tr ng-repeat="price in line.prices">
+																																												<td class="text-info">{{price.count ||1}}+</td>
+																																												<td>{{price.coef || 0 | number:3}}</a>
+																																												</td>
+																																								</tr>
+																																				</tbody>
+																																</table>
+																												</td>
+																												<td>
+																																{{line.product.totalCost | currency}}
+																												</td>
+																												<td>
+																																<a ng-if="line.priceLists.isFixed || line.priceLists.isCoef" href="#" editable-number="line.qtyMin" e-step="1" e-min="0" onaftersave="updateQty(line)">{{(line.qtyMin === 0 ? 0 : line.qtyMin || "@(Empty)")}}</a>
+																																<span ng-hide="line.priceLists.isFixed || line.priceLists.isCoef">{{(line.qtyMin === 0 ? 0 : line.qtyMin || "@(Empty)")}}</span>
+																												</td>
+																												<td>
+																																<a ng-if="line.priceLists.isFixed || line.priceLists.isCoef" href="#" editable-number="line.qtyMax" e-step="1" e-min="0" onaftersave="updateQty(line)">{{(line.qtyMax === 0 ? 0 : line.qtyMax || "@(Empty)")}}</a>
+																																<span ng-hide="line.priceLists.isFixed || line.priceLists.isCoef">{{(line.qtyMax === 0 ? 0 : line.qtyMax || "@(Empty)")}}</span>
+																												</td>
+																												<td>
+																																<table class="table-condensed">
+																																				<tbody>
+																																								<tr ng-repeat="price in line.prices">
+																																												<td class="text-info">{{price.count || 1}}+</td>
+																																												<td ng-if="line.priceLists.isFixed || line.priceLists.isCoef"><a href="#" editable-number="price.price" e-step="0.001" e-min="0" onaftersave="updatePrice(line, price, 'price')">{{price.price | currency}}</a></td>
+																																												<td ng-hide="line.priceLists.isFixed || line.priceLists.isCoef">{{price.price | currency}}</td>
+																																												<td ng-if="$index != 0">{{(price.price / line.prices[0].price -1) * 100 | percent }}</td>
+																																								</tr>
+																																				</tbody>
+																																</table>
 
-                                <span ng-if="line.priceLists.isFixed">
+																																<span ng-if="line.priceLists.isFixed">
                                         <a ng-hide="addNewRange" ng-click="addNewRange = true">@(Add)</a>
 
                                         <form ng-show="addNewRange" class="form-horizontal">
@@ -236,112 +236,112 @@
                                                                         <button type="button" ng-click="update(line, price)" class="btn blue btn-sm">@(Add)</button>
                                                                     </div>
                                         </form></span>
-                            </td>
-                            <td>
-                                <table class="table-condensed">
-                                    <tbody>
-                                        <tr ng-repeat="price in line.prices">
-                                            <td class="text-info">{{price.count || 1}}+</td>
-                                            <td ng-if="line.priceLists.isFixed || line.priceLists.isCoef"><a href="#" editable-number="price.priceTTC" e-step="0.001" e-min="0" onaftersave="updatePrice(line, price, 'priceTTC')">{{price.priceTTC | currency}}</a></td>
-                                            <td ng-hide="line.priceLists.isFixed || line.priceLists.isCoef">{{price.priceTTC | currency}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                            <td>
-                                <table class="table-condensed">
-                                    <tbody>
-                                        <tr ng-repeat="price in line.prices">
-                                            <td class="text-info">{{price.count || 1}}+</td>
-                                            <td>{{price.margin.value | currency}} ({{price.margin.rate | percent:2}})</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                            <td>{{line.updatedAt| date:'dd/MM/yyyy HH:mm'}}</td>
-                            <td>
-                                <button ng-if="line.priceLists.isFixed === true" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit {{line.product.name}} ?" confirmed-click="remove(line)"></button>
-                                <button ng-if="line.priceLists.isCoef === true" class="btn green fa fa-calculator" ng-confirm-click="Recalcul du prix  {{line.priceLists.name}} fonction du coef." confirmed-click="refreshCoefPrices(line.priceLists, line.product)"></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+																												</td>
+																												<td>
+																																<table class="table-condensed">
+																																				<tbody>
+																																								<tr ng-repeat="price in line.prices">
+																																												<td class="text-info">{{price.count || 1}}+</td>
+																																												<td ng-if="line.priceLists.isFixed || line.priceLists.isCoef"><a href="#" editable-number="price.priceTTC" e-step="0.001" e-min="0" onaftersave="updatePrice(line, price, 'priceTTC')">{{price.priceTTC | currency}}</a></td>
+																																												<td ng-hide="line.priceLists.isFixed || line.priceLists.isCoef">{{price.priceTTC | currency}}</td>
+																																								</tr>
+																																				</tbody>
+																																</table>
+																												</td>
+																												<td>
+																																<table class="table-condensed">
+																																				<tbody>
+																																								<tr ng-repeat="price in line.prices">
+																																												<td class="text-info">{{price.count || 1}}+</td>
+																																												<td>{{price.margin.value | currency}} ({{price.margin.rate | percent:2}})</a>
+																																												</td>
+																																								</tr>
+																																				</tbody>
+																																</table>
+																												</td>
+																												<td>{{line.updatedAt| date:'dd/MM/yyyy HH:mm'}}</td>
+																												<td>
+																																<button ng-if="line.priceLists.isFixed === true" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit {{line.product.name}} ?" confirmed-click="remove(line)"></button>
+																																<button ng-if="line.priceLists.isCoef === true" class="btn green fa fa-calculator" ng-confirm-click="Recalcul du prix  {{line.priceLists.name}} fonction du coef." confirmed-click="refreshCoefPrices(line.priceLists, line.product)"></button>
+																												</td>
+																								</tr>
+																				</tbody>
+																</table>
+												</div>
 
-            <div class="no-footer table-responsive" ng-if="priceList.cost == true">
-                <table class="table table-striped table-hover table-condensed no-footer">
-                    <thead>
-                        <tr role="row" class="heading">
-                            <th width="2%">
-                                <input type="checkbox" class="group-checkable" />
-                            </th>
-                            <th>@(RefOrLabel)</th>
-                            <!--<th>@(products:Promo)</th>-->
-                            <th>@(products:CostPriceHT)</th>
-                            <th>@(products:CostPrice)</th>
-                            <th>Date MAJ</th>
-                            <th>@(Action)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="line in prices">
-                            <td><input type="checkbox" ng-model="grid[line._id]" /></td>
-                            <td><a ui-sref="product.show({id:line.product._id})" class="fa fa-cubes"> {{line.product.info.SKU}}</a></td>
-                            <td>
-                                <table class="table-condensed">
-                                    <tbody>
-                                        <tr ng-repeat="price in line.prices">
-                                            <td class="text-info">{{price.count|| 1}}+</td>
-                                            <td><a href="#" editable-number="price.price" e-step="0.001" e-min="0" onaftersave="updatePrice(line, price, 'price')">{{price.price | currency}}</a></td>
-                                            <td ng-if="$index != 0">{{(price.price / line.prices[0].price -1) * 100 | percent }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+												<div class="no-footer table-responsive" ng-if="priceList.cost == true">
+																<table class="table table-striped table-hover table-condensed no-footer">
+																				<thead>
+																								<tr role="row" class="heading">
+																												<th width="2%">
+																																<input type="checkbox" class="group-checkable" />
+																												</th>
+																												<th>@(RefOrLabel)</th>
+																												<!--<th>@(products:Promo)</th>-->
+																												<th>@(products:CostPriceHT)</th>
+																												<th>@(products:CostPrice)</th>
+																												<th>Date MAJ</th>
+																												<th>@(Action)</th>
+																								</tr>
+																				</thead>
+																				<tbody>
+																								<tr ng-repeat="line in prices">
+																												<td><input type="checkbox" ng-model="grid[line._id]" /></td>
+																												<td><a ui-sref="product.show({id:line.product._id})" class="fa fa-cubes"> {{line.product.info.SKU}}</a></td>
+																												<td>
+																																<table class="table-condensed">
+																																				<tbody>
+																																								<tr ng-repeat="price in line.prices">
+																																												<td class="text-info">{{price.count|| 1}}+</td>
+																																												<td><a href="#" editable-number="price.price" e-step="0.001" e-min="0" onaftersave="updatePrice(line, price, 'price')">{{price.price | currency}}</a></td>
+																																												<td ng-if="$index != 0">{{(price.price / line.prices[0].price -1) * 100 | percent }}</td>
+																																								</tr>
+																																				</tbody>
+																																</table>
 
-                                <!--<a ng-if="!product.sellFamily.isCoef" ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>-->
+																																<!--<a ng-if="!product.sellFamily.isCoef" ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>-->
 
-                                <form ng-show="addNewRange" class="form-horizontal">
-                                    <div class="form-body">
-                                        <div class="form-group">
-                                            <label class="col-md-3 control-label">@(Qty)</label>
-                                            <div class="col-md-9">
-                                                <input type="number" class="form-control input-sm" min="0" step='0.01' ng-model="price.count" />
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-md-3 control-label">@(products:SellingPriceHT)</label>
-                                            <div class="col-md-9">
-                                                <input type="number" class="form-control input-sm" min="0" step="0.001" ng-model="price.price" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-actions right1">
-                                        <button type="button" ng-click="addNewRange = false" class="btn red">@(Cancel)</button>
-                                        <button type="button" ng-click="update(line, price)" class="btn blue btn-sm">@(Add)</button>
-                                    </div>
-                                </form>
-                            </td>
-                            <td>
-                                <table class="table-condensed">
-                                    <tbody>
-                                        <tr ng-repeat="price in line.prices">
-                                            <td class="text-info">{{price.count || 1}}+</td>
-                                            <td><a href="#" editable-number="price.priceTTC" e-step="0.001" e-min="0" onaftersave="updatePrice(line, price, 'priceTTC')">{{price.priceTTC | currency}}</a></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                            <td>{{line.updatedAt| date:'dd/MM/yyyy HH:mm'}}</td>
-                            <td><button ng-if="line.priceLists.removable !== false" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit {{line.product.name}} ?" confirmed-click="remove(line)"></button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+																																<form ng-show="addNewRange" class="form-horizontal">
+																																				<div class="form-body">
+																																								<div class="form-group">
+																																												<label class="col-md-3 control-label">@(Qty)</label>
+																																												<div class="col-md-9">
+																																																<input type="number" class="form-control input-sm" min="0" step='0.01' ng-model="price.count" />
+																																												</div>
+																																								</div>
+																																								<div class="form-group">
+																																												<label class="col-md-3 control-label">@(products:SellingPriceHT)</label>
+																																												<div class="col-md-9">
+																																																<input type="number" class="form-control input-sm" min="0" step="0.001" ng-model="price.price" />
+																																												</div>
+																																								</div>
+																																				</div>
+																																				<div class="form-actions right1">
+																																								<button type="button" ng-click="addNewRange = false" class="btn red">@(Cancel)</button>
+																																								<button type="button" ng-click="update(line, price)" class="btn blue btn-sm">@(Add)</button>
+																																				</div>
+																																</form>
+																												</td>
+																												<td>
+																																<table class="table-condensed">
+																																				<tbody>
+																																								<tr ng-repeat="price in line.prices">
+																																												<td class="text-info">{{price.count || 1}}+</td>
+																																												<td><a href="#" editable-number="price.priceTTC" e-step="0.001" e-min="0" onaftersave="updatePrice(line, price, 'priceTTC')">{{price.priceTTC | currency}}</a></td>
+																																								</tr>
+																																				</tbody>
+																																</table>
+																												</td>
+																												<td>{{line.updatedAt| date:'dd/MM/yyyy HH:mm'}}</td>
+																												<td><button ng-if="line.priceLists.removable !== false" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit {{line.product.name}} ?" confirmed-click="remove(line)"></button></td>
+																								</tr>
+																				</tbody>
+																</table>
+												</div>
 
-            <table-pagination ng-model="page"></table-pagination>
-        </div>
-    </div>
+												<table-pagination ng-model="page"></table-pagination>
+								</div>
+				</div>
 </div>
 
 <table-footer ng-model="page"></table-footer>

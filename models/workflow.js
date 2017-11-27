@@ -27,24 +27,24 @@ International Registered Trademark & Property of ToManage SAS
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+		Schema = mongoose.Schema;
 
 /**
  * Cart Schema
  */
 
 var workflowSchema = new Schema({
-    wId: String,
-    wName: String,
-    status: String,
-    name: String,
-    sequence: Number,
-    visible: {
-        type: Boolean,
-        default: true
-    }
+		wId: String,
+		wName: String,
+		status: String,
+		name: String,
+		sequence: Number,
+		visible: {
+				type: Boolean,
+				default: true
+		}
 }, {
-    collection: 'workflows'
+		collection: 'workflows'
 });
 
 exports.Schema = mongoose.model('workflows', workflowSchema);

@@ -1,90 +1,90 @@
 <!-- BEGIN PORTLET-->
 <div class="portlet light bordered">
-    <div class="portlet-title">
-        <div class="caption caption-md">
-            <i class="icon-bar-chart font-green-haze hide"></i>
-            <span class="caption-subject font-green-haze bold uppercase">Résultats {{year | date:'yyyy'}}</span>
-            <span class="caption-helper hide">annually stats...</span>
-        </div>
-    </div>
-    <div class="portlet-body">
-        <div class="row list-separated">
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div class="font-grey-mint font-sm">
-                    @(Turnover)
-                </div>
-                <div class="uppercase font-hg font-green-haze">
-                    {{caData.ca | number:0}} <span class="font-lg font-grey-mint">€</span>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div class="font-grey-mint font-sm">
-                    Charges (hors ST)
-                </div>
-                <div class="uppercase font-hg font-red-flamingo">
-                    {{caData.charge | number:0}} <span class="font-lg font-grey-mint">€</span>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div class="font-grey-mint font-sm">
-                    @(Subcontracting)
-                </div>
-                <div class="uppercase font-hg font-purple">
-                    {{caData.subcontractor | number:0}} <span class="font-lg font-grey-mint">€</span>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div class="font-grey-mint font-sm">
-                    @(Users:Salary)
-                </div>
-                <div class="uppercase font-hg font-blue-sharp">
-                    {{caData.salary | number:0}} <span class="font-lg font-grey-mint">€</span>
-                </div>
-            </div>
-        </div>
-        <ul class="list-separated list-inline-xs hide">
-            <li>
-                <div class="font-grey-mint font-sm">
-                    Chiffre d'affaire
-                </div>
-                <div class="uppercase font-hg font-red-flamingo">
-                    {{caData.ca | number:0}} <span class="font-lg font-grey-mint">€</span>
-                </div>
-            </li>
-            <li>
-            </li>
-            <li class="border">
-                <div class="font-grey-mint font-sm">
-                    Charges
-                </div>
-                <div class="uppercase font-hg font-green-haze">
-                    {{caData.charge | number:0}} <span class="font-lg font-grey-mint">€</span>
-                </div>
-            </li>
-            <li class="divider">
-            </li>
-            <li>
-                <div class="font-grey-mint font-sm">
-                    @(Subcontracting)
-                </div>
-                <div class="uppercase font-hg font-purple">
-                    {{caData.subcontractor | number:0}} <span class="font-lg font-grey-mint">€</span>
-                </div>
-            </li>
-            <li class="divider">
-            </li>
-            <li>
-                <div class="font-grey-mint font-sm">
-                    @(Users:Salary)
-                </div>
-                <div class="uppercase font-hg font-blue-sharp">
-                    {{caData.salary | number:0}} <span class="font-lg font-grey-mint">€</span>
-                </div>
-            </li>
-        </ul>
+				<div class="portlet-title">
+								<div class="caption caption-md">
+												<i class="icon-bar-chart font-green-haze hide"></i>
+												<span class="caption-subject font-green-haze bold uppercase">Résultats {{year | date:'yyyy'}}</span>
+												<span class="caption-helper hide">annually stats...</span>
+								</div>
+				</div>
+				<div class="portlet-body">
+								<div class="row list-separated">
+												<div class="col-md-3 col-sm-3 col-xs-6">
+																<div class="font-grey-mint font-sm">
+																				@(Turnover)
+																</div>
+																<div class="uppercase font-hg font-green-haze">
+																				{{caData.ca | number:0}} <span class="font-lg font-grey-mint">€</span>
+																</div>
+												</div>
+												<div class="col-md-3 col-sm-3 col-xs-6">
+																<div class="font-grey-mint font-sm">
+																				Charges (hors ST)
+																</div>
+																<div class="uppercase font-hg font-red-flamingo">
+																				{{caData.charge | number:0}} <span class="font-lg font-grey-mint">€</span>
+																</div>
+												</div>
+												<div class="col-md-3 col-sm-3 col-xs-6">
+																<div class="font-grey-mint font-sm">
+																				@(Subcontracting)
+																</div>
+																<div class="uppercase font-hg font-purple">
+																				{{caData.subcontractor | number:0}} <span class="font-lg font-grey-mint">€</span>
+																</div>
+												</div>
+												<div class="col-md-3 col-sm-3 col-xs-6">
+																<div class="font-grey-mint font-sm">
+																				@(Users:Salary)
+																</div>
+																<div class="uppercase font-hg font-blue-sharp">
+																				{{caData.salary | number:0}} <span class="font-lg font-grey-mint">€</span>
+																</div>
+												</div>
+								</div>
+								<ul class="list-separated list-inline-xs hide">
+												<li>
+																<div class="font-grey-mint font-sm">
+																				Chiffre d'affaire
+																</div>
+																<div class="uppercase font-hg font-red-flamingo">
+																				{{caData.ca | number:0}} <span class="font-lg font-grey-mint">€</span>
+																</div>
+												</li>
+												<li>
+												</li>
+												<li class="border">
+																<div class="font-grey-mint font-sm">
+																				Charges
+																</div>
+																<div class="uppercase font-hg font-green-haze">
+																				{{caData.charge | number:0}} <span class="font-lg font-grey-mint">€</span>
+																</div>
+												</li>
+												<li class="divider">
+												</li>
+												<li>
+																<div class="font-grey-mint font-sm">
+																				@(Subcontracting)
+																</div>
+																<div class="uppercase font-hg font-purple">
+																				{{caData.subcontractor | number:0}} <span class="font-lg font-grey-mint">€</span>
+																</div>
+												</li>
+												<li class="divider">
+												</li>
+												<li>
+																<div class="font-grey-mint font-sm">
+																				@(Users:Salary)
+																</div>
+																<div class="uppercase font-hg font-blue-sharp">
+																				{{caData.salary | number:0}} <span class="font-lg font-grey-mint">€</span>
+																</div>
+												</li>
+								</ul>
 
-        <div bar-chart bar-data="caData.graph.data" bar-x='y' bar-y='["a", "b", "c"]' bar-labels='caData.graph.labels' bar-colors='["#3598dc","#8775a7","#E26A6A"]' class="portlet-body-morris-fit morris-chart" style="height: 260px">
-        </div>
-    </div>
+								<div bar-chart bar-data="caData.graph.data" bar-x='y' bar-y='["a", "b", "c"]' bar-labels='caData.graph.labels' bar-colors='["#3598dc","#8775a7","#E26A6A"]' class="portlet-body-morris-fit morris-chart" style="height: 260px">
+								</div>
+				</div>
 </div>
 <!-- END PORTLET-->

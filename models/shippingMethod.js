@@ -27,44 +27,44 @@ International Registered Trademark & Property of ToManage SAS
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
-    timestamps = require('mongoose-timestamp'),
-    ObjectId = mongoose.Schema.Types.ObjectId;
+		Schema = mongoose.Schema,
+		timestamps = require('mongoose-timestamp'),
+		ObjectId = mongoose.Schema.Types.ObjectId;
 
 var shippingMethodSchema = new Schema({
-    seq: {
-        type: Number,
-        default: 1
-    },
-    isremoved: {
-        type: Boolean,
-        default: false
-    },
-    name: {
-        type: String,
-        default: ''
-    },
-    code: {
-        type: String,
-        default: ''
-    },
-    price: {
-        type: Number,
-        default: 0
-    },
-    countries: [String],
-    breaks: [Number],
-    breakType: {
-        type: String,
-        default: ''
-    },
-    account: {
-        type: ObjectId,
-        ref: 'chartOfAccount',
-        default: null
-    }
+		seq: {
+				type: Number,
+				default: 1
+		},
+		isremoved: {
+				type: Boolean,
+				default: false
+		},
+		name: {
+				type: String,
+				default: ''
+		},
+		code: {
+				type: String,
+				default: ''
+		},
+		price: {
+				type: Number,
+				default: 0
+		},
+		countries: [String],
+		breaks: [Number],
+		breakType: {
+				type: String,
+				default: ''
+		},
+		account: {
+				type: ObjectId,
+				ref: 'chartOfAccount',
+				default: null
+		}
 }, {
-    collection: 'shippingMethod'
+		collection: 'shippingMethod'
 });
 
 shippingMethodSchema.plugin(timestamps);

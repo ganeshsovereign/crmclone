@@ -1,73 +1,73 @@
 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 margin-bottom-10">
-    <div class="dashboard-stat green-haze">
-        <div class="visual">
-            <i class="fa fa-briefcase fa-icon-medium"></i>
-        </div>
-        <div class="details">
-            <div class="number">
-                {{dataCaTotal| currency}}
-            </div>
-            <div class="desc">
-                Chiffre d'affaire HT
-            </div>
-        </div>
-        <a class="more" href="javascript:;">
+				<div class="dashboard-stat green-haze">
+								<div class="visual">
+												<i class="fa fa-briefcase fa-icon-medium"></i>
+								</div>
+								<div class="details">
+												<div class="number">
+																{{dataCaTotal| currency}}
+												</div>
+												<div class="desc">
+																Chiffre d'affaire HT
+												</div>
+								</div>
+								<a class="more" href="javascript:;">
             A facturer : {{TotalCaPrev | currency}} <i class="m-icon-swapright m-icon-white"></i>
         </a>
-    </div>
+				</div>
 </div>
 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="dashboard-stat blue-madison">
-        <div class="visual">
-            <i class="fa fa-shopping-cart"></i>
-        </div>
-        <div class="details">
-            <div class="number">
-                {{totalDebit | currency}}
-            </div>
-            <div class="desc">
-                Charges HT
-            </div>
-        </div>
-        <a class="more" href="javascript:;">
+				<div class="dashboard-stat blue-madison">
+								<div class="visual">
+												<i class="fa fa-shopping-cart"></i>
+								</div>
+								<div class="details">
+												<div class="number">
+																{{totalDebit | currency}}
+												</div>
+												<div class="desc">
+																Charges HT
+												</div>
+								</div>
+								<a class="more" href="javascript:;">
             A facturer : {{TotalCaST | currency}} <i class="m-icon-swapright m-icon-white"></i>
         </a>
-    </div>
+				</div>
 </div>
 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="dashboard-stat purple-plum">
-        <div class="visual">
-            <i class="fa fa-bar-chart-o"></i>
-        </div>
-        <div class="details">
-            <div class="number">
-                {{resultYear | currency}}
-            </div>
-            <div class="desc">
-                Résultat de l'année
-            </div>
-        </div>
-        <a class="more" href="javascript:;">
+				<div class="dashboard-stat purple-plum">
+								<div class="visual">
+												<i class="fa fa-bar-chart-o"></i>
+								</div>
+								<div class="details">
+												<div class="number">
+																{{resultYear | currency}}
+												</div>
+												<div class="desc">
+																Résultat de l'année
+												</div>
+								</div>
+								<a class="more" href="javascript:;">
             View more <i class="m-icon-swapright m-icon-white"></i>
         </a>
-    </div>
+				</div>
 </div>
 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12" ng-controller="BoxTemporaryController" ng-init='loadPenality()'>
-    <div class="dashboard-stat red-intense">
-        <div class="visual">
-            <i class="fa fa-group fa-icon-medium"></i>
-        </div>
-        <div class="details">
-            <div class="number">
-                {{indicatorPenality[0].total | currency}}
-                <!--<small ng-class='{"font-red-intense":indicatorHSupp > 0}'>({{indicatorHSupp| number:0}} %)</small>-->
-            </div>
-            <div class="desc">
-                {{indicatorPenality[0].cpt}} facture(s) en retard
-            </div>
-        </div>
-        <a class="more" ui-sref="bill.list({Status:'NOT_PAID'})">
+				<div class="dashboard-stat red-intense">
+								<div class="visual">
+												<i class="fa fa-group fa-icon-medium"></i>
+								</div>
+								<div class="details">
+												<div class="number">
+																{{indicatorPenality[0].total | currency}}
+																<!--<small ng-class='{"font-red-intense":indicatorHSupp > 0}'>({{indicatorHSupp| number:0}} %)</small>-->
+												</div>
+												<div class="desc">
+																{{indicatorPenality[0].cpt}} facture(s) en retard
+												</div>
+								</div>
+								<a class="more" ui-sref="bill.list({Status:'NOT_PAID'})">
             @(View more) <i class="m-icon-swapright m-icon-white"></i>
         </a>
-    </div>
+				</div>
 </div>

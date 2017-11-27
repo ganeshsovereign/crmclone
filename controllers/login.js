@@ -25,247 +25,247 @@ var passport = require('passport');
 var _ = require('lodash');
 
 exports.install = function() {
-    F.route('/login', view_redirect, ['authorize']);
-    F.route('/login', view_login, ['unauthorize']);
-    F.route('/login/', passport_login_local, ['post', '#passport.js']);
-    F.route('/login/key/', passport_login_key, ['#passport.js']);
-    F.route('/login/google/', passport_login_google, ['#passport.js']);
-    F.route('/login/google/callback/', passport_login_google_callback, ['#passport.js']);
-    F.route('/login/symeos/', passport_login_symeos, ['#passport.js']);
-    F.route('/login/symeos/callback/', passport_login_symeos_callback, ['#passport.js']);
-    //F.route('/login/twitter/', passport_login_twitter, ['#session', '#passport.js']);
-    //F.route('/login/twitter/callback/', passport_login_twitter_callback, ['#session', '#passport.js']);
-    F.route('/logout/', logout, ['authorize']);
-    F.route('/session/', session, ['post', 'authorize']);
-    F.route('/erp/decrypt', decrypt, ['post']); //TODO MUST REMOVED
+		F.route('/login', view_redirect, ['authorize']);
+		F.route('/login', view_login, ['unauthorize']);
+		F.route('/login/', passport_login_local, ['post', '#passport.js']);
+		F.route('/login/key/', passport_login_key, ['#passport.js']);
+		F.route('/login/google/', passport_login_google, ['#passport.js']);
+		F.route('/login/google/callback/', passport_login_google_callback, ['#passport.js']);
+		F.route('/login/symeos/', passport_login_symeos, ['#passport.js']);
+		F.route('/login/symeos/callback/', passport_login_symeos_callback, ['#passport.js']);
+		//F.route('/login/twitter/', passport_login_twitter, ['#session', '#passport.js']);
+		//F.route('/login/twitter/callback/', passport_login_twitter_callback, ['#session', '#passport.js']);
+		F.route('/logout/', logout, ['authorize']);
+		F.route('/session/', session, ['post', 'authorize']);
+		F.route('/erp/decrypt', decrypt, ['post']); //TODO MUST REMOVED
 };
 
 function view_login() {
-    var self = this;
+		var self = this;
 
-    //self.theme(null);
-    self.layout('layout_login2');
-    self.view('login2');
+		//self.theme(null);
+		self.layout('layout_login2');
+		self.view('login2');
 }
 
 function view_redirect() {
-    this.redirect('/erp/');
+		this.redirect('/erp/');
 }
 
 // Login/Password sign in
 function passport_login_local() {
-    var self = this;
-    var auth = MODULE('auth');
-    var UserModel = MODEL('Users').Schema;
+		var self = this;
+		var auth = MODULE('auth');
+		var UserModel = MODEL('Users').Schema;
 
-    //clear old flash message
-    //self.flash('error', []);
+		//clear old flash message
+		//self.flash('error', []);
 
-    // Why self.custom()?
-    // Because passport module has own mechanism for redirects into the Twitter.
-    //self.custom();
+		// Why self.custom()?
+		// Because passport module has own mechanism for redirects into the Twitter.
+		//self.custom();
 
-    console.log(self.req.body);
+		console.log(self.req.body);
 
-    passport.authenticate('local', function(err, user, info) {
-        if (err)
-            return self.throw500(err);
-        if (info) {
-            console.log(info);
-            return self.json([info]);
-        }
+		passport.authenticate('local', function(err, user, info) {
+				if (err)
+						return self.throw500(err);
+				if (info) {
+						console.log(info);
+						return self.json([info]);
+				}
 
-        //console.log(user);
+				//console.log(user);
 
-        auth.login(self, user._id, user);
+				auth.login(self, user._id, user);
 
-        // Update last connection
-        UserModel.update({
-            _id: user._id
-        }, {
-            $set: {
-                lastConnection: user.newConnection,
-                newConnection: new Date()
-            }
-        }, function(err) {});
+				// Update last connection
+				UserModel.update({
+						_id: user._id
+				}, {
+						$set: {
+								lastConnection: user.newConnection,
+								newConnection: new Date()
+						}
+				}, function(err) {});
 
 
-        return self.json({
-            success: true
-        });
+				return self.json({
+						success: true
+				});
 
-    })(self.req, self.res);
+		})(self.req, self.res);
 }
 
 // apiKey sign in
 function passport_login_key() {
-    var self = this;
+		var self = this;
 
-    // Why self.custom()?
-    // Because passport module has own mechanism for redirects into the Twitter.
-    //self.custom();
+		// Why self.custom()?
+		// Because passport module has own mechanism for redirects into the Twitter.
+		//self.custom();
 
-    console.log(self.req.query);
+		console.log(self.req.query);
 
-    passport.authenticate('localapikey', {
-        successRedirect: '/erp/',
-        failureRedirect: '/login',
-        failureFlash: false
-    })(self.req, self.res);
+		passport.authenticate('localapikey', {
+				successRedirect: '/erp/',
+				failureRedirect: '/login',
+				failureFlash: false
+		})(self.req, self.res);
 }
 
 // Twitter sign in
 function passport_login_twitter() {
-    var self = this;
+		var self = this;
 
-    // Why self.custom()?
-    // Because passport module has own mechanism for redirects into the Twitter.
-    self.custom();
+		// Why self.custom()?
+		// Because passport module has own mechanism for redirects into the Twitter.
+		self.custom();
 
-    passport.authenticate('twitter')(self.req, self.res);
+		passport.authenticate('twitter')(self.req, self.res);
 }
 
 // Twitter profile
 function passport_login_twitter_callback() {
-    var self = this;
-    passport.authenticate('twitter')(self.req, self.res, function(err) {
-        if (err)
-            return self.redirect('/login/twitter/');
+		var self = this;
+		passport.authenticate('twitter')(self.req, self.res, function(err) {
+				if (err)
+						return self.redirect('/login/twitter/');
 
-        // self.json(self.user);
-        self.json({
-            name: self.user.displayName
-        });
-    });
+				// self.json(self.user);
+				self.json({
+						name: self.user.displayName
+				});
+		});
 
 }
 
 function passport_login_google() {
-    var self = this;
+		var self = this;
 
-    self.custom();
+		self.custom();
 
-    passport.authenticate('google', {
-        //failureRedirect: '/login',
-        //accessType: 'offline', // will return a refresh token
-        //approvalPrompt: 'force',
-        scope: [
-            'https://www.googleapis.com/auth/userinfo.profile',
-            'https://www.googleapis.com/auth/userinfo.email'
-            //	'https://www.googleapis.com/auth/contacts',
-            //	'https://www.googleapis.com/auth/tasks',
-            //	'https://www.googleapis.com/auth/tasks.readonly',
-            //	'https://www.googleapis.com/auth/calendar',
-            //	'https://www.googleapis.com/auth/calendar.readonly'
-        ]
-    })(self.req, self.res);
+		passport.authenticate('google', {
+				//failureRedirect: '/login',
+				//accessType: 'offline', // will return a refresh token
+				//approvalPrompt: 'force',
+				scope: [
+						'https://www.googleapis.com/auth/userinfo.profile',
+						'https://www.googleapis.com/auth/userinfo.email'
+						//	'https://www.googleapis.com/auth/contacts',
+						//	'https://www.googleapis.com/auth/tasks',
+						//	'https://www.googleapis.com/auth/tasks.readonly',
+						//	'https://www.googleapis.com/auth/calendar',
+						//	'https://www.googleapis.com/auth/calendar.readonly'
+				]
+		})(self.req, self.res);
 }
 
 function passport_login_google_callback() {
-    var self = this;
+		var self = this;
 
-    var auth = MODULE('auth');
+		var auth = MODULE('auth');
 
-    passport.authenticate('google')(self.req, self.res, function(err) {
-        if (err) {
-            console.log(err);
-            return self.plain(err);
-            //return self.redirect('/login/google/');
-        }
+		passport.authenticate('google')(self.req, self.res, function(err) {
+				if (err) {
+						console.log(err);
+						return self.plain(err);
+						//return self.redirect('/login/google/');
+				}
 
-        // self.json(self.user);
-        //self.json({name: self.user.fullname});
+				// self.json(self.user);
+				//self.json({name: self.user.fullname});
 
-        //console.log(user);
+				//console.log(user);
 
-        auth.login(self, self.user._id, self.user);
+				auth.login(self, self.user._id, self.user);
 
-        self.redirect('/erp/');
-    });
+				self.redirect('/erp/');
+		});
 }
 
 function passport_login_symeos() {
-    var self = this;
+		var self = this;
 
-    self.custom();
+		self.custom();
 
-    passport.authenticate('oauth2')(self.req, self.res);
+		passport.authenticate('oauth2')(self.req, self.res);
 }
 
 function passport_login_symeos_callback() {
-    var self = this;
+		var self = this;
 
-    passport.authenticate('oauth2')(self.req, self.res, function(err) {
-        if (err) {
-            console.log(err);
-            return self.redirect('/login/symeos/');
-        }
+		passport.authenticate('oauth2')(self.req, self.res, function(err) {
+				if (err) {
+						console.log(err);
+						return self.redirect('/login/symeos/');
+				}
 
-        // self.json(self.user);
-        //self.json({name: self.user.fullname});
-        self.redirect('/erp/');
-    });
+				// self.json(self.user);
+				//self.json({name: self.user.fullname});
+				self.redirect('/erp/');
+		});
 }
 
 function logout() {
-    var self = this;
-    var auth = MODULE('auth');
-    var user = self.user;
+		var self = this;
+		var auth = MODULE('auth');
+		var user = self.user;
 
-    //console.log(user);
-    if (user)
-        auth.logoff(self, user._id);
+		//console.log(user);
+		if (user)
+				auth.logoff(self, user._id);
 
-    self.redirect('/');
+		self.redirect('/');
 }
 
 function session() {
-    var self = this;
+		var self = this;
 
-    if (!self.user)
-        return self.throw401();
+		if (!self.user)
+				return self.throw401();
 
-    var user = self.user.toObject();
+		var user = self.user.toObject();
 
-    delete user.password;
-    //delete user.hashed_password;
-    delete user.google;
-    //console.log("session",user);
+		delete user.password;
+		//delete user.hashed_password;
+		delete user.google;
+		//console.log("session",user);
 
-    var config = {
-        version: "1.2.3"
-    };
+		var config = {
+				version: "1.2.3"
+		};
 
 
-    self.json({
-        user: user,
-        config: config
-    });
+		self.json({
+				user: user,
+				config: config
+		});
 }
 
 function decrypt() {
-    var self = this;
-    var sessionModel = MODEL('session').Schema;
-    var userModel = MODEL('Users').Schema;
+		var self = this;
+		var sessionModel = MODEL('session').Schema;
+		var userModel = MODEL('Users').Schema;
 
-    var session = F.decrypt(self.body.data, CONFIG('secret'));
+		var session = F.decrypt(self.body.data, CONFIG('secret'));
 
-    sessionModel.findOne({
-        session: session.id
-    }, function(err, doc) {
-        //console.log(doc.value);
-        if (doc && doc.value && doc.value.passport && doc.value.passport.user)
-            userModel.findOne({
-                _id: doc.value.passport.user
-            }, "-password -google", function(err, user) {
-                self.json({
-                    passport: {
-                        user: user
-                    }
-                });
-            });
-        else
-            self.json({});
-    });
+		sessionModel.findOne({
+				session: session.id
+		}, function(err, doc) {
+				//console.log(doc.value);
+				if (doc && doc.value && doc.value.passport && doc.value.passport.user)
+						userModel.findOne({
+								_id: doc.value.passport.user
+						}, "-password -google", function(err, user) {
+								self.json({
+										passport: {
+												user: user
+										}
+								});
+						});
+				else
+						self.json({});
+		});
 
 }

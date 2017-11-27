@@ -1,66 +1,66 @@
 <div class="row">
-    <div class="col-md-3">
-        <div class="portlet light" ng-repeat="ch in chEvolution">
-            <div class="portlet-title">
-                <div class="caption caption-md">
-                    <i class="icon-bar-chart font-green-haze hide"></i>
-                    <span class="caption-subject font-green-haze bold uppercase">@(EvolutionOfTurnover) {{ch.entity}}</span>
-                    <span class="caption-helper"> Par rapport a N-1</span>
-                </div>
-            </div>
-            <div class="portlet-body">
-                <div class="mt-element-step">
-                    <div class="row step-default">
-                        <div class="col-md-12 bg-grey mt-step-col">
-                            <div class="mt-step-title uppercase">{{ch.entity}}</div>
-                            <div class="mt-step-content font-grey-cascade">@(EvolutionOfTurnover)</div>
-                            <div class="mt-step-number font-grey" ng-class="{'progress-bar-success' : ch.evolution <= 0, 'bg-red':ch.evolution > 0}">{{ch.evolutionStr}}</div>
-                            <div class="mt-step-title uppercase font-green-haze">Charges Actuelles</div>
-                            <progressbar animate="true" value="ch.chNpercent" type="green"><b>{{ch.chN | currency}}</b></progressbar>
-                            <progressbar animate="true" value="ch.chN_1percent" type="warning"><b>{{ch.chN_1 | currency}}</b></progressbar>
-                            <div class="mt-step-title uppercase font-yellow-gold">Charges N-1</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="portlet light">
-            <div class="portlet-title">
-                <div class="caption caption-md">
-                    <i class="icon-bar-chart font-green-haze hide"></i>
-                    <span class="caption-subject font-green-haze bold uppercase">Charges</span>
-                    <span class="caption-helper"> {{year| date:'yyyy'}}</span>
-                </div>
-            </div>
-            <div class="portlet-body">
-                <div class="CSSAnimationChart">
-                    <am-chart id="amchart_2" options="amChartOptions" datas="chData.graph"></am-chart>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="portlet light" ng-repeat="(entity, value) in chFamily">
-            <div class="portlet-title">
-                <div class="caption caption-md">
-                    <i class="icon-bar-chart font-green-haze hide"></i>
-                    <span class="caption-subject font-green-haze bold uppercase"> @(Sales) {{entity}}</span>
-                    <span class="caption-helper"> {{date.start | date:'dd/MM/yyyy'}} - {{date.end | date:'dd/MM/yyyy'}}</span>
-                </div>
-            </div>
-            <div class="portlet-body">
-                <div class="mt-element-step">
-                    <div class="row step-thin">
-                        <div class="col-md-12 bg-grey mt-step-col" ng-repeat="line in value">
-                            <div class="mt-step-number font-grey" ng-class="{'progress-bar-success' : line.caN_1 >= line.caN, 'bg-red':line.caN_1 < line.caN}"><i class='fa' ng-class="{'fa-thumbs-o-up' : line.caN_1 >= line.caN, 'fa-thumbs-o-down':line.caN_1 < line.caN}"></i></div>
-                            <div class="mt-step-title uppercase">{{line.family.langs[_language].name}}</div>
-                            <div class="mt-step-content"><span class='font-yellow-gold bold'>{{line.caN_1|number:0}}</span> <i class='fa fa-arrow-circle-right'></i> <span class='font-green-haze bold'>{{line.caN|number:0}}</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+				<div class="col-md-3">
+								<div class="portlet light" ng-repeat="ch in chEvolution">
+												<div class="portlet-title">
+																<div class="caption caption-md">
+																				<i class="icon-bar-chart font-green-haze hide"></i>
+																				<span class="caption-subject font-green-haze bold uppercase">@(EvolutionOfTurnover) {{ch.entity}}</span>
+																				<span class="caption-helper"> Par rapport a N-1</span>
+																</div>
+												</div>
+												<div class="portlet-body">
+																<div class="mt-element-step">
+																				<div class="row step-default">
+																								<div class="col-md-12 bg-grey mt-step-col">
+																												<div class="mt-step-title uppercase">{{ch.entity}}</div>
+																												<div class="mt-step-content font-grey-cascade">@(EvolutionOfTurnover)</div>
+																												<div class="mt-step-number font-grey" ng-class="{'progress-bar-success' : ch.evolution <= 0, 'bg-red':ch.evolution > 0}">{{ch.evolutionStr}}</div>
+																												<div class="mt-step-title uppercase font-green-haze">Charges Actuelles</div>
+																												<progressbar animate="true" value="ch.chNpercent" type="green"><b>{{ch.chN | currency}}</b></progressbar>
+																												<progressbar animate="true" value="ch.chN_1percent" type="warning"><b>{{ch.chN_1 | currency}}</b></progressbar>
+																												<div class="mt-step-title uppercase font-yellow-gold">Charges N-1</div>
+																								</div>
+																				</div>
+																</div>
+												</div>
+								</div>
+				</div>
+				<div class="col-md-6">
+								<div class="portlet light">
+												<div class="portlet-title">
+																<div class="caption caption-md">
+																				<i class="icon-bar-chart font-green-haze hide"></i>
+																				<span class="caption-subject font-green-haze bold uppercase">Charges</span>
+																				<span class="caption-helper"> {{year| date:'yyyy'}}</span>
+																</div>
+												</div>
+												<div class="portlet-body">
+																<div class="CSSAnimationChart">
+																				<am-chart id="amchart_2" options="amChartOptions" datas="chData.graph"></am-chart>
+																</div>
+												</div>
+								</div>
+				</div>
+				<div class="col-md-3">
+								<div class="portlet light" ng-repeat="(entity, value) in chFamily">
+												<div class="portlet-title">
+																<div class="caption caption-md">
+																				<i class="icon-bar-chart font-green-haze hide"></i>
+																				<span class="caption-subject font-green-haze bold uppercase"> @(Sales) {{entity}}</span>
+																				<span class="caption-helper"> {{date.start | date:'dd/MM/yyyy'}} - {{date.end | date:'dd/MM/yyyy'}}</span>
+																</div>
+												</div>
+												<div class="portlet-body">
+																<div class="mt-element-step">
+																				<div class="row step-thin">
+																								<div class="col-md-12 bg-grey mt-step-col" ng-repeat="line in value">
+																												<div class="mt-step-number font-grey" ng-class="{'progress-bar-success' : line.caN_1 >= line.caN, 'bg-red':line.caN_1 < line.caN}"><i class='fa' ng-class="{'fa-thumbs-o-up' : line.caN_1 >= line.caN, 'fa-thumbs-o-down':line.caN_1 < line.caN}"></i></div>
+																												<div class="mt-step-title uppercase">{{line.family.langs[_language].name}}</div>
+																												<div class="mt-step-content"><span class='font-yellow-gold bold'>{{line.caN_1|number:0}}</span> <i class='fa fa-arrow-circle-right'></i> <span class='font-green-haze bold'>{{line.caN|number:0}}</span></div>
+																								</div>
+																				</div>
+																</div>
+												</div>
+								</div>
+				</div>
 </div>

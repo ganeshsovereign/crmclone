@@ -1,49 +1,49 @@
 <div class="row">
-    <div class="col-md-offset-2 col-md-8">
-        <div class="form-horizontal form-row-seperated">
-            <div class="portlet light bordered">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="icon-magic-wand"></i>
-                        <span ng-if="object._id" class="caption-subject dark bold uppercase"> @(products:Warehouse)</span>
-                        <span ng-if="!object._id" class="caption-subject dark bold uppercase"> @(products:NewWarehouse)</span>
-                    </div>
-                    <save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
-                </div>
-                <div class="portlet-body">
-                    <div class="form-body">
-                        <div class="portlet light">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="Name" ng-model="object.name">
-                                        <label for="Name">@(Name)</label>
-                                    </div>
-                                    <!--<div class="form-group form-md-line-input">
+				<div class="col-md-offset-2 col-md-8">
+								<div class="form-horizontal form-row-seperated">
+												<div class="portlet light bordered">
+																<div class="portlet-title">
+																				<div class="caption">
+																								<i class="icon-magic-wand"></i>
+																								<span ng-if="object._id" class="caption-subject dark bold uppercase"> @(products:Warehouse)</span>
+																								<span ng-if="!object._id" class="caption-subject dark bold uppercase"> @(products:NewWarehouse)</span>
+																				</div>
+																				<save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+																</div>
+																<div class="portlet-body">
+																				<div class="form-body">
+																								<div class="portlet light">
+																												<div class="row">
+																																<div class="col-md-6">
+																																				<div class="form-group form-md-line-input">
+																																								<input type="text" class="form-control" id="Name" ng-model="object.name">
+																																								<label for="Name">@(Name)</label>
+																																				</div>
+																																				<!--<div class="form-group form-md-line-input">
                                     <select class="table-group-action-input form-control" id="Account" ng-model="object.currency" ng-options="s._id as s.name for s in $dict.currency"></select>
                                     <label for="Account">@(products:Account)</label>
                                 </div>-->
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group form-md-line-input">
-                                        <div class="md-checkbox-inline">
-                                            <div class="md-checkbox">
-                                                <input type="checkbox" id="Owner" class="md-check" name="md-check" ng-model="object.isOwn" ng-checked="object.isOwn" />
-                                                <label for="Owner">
+																																</div>
+																																<div class="col-md-6">
+																																				<div class="form-group form-md-line-input">
+																																								<div class="md-checkbox-inline">
+																																												<div class="md-checkbox">
+																																																<input type="checkbox" id="Owner" class="md-check" name="md-check" ng-model="object.isOwn" ng-checked="object.isOwn" />
+																																																<label for="Owner">
                                                         <span></span>
                                                         <span class="check"></span>
                                                         <span class="box"></span> @(Owner) </label>
-                                            </div>
-                                            <div class="md-checkbox">
-                                                <input type="checkbox" id="Main" class="md-check" name="md-check" ng-model="object.main" ng-checked="object.main" />
-                                                <label for="Main">
+																																												</div>
+																																												<div class="md-checkbox">
+																																																<input type="checkbox" id="Main" class="md-check" name="md-check" ng-model="object.main" ng-checked="object.main" />
+																																																<label for="Main">
                                                         <span></span>
                                                         <span class="check"></span>
                                                         <span class="box"></span> @(products:DefineMain) </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--<div class="portlet">
+																																												</div>
+																																								</div>
+																																				</div>
+																																				<!--<div class="portlet">
                                         <div class="md-checkbox">
                                             <input type="checkbox" id="Owner" class="md-check" ng-model="object.isOwn" ng-checked="object.isOwn">
                                             <label for="Owner">
@@ -59,120 +59,120 @@
                                             <span class="box"></span> @(products:DefineMain)</label>
                                         </div>
                                     </div>-->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="portlet light">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <address ng-model="object.address" ng-disabled="false"></address>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <div ng-hide="!object._id" class="row">
-                <div class="col-md-12">
-                    <div class="portlet light">
-                        <div class="portlet-title">
-                            <button ng-hide="openZone" ng-click="openZone = 1;zone={};" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i> @(products:AddZone) </button>
-                            <div class="bootbox-body" ng-show="openZone">
-                                <form class="bootbox-form">
-                                    <div class="col-md-9">
-                                        <input ng-model="zone.name" class="bootbox-input bootbox-input-text form-control" type="text">
-                                    </div>
-                                    <button class="btn red" ng-click="openZone = 0" type="button"><i class="fa fa-times"></i>@(Cancel)</button>
-                                    <button class="btn green" ng-click="addZone(zone)" type="button"><i class="fa fa-check-circle"></i> @(Add)</button>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="portlet boby">
-                            <div class="form-body">
-                                <div class="table-responsive">
-                                    <div class="dataTables_wrapper no-footer table-responsive">
-                                        <div class="col-md-12">
-                                            <table class="table dataTable no-footer table-hover" id="Zones">
-                                                <thead>
-                                                    <tr role="row" class="heading">
-                                                        <th>@(Name)</th>
-                                                        <th width="120px"></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="zone in object.zones">
-                                                        <td>{{zone.name}}</td>
-                                                        <td>
-                                                            <a class="btn green fa fa-pencil" ng-click="editZone(zone)" title="Editer"></a>
-                                                            <button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteWarehouse)" confirmed-click="removeZone(zone)"></button>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="portlet light">
-                        <div class="portlet-title">
-                            <button ng-hide="openLocation" ng-click="openLocation = 1;location = {};" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i> @(products:AddLocation) </button>
-                            <div class="bootbox-body" ng-show="openLocation">
-                                <form class="bootbox-form">
-                                    <div class="col-md-9">
-                                        <input placeholder="@(products:Aisle)" ng-model="location.groupingA" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
-                                        <input placeholder="@(products:Bay)" ng-model="location.groupingB" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
-                                        <input placeholder="@(products:Shelf)" ng-model="location.groupingC" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
-                                        <input placeholder="@(products:Bin)" ng-model="location.groupingD" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
-                                        <div class="form-group form-md-line-input">
-                                            <select class="table-group-action-input form-control" ng-model="location.zone" ng-options="s._id as s.name for s in $dict.zones">
+																																</div>
+																												</div>
+																								</div>
+																								<div class="portlet light">
+																												<div class="row">
+																																<div class="col-md-12">
+																																				<address ng-model="object.address" ng-disabled="false"></address>
+																																</div>
+																												</div>
+																								</div>
+																				</div>
+																</div>
+												</div>
+												<hr>
+												<div ng-hide="!object._id" class="row">
+																<div class="col-md-12">
+																				<div class="portlet light">
+																								<div class="portlet-title">
+																												<button ng-hide="openZone" ng-click="openZone = 1;zone={};" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i> @(products:AddZone) </button>
+																												<div class="bootbox-body" ng-show="openZone">
+																																<form class="bootbox-form">
+																																				<div class="col-md-9">
+																																								<input ng-model="zone.name" class="bootbox-input bootbox-input-text form-control" type="text">
+																																				</div>
+																																				<button class="btn red" ng-click="openZone = 0" type="button"><i class="fa fa-times"></i>@(Cancel)</button>
+																																				<button class="btn green" ng-click="addZone(zone)" type="button"><i class="fa fa-check-circle"></i> @(Add)</button>
+																																</form>
+																												</div>
+																								</div>
+																								<div class="portlet boby">
+																												<div class="form-body">
+																																<div class="table-responsive">
+																																				<div class="dataTables_wrapper no-footer table-responsive">
+																																								<div class="col-md-12">
+																																												<table class="table dataTable no-footer table-hover" id="Zones">
+																																																<thead>
+																																																				<tr role="row" class="heading">
+																																																								<th>@(Name)</th>
+																																																								<th width="120px"></th>
+																																																				</tr>
+																																																</thead>
+																																																<tbody>
+																																																				<tr ng-repeat="zone in object.zones">
+																																																								<td>{{zone.name}}</td>
+																																																								<td>
+																																																												<a class="btn green fa fa-pencil" ng-click="editZone(zone)" title="Editer"></a>
+																																																												<button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteWarehouse)" confirmed-click="removeZone(zone)"></button>
+																																																								</td>
+																																																				</tr>
+																																																</tbody>
+																																												</table>
+																																								</div>
+																																				</div>
+																																</div>
+																												</div>
+																								</div>
+																				</div>
+																</div>
+																<div class="col-md-12">
+																				<div class="portlet light">
+																								<div class="portlet-title">
+																												<button ng-hide="openLocation" ng-click="openLocation = 1;location = {};" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i> @(products:AddLocation) </button>
+																												<div class="bootbox-body" ng-show="openLocation">
+																																<form class="bootbox-form">
+																																				<div class="col-md-9">
+																																								<input placeholder="@(products:Aisle)" ng-model="location.groupingA" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
+																																								<input placeholder="@(products:Bay)" ng-model="location.groupingB" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
+																																								<input placeholder="@(products:Shelf)" ng-model="location.groupingC" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
+																																								<input placeholder="@(products:Bin)" ng-model="location.groupingD" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
+																																								<div class="form-group form-md-line-input">
+																																												<select class="table-group-action-input form-control" ng-model="location.zone" ng-options="s._id as s.name for s in $dict.zones">
                                                     <option value="">-- @(No zone) --</option>
                                                 </select>
-                                            <label for="form_control_1">@(products:SelectZone)</label>
-                                        </div>
-                                    </div>
-                                    <button class="btn red" ng-click="openLocation = 0" type="button"><i class="fa fa-times"></i>@(Cancel)</button>
-                                    <button class="btn green" ng-click="addLocation(location)" type="button"><i class="fa fa-check-circle"></i> @(Add)</button>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="portlet boby">
-                            <div class="form-body">
-                                <div class="table-responsive">
-                                    <div class="dataTables_wrapper no-footer table-responsive">
-                                        <div class="col-md-12">
-                                            <table class="table dataTable no-footer table-hover" id="Locations">
-                                                <thead>
-                                                    <tr role="row" class="heading">
-                                                        <th>@(products:Zone)</th>
-                                                        <th>@(products:Location)</th>
-                                                        <th width="120px"></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr ng-repeat="location in object.locations">
-                                                        <td>{{location.zone.name}}</td>
-                                                        <td>{{location.name}}</td>
-                                                        <td>
-                                                            <a class="btn green fa fa-pencil" ng-click="editLocation(location)" title="Editer"></a>
-                                                            <button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteLocation)" confirmed-click="removeLocation(location)"></button>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+																																												<label for="form_control_1">@(products:SelectZone)</label>
+																																								</div>
+																																				</div>
+																																				<button class="btn red" ng-click="openLocation = 0" type="button"><i class="fa fa-times"></i>@(Cancel)</button>
+																																				<button class="btn green" ng-click="addLocation(location)" type="button"><i class="fa fa-check-circle"></i> @(Add)</button>
+																																</form>
+																												</div>
+																								</div>
+																								<div class="portlet boby">
+																												<div class="form-body">
+																																<div class="table-responsive">
+																																				<div class="dataTables_wrapper no-footer table-responsive">
+																																								<div class="col-md-12">
+																																												<table class="table dataTable no-footer table-hover" id="Locations">
+																																																<thead>
+																																																				<tr role="row" class="heading">
+																																																								<th>@(products:Zone)</th>
+																																																								<th>@(products:Location)</th>
+																																																								<th width="120px"></th>
+																																																				</tr>
+																																																</thead>
+																																																<tbody>
+																																																				<tr ng-repeat="location in object.locations">
+																																																								<td>{{location.zone.name}}</td>
+																																																								<td>{{location.name}}</td>
+																																																								<td>
+																																																												<a class="btn green fa fa-pencil" ng-click="editLocation(location)" title="Editer"></a>
+																																																												<button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteLocation)" confirmed-click="removeLocation(location)"></button>
+																																																								</td>
+																																																				</tr>
+																																																</tbody>
+																																												</table>
+																																								</div>
+																																				</div>
+																																</div>
+																												</div>
+																								</div>
+																				</div>
+																</div>
+												</div>
+								</div>
+				</div>
 </div>
 </div>

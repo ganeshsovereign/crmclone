@@ -1,77 +1,77 @@
 <h3 class="page-title">
-    <i class="fa fa-check-square-o font-blue-madison"></i> @(users:GroupManagmentInterface)
+				<i class="fa fa-check-square-o font-blue-madison"></i> @(users:GroupManagmentInterface)
 </h3>
 
 <div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="fa fa-home"></i>
-            <a ui-sref="home">@(Home)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <a ui-sref="group.list">@(users:GroupManagement)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>@(users:NewGroup)</span>
-        </li>
-    </ul>
+				<ul class="page-breadcrumb">
+								<li>
+												<i class="fa fa-home"></i>
+												<a ui-sref="home">@(Home)</a>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<a ui-sref="group.list">@(users:GroupManagement)</a>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<span>@(users:NewGroup)</span>
+								</li>
+				</ul>
 </div>
 
 
 
 <form ng-submit="create()" role="form">
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
+				<div class="row">
+								<div class="col-md-6 col-md-offset-3">
 
-            <!-- BEGIN PARAMETRES GENERAUX -->
-            <div class="portlet blue-madison box">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-check-square-o"></i> @(users:NewGroup)
-                    </div>
-                </div>
-                <div class="portlet-body form">
-                    <div class="form-horizontal">
-                        <div class="form-body">
+												<!-- BEGIN PARAMETRES GENERAUX -->
+												<div class="portlet blue-madison box">
+																<div class="portlet-title">
+																				<div class="caption">
+																								<i class="fa fa-check-square-o"></i> @(users:NewGroup)
+																				</div>
+																</div>
+																<div class="portlet-body form">
+																				<div class="form-horizontal">
+																								<div class="form-body">
 
-                            <div>
-                                <p style="height:25px;"> </p>
-                            </div>
+																												<div>
+																																<p style="height:25px;"> </p>
+																												</div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label" style="height:75px;">@(users:NameGroup)</label>
-                                <div class="col-md-4">
-                                    <input class="form-control" required ng-model="group.name" placeholder="@(users:NameGroup)" type="text" autocomplete="off">
-                                </div>
-                            </div>
-
-
-                            <div class="portlet-title">
-                                <div class="caption font-blue-hoki">
-                                    <i class="fa fa-group font-blue-hoki"></i> @(Notes)
-                                </div>
-                            </div>
-
-                            <div markdown-editor ng-model="group.notes"></div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label" style="height:75px;">@(users:NameGroup)</label>
+																																<div class="col-md-4">
+																																				<input class="form-control" required ng-model="group.name" placeholder="@(users:NameGroup)" type="text" autocomplete="off">
+																																</div>
+																												</div>
 
 
+																												<div class="portlet-title">
+																																<div class="caption font-blue-hoki">
+																																				<i class="fa fa-group font-blue-hoki"></i> @(Notes)
+																																</div>
+																												</div>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+																												<div markdown-editor ng-model="group.notes"></div>
 
-    </div>
 
-    <div class="form-actions">
-        <div class="row">
-            <div class="col-md-offset-5 col-md-7">
-                <button type="submit" class="btn blue">@(Create)</button>
-                <a ui-sref="group.list" class="btn default">@(Cancel)</a>
-            </div>
-        </div>
-    </div>
+
+																								</div>
+																				</div>
+																</div>
+												</div>
+								</div>
+
+				</div>
+
+				<div class="form-actions">
+								<div class="row">
+												<div class="col-md-offset-5 col-md-7">
+																<button type="submit" class="btn blue">@(Create)</button>
+																<a ui-sref="group.list" class="btn default">@(Cancel)</a>
+												</div>
+								</div>
+				</div>
 </form>

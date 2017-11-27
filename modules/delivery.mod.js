@@ -28,262 +28,262 @@ exports.version = '1.00';
 exports.enabled = true;
 
 exports.csv = {
-    "model": "order",
-    "schema": "GoodsOutNote",
-    "aliases": {
-        "supplier.fullName": "Client",
-        "ref": "Ref",
-        "ref_client": "Ref_Client",
-        "salesPerson.fullName": "Commercial",
-        "datedl": "Date exp",
-        "qty": "Qte",
-        "Status": "Statut",
-        "entity": "Entite",
-        "status.isPrinted": "Impression",
-        "status.isPicked": "Scanne",
-        "status.isPacked": "Emballe",
-        "status.isShipped": "Expedie",
-        "status.printedBy": "Impression par",
-        "status.pickedBy": "Scanne par",
-        "status.packedBy": "Emballe par",
-        "status.shippedBy": "Expedie par",
-        "datec": "Date creation",
-        "weight": "Poids"
-        //"createdBy.user": "Created By User",
-        //"createdBy.date": "Created By Date",
-        //"editedBy.user": "Edited By User",
-        //"editedBy.date": "Edited By Date"
-    },
+		"model": "order",
+		"schema": "GoodsOutNote",
+		"aliases": {
+				"supplier.fullName": "Client",
+				"ref": "Ref",
+				"ref_client": "Ref_Client",
+				"salesPerson.fullName": "Commercial",
+				"datedl": "Date exp",
+				"qty": "Qte",
+				"Status": "Statut",
+				"entity": "Entite",
+				"status.isPrinted": "Impression",
+				"status.isPicked": "Scanne",
+				"status.isPacked": "Emballe",
+				"status.isShipped": "Expedie",
+				"status.printedBy": "Impression par",
+				"status.pickedBy": "Scanne par",
+				"status.packedBy": "Emballe par",
+				"status.shippedBy": "Expedie par",
+				"datec": "Date creation",
+				"weight": "Poids"
+				//"createdBy.user": "Created By User",
+				//"createdBy.date": "Created By Date",
+				//"editedBy.user": "Edited By User",
+				//"editedBy.date": "Edited By Date"
+		},
 
-    "arrayKeys": {
-        // "groups.users": true,
-        // "groups.group": true
-    },
+		"arrayKeys": {
+				// "groups.users": true,
+				// "groups.group": true
+		},
 
-    "formatters": {
-        "Date exp": function(date) {
-            return moment(date).format(CONFIG('dateformatLong'));
-        },
+		"formatters": {
+				"Date exp": function(date) {
+						return moment(date).format(CONFIG('dateformatLong'));
+				},
 
-        "Date creation": function(date) {
-            return moment(date).format(CONFIG('dateformatLong'));
-        },
+				"Date creation": function(date) {
+						return moment(date).format(CONFIG('dateformatLong'));
+				},
 
-        "Statut": function(Status) {
-            const OrderStatus = MODEL('order').Status;
+				"Statut": function(Status) {
+						const OrderStatus = MODEL('order').Status;
 
-            let result = MODULE('utils').Status(Status, OrderStatus);
-            return result.name;
-        },
-        "Impression": function(date) {
-            return moment(date).format(CONFIG('dateformatLong'));
-        },
-        "Scanne": function(date) {
-            return moment(date).format(CONFIG('dateformatLong'));
-        },
-        "Emballe": function(date) {
-            return moment(date).format(CONFIG('dateformatLong'));
-        },
-        "Expedie": function(date) {
-            return moment(date).format(CONFIG('dateformatLong'));
-        }
-    }
+						let result = MODULE('utils').Status(Status, OrderStatus);
+						return result.name;
+				},
+				"Impression": function(date) {
+						return moment(date).format(CONFIG('dateformatLong'));
+				},
+				"Scanne": function(date) {
+						return moment(date).format(CONFIG('dateformatLong'));
+				},
+				"Emballe": function(date) {
+						return moment(date).format(CONFIG('dateformatLong'));
+				},
+				"Expedie": function(date) {
+						return moment(date).format(CONFIG('dateformatLong'));
+				}
+		}
 };
 
 exports.description = "Gestion des bon de livraisons";
 exports.rights = [{
-        "desc": "Lire les bons livraisons clients",
-        "perm": {
-            "read": true
-        }
-    },
-    {
-        "desc": "Creer/modifier les bons livraisons clients",
-        "perm": {
-            "create": false
-        }
-    },
-    {
-        "desc": "Valider les bons livraisons clients",
-        "perm": {
-            "validate": false
-        }
-    },
-    {
-        "desc": "Envoyer les bons livraisons clients",
-        "perm": {
-            "send": true
-        }
-    },
-    {
-        "desc": "Cloturer les bons livraisons clients",
-        "perm": {
-            "closed": false
-        }
-    },
-    {
-        "desc": "Re-ouvrir un bon de livraison",
-        "perm": {
-            "reopen": false
-        }
-    },
-    {
-        "desc": "Annuler les bons livraisons clients",
-        "perm": {
-            "cancel": false
-        }
-    },
-    {
-        "desc": "Supprimer les bons livraisons clients",
-        "perm": {
-            "delete": false
-        }
-    },
-    {
-        "desc": "Affichager la pre-facturation des bons de livraisons",
-        "perm": {
-            "prefac": false
-        }
-    },
-    {
-        "desc": "Générer la facturation des bons de livraisons",
-        "perm": {
-            "createBills": false
-        }
-    },
-    {
-        "desc": "Exporter les bons livraisons clients et attributs",
-        "perm": {
-            "export": false
-        }
-    }
+				"desc": "Lire les bons livraisons clients",
+				"perm": {
+						"read": true
+				}
+		},
+		{
+				"desc": "Creer/modifier les bons livraisons clients",
+				"perm": {
+						"create": false
+				}
+		},
+		{
+				"desc": "Valider les bons livraisons clients",
+				"perm": {
+						"validate": false
+				}
+		},
+		{
+				"desc": "Envoyer les bons livraisons clients",
+				"perm": {
+						"send": true
+				}
+		},
+		{
+				"desc": "Cloturer les bons livraisons clients",
+				"perm": {
+						"closed": false
+				}
+		},
+		{
+				"desc": "Re-ouvrir un bon de livraison",
+				"perm": {
+						"reopen": false
+				}
+		},
+		{
+				"desc": "Annuler les bons livraisons clients",
+				"perm": {
+						"cancel": false
+				}
+		},
+		{
+				"desc": "Supprimer les bons livraisons clients",
+				"perm": {
+						"delete": false
+				}
+		},
+		{
+				"desc": "Affichager la pre-facturation des bons de livraisons",
+				"perm": {
+						"prefac": false
+				}
+		},
+		{
+				"desc": "Générer la facturation des bons de livraisons",
+				"perm": {
+						"createBills": false
+				}
+		},
+		{
+				"desc": "Exporter les bons livraisons clients et attributs",
+				"perm": {
+						"export": false
+				}
+		}
 ];
 exports.menus = {
-    "menu:delivery": {
-        "position": 50,
-        "perms": "delivery.read",
-        "enabled": "delivery.enabled",
-        "usertype": 2,
-        "icon": "fa-truck",
-        "title": "orders:Logistics",
-        route: "delivery",
-        params: {
-            forSales: 1
-        },
-        "submenus": {
-            "menu:deliverylist": {
-                "position": 1,
-                route: "delivery.list",
-                params: {
-                    forSales: 1
-                },
-                "perms": "delivery.read",
-                "enabled": "delivery->enabled",
-                "usertype": 2,
-                "icon": "fa-truck",
-                "title": "orders:PreparationReceipt"
-            },
-            "menu:deliverysuppliers": {
-                "position": 5,
-                route: "delivery.list",
-                params: {
-                    forSales: 0
-                },
-                "perms": "delivery.read",
-                "enabled": "delivery->enabled",
-                "usertype": 2,
-                "icon": "fa-truck",
-                "title": "orders:SuppliersDeliveries"
-            },
-            "menu:stockreturn": {
-                "position": 15,
-                "url": "/erp/#!/stockreturn",
-                "perms": "delivery.read",
-                "enabled": "delivery->enabled",
-                "usertype": 2,
-                "icon": "fa-refresh",
-                "title": "orders:StockReturn"
-            }
-        }
-    }
+		"menu:delivery": {
+				"position": 50,
+				"perms": "delivery.read",
+				"enabled": "delivery.enabled",
+				"usertype": 2,
+				"icon": "fa-truck",
+				"title": "orders:Logistics",
+				route: "delivery",
+				params: {
+						forSales: 1
+				},
+				"submenus": {
+						"menu:deliverylist": {
+								"position": 1,
+								route: "delivery.list",
+								params: {
+										forSales: 1
+								},
+								"perms": "delivery.read",
+								"enabled": "delivery->enabled",
+								"usertype": 2,
+								"icon": "fa-truck",
+								"title": "orders:PreparationReceipt"
+						},
+						"menu:deliverysuppliers": {
+								"position": 5,
+								route: "delivery.list",
+								params: {
+										forSales: 0
+								},
+								"perms": "delivery.read",
+								"enabled": "delivery->enabled",
+								"usertype": 2,
+								"icon": "fa-truck",
+								"title": "orders:SuppliersDeliveries"
+						},
+						"menu:stockreturn": {
+								"position": 15,
+								"url": "/erp/#!/stockreturn",
+								"perms": "delivery.read",
+								"enabled": "delivery->enabled",
+								"usertype": 2,
+								"icon": "fa-refresh",
+								"title": "orders:StockReturn"
+						}
+				}
+		}
 };
 exports.filters = {
-    "delivery": {
-        "forSales": {
-            "backend": "forSales",
-            "type": "boolean"
-        },
+		"delivery": {
+				"forSales": {
+						"backend": "forSales",
+						"type": "boolean"
+				},
 
-        "ref": {
-            "displayName": "Ref",
-            "backend": "ref",
-            "type": "regex"
-        },
+				"ref": {
+						"displayName": "Ref",
+						"backend": "ref",
+						"type": "regex"
+				},
 
-        "ref_client": {
-            "displayName": "Ref customer",
-            "backend": "ref_client",
-            "type": "regex"
-        },
+				"ref_client": {
+						"displayName": "Ref customer",
+						"backend": "ref_client",
+						"type": "regex"
+				},
 
-        "entity": {
-            "displayName": "Entity",
-            "backend": "entity",
-            "type": "string"
-        },
+				"entity": {
+						"displayName": "Entity",
+						"backend": "entity",
+						"type": "string"
+				},
 
-        "Status": {
-            "displayName": "Status",
-            "backend": "Status",
-            "type": "string"
-        },
+				"Status": {
+						"displayName": "Status",
+						"backend": "Status",
+						"type": "string"
+				},
 
-        "supplier": {
-            "displayName": "Customer",
-            "backend": "supplier"
-        },
+				"supplier": {
+						"displayName": "Customer",
+						"backend": "supplier"
+				},
 
-        "warehouse": {
-            "displayName": "Warhouse",
-            "backend": "warehouse"
-        },
+				"warehouse": {
+						"displayName": "Warhouse",
+						"backend": "warehouse"
+				},
 
-        "salesPerson": {
-            "displayName": "Assigned To",
-            "backend": "salesPerson"
-        },
+				"salesPerson": {
+						"displayName": "Assigned To",
+						"backend": "salesPerson"
+				},
 
-        "workflow": {
-            "displayName": "Status",
-            "backend": "workflow._id"
-        },
+				"workflow": {
+						"displayName": "Status",
+						"backend": "workflow._id"
+				},
 
-        "channel": {
-            "displayName": "Channel",
-            "backend": "channel._id"
-        },
+				"channel": {
+						"displayName": "Channel",
+						"backend": "channel._id"
+				},
 
-        "name": {
-            "displayName": "Reference",
-            "backend": "_id"
-        },
+				"name": {
+						"displayName": "Reference",
+						"backend": "_id"
+				},
 
-        "datedl": {
-            "type": "date",
-            "backend": {
-                "key": "datedl",
-                "operator": ["$gte", "$lte"]
-            }
-        },
+				"datedl": {
+						"type": "date",
+						"backend": {
+								"key": "datedl",
+								"operator": ["$gte", "$lte"]
+						}
+				},
 
-        "datec": {
-            "type": "date",
-            "backend": {
-                "key": "datec",
-                "operator": ["$gte", "$lte"]
-            }
-        },
+				"datec": {
+						"type": "date",
+						"backend": {
+								"key": "datec",
+								"operator": ["$gte", "$lte"]
+						}
+				},
 
-        "array": ["supplier", "salesPerson", "workflow", "channel", "name"]
-    }
+				"array": ["supplier", "salesPerson", "workflow", "channel", "name"]
+		}
 };

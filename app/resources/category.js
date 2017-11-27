@@ -26,11 +26,11 @@ International Registered Trademark & Property of ToManage SAS
 
 //service used for REST endpoint
 MetronicApp.factory("Categories", ['$resource', function($resource) {
-    return $resource('api/category/:Id', {
-        Id: '@_id'
-    }, {
-        update: {
-            method: 'PUT'
-        }
-    });
+		return $resource('api/category/:Id', {
+				Id: '@_id'
+		}, {
+				update: {
+						method: 'PUT'
+				}
+		});
 }]);

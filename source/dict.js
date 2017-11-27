@@ -24,49 +24,49 @@ International Registered Trademark & Property of ToManage SAS
 "use strict";
 
 var async = require('async'),
-    _ = require('lodash'),
-    i18n = require('i18next');
+		_ = require('lodash'),
+		i18n = require('i18next');
 
 function convertDict(params, doc, callback) {
-    var result = {};
+		var result = {};
 
-    if (params.object) // retourne le dict complet
-        return callback(doc);
+		if (params.object) // retourne le dict complet
+				return callback(doc);
 
-    if (doc) { // converti le dict en array
-        result = {
-            _id: doc._id,
-            values: []
-        };
+		if (doc) { // converti le dict en array
+				result = {
+						_id: doc._id,
+						values: []
+				};
 
-        if (doc.lang)
-            result.lang = doc.lang;
+				if (doc.lang)
+						result.lang = doc.lang;
 
-        for (var i in doc.values) {
-            if (doc.values[i].enable) {
-                if (doc.values[i].pays_code && doc.values[i].pays_code != 'FR')
-                    continue;
+				for (var i in doc.values) {
+						if (doc.values[i].enable) {
+								if (doc.values[i].pays_code && doc.values[i].pays_code != 'FR')
+										continue;
 
-                var val = doc.values[i];
-                val.id = i;
+								var val = doc.values[i];
+								val.id = i;
 
-                if (doc.lang) //(doc.values[i].label)
-                    val.label = i18n.t(doc.lang + ":" + doc.values[i].label);
-                else
-                    val.label = doc.values[i].label;
+								if (doc.lang) //(doc.values[i].label)
+										val.label = i18n.t(doc.lang + ":" + doc.values[i].label);
+								else
+										val.label = doc.values[i].label;
 
-                //else
-                //  val.label = req.i18n.t("companies:" + i);
+								//else
+								//  val.label = req.i18n.t("companies:" + i);
 
-                result.values.push(val);
-                //console.log(val);
-            }
-        }
-    } else {
-        console.log('Dict is not loaded');
-    }
+								result.values.push(val);
+								//console.log(val);
+						}
+				}
+		} else {
+				console.log('Dict is not loaded');
+		}
 
-    callback(result);
+		callback(result);
 }
 
 
@@ -74,68 +74,68 @@ function Dict() {}
 
 // Database interface
 Dict.prototype.dict = function(params, callback) {
-    var DictModel = MODEL('dict').Schema;
+		var DictModel = MODEL('dict').Schema;
 
-    if (typeof params.dictName == "string")
-        DictModel.findOne({
-            _id: params.dictName
-        }, function(err, doc) {
-            if (err)
-                return callback(err);
+		if (typeof params.dictName == "string")
+				DictModel.findOne({
+						_id: params.dictName
+				}, function(err, doc) {
+						if (err)
+								return callback(err);
 
-            convertDict(params, doc, function(result) {
-                callback(null, result);
-            });
+						convertDict(params, doc, function(result) {
+								callback(null, result);
+						});
 
-        });
-    else
-        DictModel.find({
-            _id: {
-                $in: params.dictName
-            }
-        }, function(err, docs) {
-            if (err)
-                return callback(err);
+				});
+		else
+				DictModel.find({
+						_id: {
+								$in: params.dictName
+						}
+				}, function(err, docs) {
+						if (err)
+								return callback(err);
 
-            var result = {};
+						var result = {};
 
-            async.each(docs, function(dict, cb) {
-                convertDict(params, dict, function(res) {
-                    //console.log(res);
-                    result[dict._id] = res;
-                    cb();
-                });
-            }, function(err) {
-                //console.log(result);
-                callback(null, result);
-            });
+						async.each(docs, function(dict, cb) {
+								convertDict(params, dict, function(res) {
+										//console.log(res);
+										result[dict._id] = res;
+										cb();
+								});
+						}, function(err) {
+								//console.log(result);
+								callback(null, result);
+						});
 
-        });
+				});
 };
 Dict.prototype.extrafield = function(params, callback) {
-    var ExtrafieldModel = MODEL('extrafield').Schema;
+		var ExtrafieldModel = MODEL('extrafield').Schema;
 
-    ExtrafieldModel.findById(params.extrafieldName, function(err, doc) {
-        if (err)
-            return callback(err);
+		ExtrafieldModel.findById(params.extrafieldName, function(err, doc) {
+				if (err)
+						return callback(err);
 
-        var result = [];
-        if (params.field) {
-            for (var i in doc.fields[params.field].values) {
-                if (doc.fields[params.field].values[i].enable) {
-                    var val = {};
-                    val.id = i;
-                    val.label = i18n.t("orders:" + doc.fields[params.field].values[i].label);
-                    result.push(val);
-                }
-            }
-            doc.fields[params.field].values = result;
+				var result = [];
+				if (params.field) {
+						for (var i in doc.fields[params.field].values) {
+								if (doc.fields[params.field].values[i].enable) {
+										var val = {};
+										val.id = i;
+										val.label = i18n.t("orders:" + doc.fields[params.field].values[i].label);
+										result.push(val);
+								}
+						}
+						doc.fields[params.field].values = result;
 
-            callback(err, doc.fields[params.field]);
-        } else {
-            callback(err, doc);
-        }
-    });
+						callback(err, doc.fields[params.field]);
+				} else {
+						callback(err, doc);
+				}
+		});
 };
 
 module.exports = new Dict();

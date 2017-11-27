@@ -1,29 +1,29 @@
 <div class="modal-header">
-    <h4 class="modal-title"><span class="glyphicon glyphicon-envelope"></span> @(orders:SendPropalByMail)</h4>
+				<h4 class="modal-title"><span class="glyphicon glyphicon-envelope"></span> @(orders:SendPropalByMail)</h4>
 </div>
 <div class="modal-body">
-    <ng-form name="nameDialog" novalidate role="form">
-        <div class="row static-info">
-            <div class="col-md-4 name">@(Email)</div>
-            <div class="col-md-8 value ng-binding">{{email.to}}</div>
-        </div>
-        <div class="form-group input-group-lg">
-            <label class="control-label" for="title">@(mails:MailTopic) :</label>
-            <input type="text" class="form-control" name="title" id="title" ng-model="email.title" required/>
-            <span class="help-block">@(mails:Title).</span>
-        </div>
-        <div class="form-group input-group-lg">
-            <label class="control-label" for="subtitle">@(Subtitle) :</label>
-            <input type="text" class="form-control" name="subtitle" id="subtitle" ng-model="email.subtitle" />
-            <span class="help-block">@(mails:Subtitle).</span>
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="message">@(mails:MailMessage) :</label>
-            <textarea class="form-control" name="message" id="message" ng-model="email.message" rows="3"></textarea>
-        </div>
-    </ng-form>
+				<ng-form name="nameDialog" novalidate role="form">
+								<div class="row static-info">
+												<div class="col-md-4 name">@(Email)</div>
+												<div class="col-md-8 value ng-binding">{{email.to}}</div>
+								</div>
+								<div class="form-group input-group-lg">
+												<label class="control-label" for="title">@(mails:MailTopic) :</label>
+												<input type="text" class="form-control" name="title" id="title" ng-model="email.title" required/>
+												<span class="help-block">@(mails:Title).</span>
+								</div>
+								<div class="form-group input-group-lg">
+												<label class="control-label" for="subtitle">@(Subtitle) :</label>
+												<input type="text" class="form-control" name="subtitle" id="subtitle" ng-model="email.subtitle" />
+												<span class="help-block">@(mails:Subtitle).</span>
+								</div>
+								<div class="form-group">
+												<label class="control-label" for="message">@(mails:MailMessage) :</label>
+												<textarea class="form-control" name="message" id="message" ng-model="email.message" rows="3"></textarea>
+								</div>
+				</ng-form>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="cancel()">@(Cancel)</button>
-    <button type="button" class="btn btn-primary" ng-click="send()">@(mails:SendMail)</button>
+				<button type="button" class="btn btn-default" ng-click="cancel()">@(Cancel)</button>
+				<button type="button" class="btn btn-primary" ng-click="send()">@(mails:SendMail)</button>
 </div>

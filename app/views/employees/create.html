@@ -1,243 +1,243 @@
 <h3 class="page-title">
-    <i class="fa fa-check-square-o font-blue-madison"></i> @(users:NewUser)
+				<i class="fa fa-check-square-o font-blue-madison"></i> @(users:NewUser)
 </h3>
 
 <div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="fa fa-home"></i>
-            <a ui-sref="home">@(Home)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <a ui-sref="employee.list">@(users:ListOfUsers)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>@(users:NewUser)</span>
-        </li>
-    </ul>
+				<ul class="page-breadcrumb">
+								<li>
+												<i class="fa fa-home"></i>
+												<a ui-sref="home">@(Home)</a>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<a ui-sref="employee.list">@(users:ListOfUsers)</a>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<span>@(users:NewUser)</span>
+								</li>
+				</ul>
 </div>
 
 
 
 <form ng-submit="create()" role="form">
-    <div class="row">
-        <div class="col-md-6 col-sm-12">
+				<div class="row">
+								<div class="col-md-6 col-sm-12">
 
-            <!-- BEGIN PARAMETRES GENERAUX -->
-            <div class="portlet box green">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-check-square-o"></i> @(users:NewUser)
-                    </div>
-                </div>
-                <div class="portlet-body form">
-                    <div class="form-horizontal">
-                        <div class="form-body">
+												<!-- BEGIN PARAMETRES GENERAUX -->
+												<div class="portlet box green">
+																<div class="portlet-title">
+																				<div class="caption">
+																								<i class="fa fa-check-square-o"></i> @(users:NewUser)
+																				</div>
+																</div>
+																<div class="portlet-body form">
+																				<div class="form-horizontal">
+																								<div class="form-body">
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(users:FirstName)</label>
-                                <div class="col-md-4">
-                                    <input class="form-control" required ng-model="employee.firstname" placeholder="@(users:FirstName)" type="text" autocomplete="off">
-                                </div>
-                            </div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(users:FirstName)</label>
+																																<div class="col-md-4">
+																																				<input class="form-control" required ng-model="employee.firstname" placeholder="@(users:FirstName)" type="text" autocomplete="off">
+																																</div>
+																												</div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(users:LastName)</label>
-                                <div class="col-md-4">
-                                    <input class="form-control" required ng-model="employee.lastname" placeholder="@(users:LastName)" type="text" autocomplete="off">
-                                </div>
-                            </div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(users:LastName)</label>
+																																<div class="col-md-4">
+																																				<input class="form-control" required ng-model="employee.lastname" placeholder="@(users:LastName)" type="text" autocomplete="off">
+																																</div>
+																												</div>
 
-                            <div class="form-group" ng-class="{'has-error':!validLogin, 'has-success': validLogin}">
-                                <label class="col-md-4 control-label">@(users:Username)</label>
-                                <div class="col-md-4">
-                                    <input class="form-control" ng-change="checkUserExist(employee.username)" required ng-model="employee.username" placeholder="@(users:Username)" type="text" autocomplete="off">
-                                    <span class="help-block">
+																												<div class="form-group" ng-class="{'has-error':!validLogin, 'has-success': validLogin}">
+																																<label class="col-md-4 control-label">@(users:Username)</label>
+																																<div class="col-md-4">
+																																				<input class="form-control" ng-change="checkUserExist(employee.username)" required ng-model="employee.username" placeholder="@(users:Username)" type="text" autocomplete="off">
+																																				<span class="help-block">
                                         <div class="alert alert-danger" ng-show="employee.username.length >= 6 && !validLogin"> @(users:IdentifierAlReadyUsed)</div>
                                         <div class="alert alert-warning" ng-show="employee.username.length < 6"> @(users:MoreThanSixCharacters)</div>
                                     </span>
-                                </div>
-                            </div>
+																																</div>
+																												</div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(users:Password)</label>
-                                <div class="col-md-4">
-                                    <input class="form-control" required ng-model="employee.password" placeholder="@(users:Password)" type="text" autocomplete="off">
-                                </div>
-                            </div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(users:Password)</label>
+																																<div class="col-md-4">
+																																				<input class="form-control" required ng-model="employee.password" placeholder="@(users:Password)" type="text" autocomplete="off">
+																																</div>
+																												</div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(users:Poste)</label>
-                                <div class="col-md-4">
-                                    <select class="form-control" ng-model="employee.poste" ng-options="s.id as s.label for s in dict.fk_job.values"></select>
-                                </div>
-                            </div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(users:Poste)</label>
+																																<div class="col-md-4">
+																																				<select class="form-control" ng-model="employee.poste" ng-options="s.id as s.label for s in dict.fk_job.values"></select>
+																																</div>
+																												</div>
 
-                            <div ng-if="login.multiEntities" class="form-group">
-                                <label class="col-md-4 control-label">@(companies:Entity)</label>
-                                <div class="col-md-4">
-                                    <select class="form-control" required ng-model="employee.entity" ng-options="s.id as s.name for s in entityListAll"></select>
-                                </div>
-                            </div>
+																												<div ng-if="login.multiEntities" class="form-group">
+																																<label class="col-md-4 control-label">@(companies:Entity)</label>
+																																<div class="col-md-4">
+																																				<select class="form-control" required ng-model="employee.entity" ng-options="s.id as s.name for s in entityListAll"></select>
+																																</div>
+																												</div>
 
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(Address)</label>
-                                <div class="col-md-4">
-                                    <div crm-address mode="create" model="employee"></div>
-                                </div>
-                            </div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(Address)</label>
+																																<div class="col-md-4">
+																																				<div crm-address mode="create" model="employee"></div>
+																																</div>
+																												</div>
 
-                            <div class="form-group" ng-class="{'has-error':!validEmail, 'has-success': validEmail}">
-                                <label class="col-md-4 control-label">@(Email)</label>
-                                <div class="col-md-4">
-                                    <input class="form-control" ng-change="checkEmailExist(employee.email)" required ng-model="employee.email" placeholder="@(users:Email)" type="email" autocomplete="off">
-                                    <span class="help-block">
+																												<div class="form-group" ng-class="{'has-error':!validEmail, 'has-success': validEmail}">
+																																<label class="col-md-4 control-label">@(Email)</label>
+																																<div class="col-md-4">
+																																				<input class="form-control" ng-change="checkEmailExist(employee.email)" required ng-model="employee.email" placeholder="@(users:Email)" type="email" autocomplete="off">
+																																				<span class="help-block">
                                         <div class="alert alert-warning" ng-show="!employee.email"> @(users:EmailAddressNeeded)</div>
                                         <div class="alert alert-danger" ng-show="!validEmail"> @(users:ErrorEmailAlreadyExists)</div>
                                     </span>
-                                </div>
-                            </div>
+																																</div>
+																												</div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(users:Phone)</label>
-                                <div class="col-md-4">
-                                    <input class="form-control" ng-model="employee.phone" placeholder="@(users:Phone)" type="text" e-title="+xxxxxxxxxxx">
-                                </div>
-                            </div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(users:Phone)</label>
+																																<div class="col-md-4">
+																																				<input class="form-control" ng-model="employee.phone" placeholder="@(users:Phone)" type="text" e-title="+xxxxxxxxxxx">
+																																</div>
+																												</div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(users:TelMobile)</label>
-                                <div class="col-md-4">
-                                    <input class="form-control" ng-model="employee.mobilePhone" placeholder="@(users:TelMobile)" type="text" e-title="+xxxxxxxxxxx">
-                                </div>
-                            </div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(users:TelMobile)</label>
+																																<div class="col-md-4">
+																																				<input class="form-control" ng-model="employee.mobilePhone" placeholder="@(users:TelMobile)" type="text" e-title="+xxxxxxxxxxx">
+																																</div>
+																												</div>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+																								</div>
+																				</div>
+																</div>
+												</div>
+								</div>
 
-        <div class="col-md-6 col-sm-12">
-            <div class="portlet light">
-                <div class="portlet-title">
-                    <div class="caption font-red-flamingo">
-                        <i class="fa fa-hand-o-right font-red-flamingo"></i>@(users:Civility)
-                    </div>
-                </div>
-                <div class="portlet-body form">
-                    <div class="form-horizontal">
-                        <div class="portlet-body">
-                            <div class="form-group">
+								<div class="col-md-6 col-sm-12">
+												<div class="portlet light">
+																<div class="portlet-title">
+																				<div class="caption font-red-flamingo">
+																								<i class="fa fa-hand-o-right font-red-flamingo"></i>@(users:Civility)
+																				</div>
+																</div>
+																<div class="portlet-body form">
+																				<div class="form-horizontal">
+																								<div class="portlet-body">
+																												<div class="form-group">
 
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">@(users:CityOfBirth)</label>
-                                    <div class="col-md-4">
-                                        <input class="form-control" ng-model="employee.cityOfBirth" placeholder="@(users:CityOfBirth)" type="text" autocomplete="off">
-                                    </div>
-                                </div>
+																																<div class="form-group">
+																																				<label class="col-md-4 control-label">@(users:CityOfBirth)</label>
+																																				<div class="col-md-4">
+																																								<input class="form-control" ng-model="employee.cityOfBirth" placeholder="@(users:CityOfBirth)" type="text" autocomplete="off">
+																																				</div>
+																																</div>
 
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">@(users:CountryOfBirth)</label>
-                                    <div class="col-md-4">
-                                        <select class="form-control" ng-model="employee.countryOfBirth" ng-options="s.id as s.label for s in dict.fk_country.values"></select>
-                                    </div>
-                                </div>
+																																<div class="form-group">
+																																				<label class="col-md-4 control-label">@(users:CountryOfBirth)</label>
+																																				<div class="col-md-4">
+																																								<select class="form-control" ng-model="employee.countryOfBirth" ng-options="s.id as s.label for s in dict.fk_country.values"></select>
+																																				</div>
+																																</div>
 
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">@(users:Nationality)</label>
-                                    <div class="col-md-4">
-                                        <input class="form-control" ng-model="employee.nationality" placeholder="@(users:Nationality)" type="text" autocomplete="off">
-                                    </div>
-                                </div>
+																																<div class="form-group">
+																																				<label class="col-md-4 control-label">@(users:Nationality)</label>
+																																				<div class="col-md-4">
+																																								<input class="form-control" ng-model="employee.nationality" placeholder="@(users:Nationality)" type="text" autocomplete="off">
+																																				</div>
+																																</div>
 
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">@(users:Situation)</label>
-                                    <div class="col-md-4">
-                                        <select class="form-control" ng-model="employee.familySituation" ng-options="s.id as s.label for s in dict.fk_rh_situationFamiliale.values"></select>
-                                    </div>
-                                </div>
+																																<div class="form-group">
+																																				<label class="col-md-4 control-label">@(users:Situation)</label>
+																																				<div class="col-md-4">
+																																								<select class="form-control" ng-model="employee.familySituation" ng-options="s.id as s.label for s in dict.fk_rh_situationFamiliale.values"></select>
+																																				</div>
+																																</div>
 
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">@(users:Children)</label>
-                                    <div class="col-md-4">
-                                        <input class="form-control" ng-model="employee.children" placeholder="@(users:Children)" type="text" autocomplete="off">
-                                    </div>
-                                </div>
+																																<div class="form-group">
+																																				<label class="col-md-4 control-label">@(users:Children)</label>
+																																				<div class="col-md-4">
+																																								<input class="form-control" ng-model="employee.children" placeholder="@(users:Children)" type="text" autocomplete="off">
+																																				</div>
+																																</div>
 
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">@(users:PerCharges)</label>
-                                    <div class="col-md-4">
-                                        <input class="form-control" ng-model="employee.perCharges" placeholder="@(users:PerCharges)" type="text" autocomplete="off">
-                                    </div>
-                                </div>
-                                <!-- END PORTLET MAIN -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
+																																<div class="form-group">
+																																				<label class="col-md-4 control-label">@(users:PerCharges)</label>
+																																				<div class="col-md-4">
+																																								<input class="form-control" ng-model="employee.perCharges" placeholder="@(users:PerCharges)" type="text" autocomplete="off">
+																																				</div>
+																																</div>
+																																<!-- END PORTLET MAIN -->
+																												</div>
+																								</div>
+																				</div>
+																</div>
 
-            </div>
-        </div>
+												</div>
+								</div>
 
-        <div class="col-md-6 col-sm-12">
-            <div class="portlet light">
-                <div class="portlet-title">
-                    <div class="caption font-green">
-                        <i class="fa fa-hand-o-right font-green"></i>@(users:informations)
-                    </div>
-                </div>
-                <div class="portlet-body form">
-                    <div class="form-horizontal">
-                        <div class="portlet-body">
-                            <div class="form-group">
+								<div class="col-md-6 col-sm-12">
+												<div class="portlet light">
+																<div class="portlet-title">
+																				<div class="caption font-green">
+																								<i class="fa fa-hand-o-right font-green"></i>@(users:informations)
+																				</div>
+																</div>
+																<div class="portlet-body form">
+																				<div class="form-horizontal">
+																								<div class="portlet-body">
+																												<div class="form-group">
 
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">@(users:SocialeSecurityNumber)</label>
-                                    <div class="col-md-4">
-                                        <input class="form-control" ng-model="employee.socialeSecurityNumber" placeholder="@(users:SocialeSecurityNumber)" type="text" autocomplete="off">
-                                    </div>
-                                </div>
+																																<div class="form-group">
+																																				<label class="col-md-4 control-label">@(users:SocialeSecurityNumber)</label>
+																																				<div class="col-md-4">
+																																								<input class="form-control" ng-model="employee.socialeSecurityNumber" placeholder="@(users:SocialeSecurityNumber)" type="text" autocomplete="off">
+																																				</div>
+																																</div>
 
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">@(users:AccountStatement)</label>
-                                    <div class="col-md-4">
-                                        <input class="form-control" ng-model="employee.accountStatement" placeholder="@(users:AccountStatement)" type="text" autocomplete="off">
-                                    </div>
-                                </div>
+																																<div class="form-group">
+																																				<label class="col-md-4 control-label">@(users:AccountStatement)</label>
+																																				<div class="col-md-4">
+																																								<input class="form-control" ng-model="employee.accountStatement" placeholder="@(users:AccountStatement)" type="text" autocomplete="off">
+																																				</div>
+																																</div>
 
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">@(users:IBAN)</label>
-                                    <div class="col-md-4">
-                                        <input class="form-control" ng-model="employee.IBAN" placeholder="@(users:IBAN)" type="text" autocomplete="off">
-                                    </div>
-                                </div>
+																																<div class="form-group">
+																																				<label class="col-md-4 control-label">@(users:IBAN)</label>
+																																				<div class="col-md-4">
+																																								<input class="form-control" ng-model="employee.IBAN" placeholder="@(users:IBAN)" type="text" autocomplete="off">
+																																				</div>
+																																</div>
 
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">@(users:BIC)</label>
-                                    <div class="col-md-4">
-                                        <input class="form-control" ng-model="employee.bic" placeholder="@(users:bic)" type="text" autocomplete="off">
-                                    </div>
-                                </div>
+																																<div class="form-group">
+																																				<label class="col-md-4 control-label">@(users:BIC)</label>
+																																				<div class="col-md-4">
+																																								<input class="form-control" ng-model="employee.bic" placeholder="@(users:bic)" type="text" autocomplete="off">
+																																				</div>
+																																</div>
 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+																												</div>
+																								</div>
+																				</div>
+																</div>
+												</div>
 
-        </div>
-    </div>
-    <div class="form-actions">
-        <div class="row">
-            <div class="col-md-offset-5 col-md-7">
-                <button type="submit" ng-disabled="!validLogin || !validEmail" class="btn blue">@(Create)</button>
-                <a ui-sref="employee.list" class="btn red">@(Cancel)</a>
-            </div>
-        </div>
-    </div>
-    </div>
+								</div>
+				</div>
+				<div class="form-actions">
+								<div class="row">
+												<div class="col-md-offset-5 col-md-7">
+																<button type="submit" ng-disabled="!validLogin || !validEmail" class="btn blue">@(Create)</button>
+																<a ui-sref="employee.list" class="btn red">@(Cancel)</a>
+												</div>
+								</div>
+				</div>
+				</div>
 </form>

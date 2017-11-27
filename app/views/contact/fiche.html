@@ -1,407 +1,407 @@
 <div ng-init="findOne()">
-    <div class="page-bar">
-        <ul class="page-breadcrumb">
-            <li>
-                <i class="fa fa-home"></i>
-                <a ui-sref="home">@(Home)</a>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span>@(companies:ThirdParties)</span>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <a ui-sref="contact.list">@(companies:ListOfContacts)</a>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <a ui-sref="societe.show({id:contact.societe.id})">{{contact.societe.name}}</a>
-                <i class="fa fa-angle-right"></i></li>
-            <li>
-                <span>{{contact.fullname}}</span>
-            </li>
-        </ul>
-        <div class="page-toolbar" ng-hide="contact.isremoved">
-            <div class="btn-group pull-right">
-                <button type="button" class="btn btn-circle dark sbold uppercase dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+				<div class="page-bar">
+								<ul class="page-breadcrumb">
+												<li>
+																<i class="fa fa-home"></i>
+																<a ui-sref="home">@(Home)</a>
+																<i class="fa fa-angle-right"></i>
+												</li>
+												<li>
+																<span>@(companies:ThirdParties)</span>
+																<i class="fa fa-angle-right"></i>
+												</li>
+												<li>
+																<a ui-sref="contact.list">@(companies:ListOfContacts)</a>
+																<i class="fa fa-angle-right"></i>
+												</li>
+												<li>
+																<a ui-sref="societe.show({id:contact.societe.id})">{{contact.societe.name}}</a>
+																<i class="fa fa-angle-right"></i></li>
+												<li>
+																<span>{{contact.fullname}}</span>
+												</li>
+								</ul>
+								<div class="page-toolbar" ng-hide="contact.isremoved">
+												<div class="btn-group pull-right">
+																<button type="button" class="btn btn-circle dark sbold uppercase dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     @(Tools) <i class="fa fa-angle-down"></i>
                 </button>
-                <ul class="dropdown-menu pull-right" role="menu">
-                    <li>
-                        <a href="#" ng-show="!contact.password && contact.email && login.rights.societe.write" ng-click="createLogin(contact)">
+																<ul class="dropdown-menu pull-right" role="menu">
+																				<li>
+																								<a href="#" ng-show="!contact.password && contact.email && login.rights.societe.write" ng-click="createLogin(contact)">
                             <i class="fa fa-lock"></i> @(Create) acces web
                         </a>
-                    </li>
-                    <li>
-                        <a href="#" class="font-red" ng-show="login.rights.societe.delete" confirmed-click="remove(contact)" ng-confirm-click="Supprimer le contact ?" title="Supprimer le contact">
+																				</li>
+																				<li>
+																								<a href="#" class="font-red" ng-show="login.rights.societe.delete" confirmed-click="remove(contact)" ng-confirm-click="Supprimer le contact ?" title="Supprimer le contact">
                             <i class="fa fa-trash-o font-red"></i> @(Delete)
                         </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <h3 class="page-title">
-        <i class="fa fa-group font-yellow-crusta"></i> {{contact.fullname}} <small> @(from) {{contact.societe.name}}</small>
-    </h3>
+																				</li>
+																</ul>
+												</div>
+								</div>
+				</div>
+				<h3 class="page-title">
+								<i class="fa fa-group font-yellow-crusta"></i> {{contact.fullname}} <small> @(from) {{contact.societe.name}}</small>
+				</h3>
 
-    <div ng-if="contact.isremoved" class="alert alert-danger"><strong>Attention !</strong> Ce contact est supprimé. </div>
+				<div ng-if="contact.isremoved" class="alert alert-danger"><strong>Attention !</strong> Ce contact est supprimé. </div>
 
 
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-6 col-sm-12">
-                    <form editable-form name="editableContact" onaftersave="update()">
-                        <div class="portlet light portlet-form bordered">
-                            <div class="portlet-title">
-                                <div class="caption font-yellow-crusta">
-                                    <i class="fa fa-group font-yellow-crusta"></i>@(companies:ContactDetails)
-                                </div>
-                                <div class="actions">
-                                    <a href="javascript:;" ng-click="editableContact.$show()" ng-show="!editableContact.$visible && editable" class="btn btn-circle btn-default">
+				<div class="row">
+								<div class="col-md-12">
+												<div class="row">
+																<div class="col-md-6 col-sm-12">
+																				<form editable-form name="editableContact" onaftersave="update()">
+																								<div class="portlet light portlet-form bordered">
+																												<div class="portlet-title">
+																																<div class="caption font-yellow-crusta">
+																																				<i class="fa fa-group font-yellow-crusta"></i>@(companies:ContactDetails)
+																																</div>
+																																<div class="actions">
+																																				<a href="javascript:;" ng-click="editableContact.$show()" ng-show="!editableContact.$visible && editable" class="btn btn-circle btn-default">
                                         <i class="fa fa-pencil"></i> @(Edit) </a>
-                                </div>
-                                <div class="actions" ng-show="editableContact.$visible">
-                                    <button type="submit" ng-disabled="editableContact.$waiting" class="btn btn-circle btn-outline uppercase green">@(Save) <i class="fa fa-check"></i></button>
-                                    <button type="button" ng-disabled="editableContact.$waiting" ng-click="editableContact.$cancel();
+																																</div>
+																																<div class="actions" ng-show="editableContact.$visible">
+																																				<button type="submit" ng-disabled="editableContact.$waiting" class="btn btn-circle btn-outline uppercase green">@(Save) <i class="fa fa-check"></i></button>
+																																				<button type="button" ng-disabled="editableContact.$waiting" ng-click="editableContact.$cancel();
                                                 findOne();" class="btn btn-circle btn-outline uppercase red">@(Cancel) <i class="fa fa-angle-right"></i></button>
-                                </div>
-                            </div>
-                            <div class="portlet-body">
-                                <div class="form-group form-md-line-input">
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:UserTitle) : </div>
-                                        <div class="col-md-8 value">
-                                            <span editable-select="contact.civilite" e-ng-options="s.id as s.label for s in dict.fk_civilite.values">
+																																</div>
+																												</div>
+																												<div class="portlet-body">
+																																<div class="form-group form-md-line-input">
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:UserTitle) : </div>
+																																								<div class="col-md-8 value">
+																																												<span editable-select="contact.civilite" e-ng-options="s.id as s.label for s in dict.fk_civilite.values">
                                                     {{showStatus('civilite', 'fk_civilite')}}</span>
-                                        </div>
-                                    </div>
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:Lastname):</div>
-                                        <div class="col-md-8 value">
-                                            <span editable-text="contact.lastname">
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:Lastname):</div>
+																																								<div class="col-md-8 value">
+																																												<span editable-text="contact.lastname">
                                                     {{contact.lastname|| "Non défini"}}
                                                 </span>
-                                        </div>
-                                    </div>
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:Firstname) :</div>
-                                        <div class="col-md-8 value">
-                                            <span editable-text="contact.firstname">
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:Firstname) :</div>
+																																								<div class="col-md-8 value">
+																																												<span editable-text="contact.firstname">
                                                     {{contact.firstname|| "Non défini"}}
                                                 </span>
-                                        </div>
-                                    </div>
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:Company) :</div>
-                                        <div class="col-md-8 value">
-                                            <a ui-sref="societe.show({id:contact.societe.id})" class="fa fa-institution" editable-text="contact.societe" e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete') | filter:{name:$viewValue}" e-typeahead-on-select="updateAddress($item)"> {{contact.societe.name|| "Non defini"}} </a>
-                                        </div>
-                                    </div>
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:Company) :</div>
+																																								<div class="col-md-8 value">
+																																												<a ui-sref="societe.show({id:contact.societe.id})" class="fa fa-institution" editable-text="contact.societe" e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete') | filter:{name:$viewValue}" e-typeahead-on-select="updateAddress($item)"> {{contact.societe.name|| "Non defini"}} </a>
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:PostOrFunction) : </div>
-                                        <div class="col-md-8 value">
-                                            <span editable-select="contact.poste" e-ng-options="s.id as s.label for s in dict.fk_job.values">
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:PostOrFunction) : </div>
+																																								<div class="col-md-8 value">
+																																												<span editable-select="contact.poste" e-ng-options="s.id as s.label for s in dict.fk_job.values">
                                                     {{showStatus('poste', 'fk_job')}}</span>
-                                        </div>
-                                    </div>
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:DétailsPostOrFunction) :</div>
-                                        <div class="col-md-8 value">
-                                            <span editable-text="contact.firstname">
+																																								</div>
+																																				</div>
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:DétailsPostOrFunction) :</div>
+																																								<div class="col-md-8 value">
+																																												<span editable-text="contact.firstname">
                                                     {{contact.firstname|| "Non défini"}}
                                                 </span>
-                                        </div>
-                                    </div>
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:birthday) : </div>
-                                        <div class="col-md-8 value">
-                                            <span editable-bsdate="contact.birthday" e-datepicker-popup="dd/MM/yyyy">
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:birthday) : </div>
+																																								<div class="col-md-8 value">
+																																												<span editable-bsdate="contact.birthday" e-datepicker-popup="dd/MM/yyyy">
                                                     {{ (contact.birthday | date:"dd/MM/yyyy") || 'empty'}}
                                                 </span>
-                                        </div>
-                                    </div>
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:DefaultLang) : </div>
-                                        <div class="col-md-8 value">
-                                            <span editable-select="contact.civilite" e-ng-options="s.id as s.label for s in dict.fk_civilite.values">
+																																								</div>
+																																				</div>
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:DefaultLang) : </div>
+																																								<div class="col-md-8 value">
+																																												<span editable-select="contact.civilite" e-ng-options="s.id as s.label for s in dict.fk_civilite.values">
                                                     {{showStatus('civilite', 'fk_civilite')}}</span>
-                                        </div>
-                                    </div>
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:CivilStatus) : </div>
-                                        <div class="col-md-8 value">
-                                            <span editable-select="contact.civilite" e-ng-options="s.id as s.label for s in dict.fk_civilite.values">
+																																								</div>
+																																				</div>
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:CivilStatus) : </div>
+																																								<div class="col-md-8 value">
+																																												<span editable-select="contact.civilite" e-ng-options="s.id as s.label for s in dict.fk_civilite.values">
                                                     {{showStatus('civilite', 'fk_civilite')}}</span>
-                                        </div>
-                                    </div>
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:SendNewsletter) :</div>
-                                        <div class="col-md-8 value">
-                                            <span editable-checkbox="contact.newsletter">
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:SendNewsletter) :</div>
+																																								<div class="col-md-8 value">
+																																												<span editable-checkbox="contact.newsletter">
                                                     <input type="checkbox" ng-checked="contact.newsletter" disabled="" />
                                                 </span>
-                                        </div>
-                                    </div>
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:SendSMS) :</div>
-                                        <div class="col-md-8 value">
-                                            <span editable-checkbox="contact.sendSMS">
+																																								</div>
+																																				</div>
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:SendSMS) :</div>
+																																								<div class="col-md-8 value">
+																																												<span editable-checkbox="contact.sendSMS">
                                                     <input type="checkbox" ng-checked="contact.sendSMS" disabled="" />
                                                 </span>
-                                        </div>
-                                    </div>
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:Soncas) :</div>
-                                        <div class="col-md-8 value">
-                                            <span editable-checklist="contact.soncas" e-ng-options="s.value as s.text for s in soncas">
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:Soncas) :</div>
+																																								<div class="col-md-8 value">
+																																												<span editable-checklist="contact.soncas" e-ng-options="s.value as s.text for s in soncas">
                                                     {{contact.soncas| tag}}
                                                 </span>
-                                        </div>
-                                    </div>
+																																								</div>
+																																				</div>
 
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:Hobbies) :</div>
-                                        <div class="col-md-8 value">
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:Hobbies) :</div>
+																																								<div class="col-md-8 value">
 
 
-                                            <span editable-checklist="contact.hobbies" e-ng-options="s.label as s.label for s in dict.fk_hobbies.values">
+																																												<span editable-checklist="contact.hobbies" e-ng-options="s.label as s.label for s in dict.fk_hobbies.values">
                                                     {{ contact.hobbies | tag}}
                                                 </span>
 
-                                        </div>
-                                    </div>
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:StatusContactValidated) : </div>
-                                        <div class="col-md-8 value">
-                                            <span class="label label-sm" data-ng-class="contact.status.css" editable-select="contact.Status" e-ng-options="s.id as s.label for s in dict.fk_user_status.values"> {{contact.status.name}}</span>
-                                        </div>
-                                    </div>
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:StatusContactValidated) : </div>
+																																								<div class="col-md-8 value">
+																																												<span class="label label-sm" data-ng-class="contact.status.css" editable-select="contact.Status" e-ng-options="s.id as s.label for s in dict.fk_user_status.values"> {{contact.status.name}}</span>
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(DateLastModification) :</div>
-                                        <div class="col-md-8 value">{{contact.updatedAt|date:'dd/MM/yyyy HH:mm'}}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(DateLastModification) :</div>
+																																								<div class="col-md-8 value">{{contact.updatedAt|date:'dd/MM/yyyy HH:mm'}}</div>
+																																				</div>
+																																</div>
+																												</div>
+																								</div>
+																				</form>
 
-                    <form ng-if="contact.password" editable-form name="editableWebContact" onaftersave="update()">
-                        <div class="portlet yellow-gold box">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class="fa fa-group"></i>@(companies:ContactDetails) Ecommerce
-                                </div>
-                                <div class="actions">
-                                    <a href="javascript:;" ng-click="editableWebContact.$show()" ng-show="!editableWebContact.$visible && editable" class="btn btn-default btn-sm">
+																				<form ng-if="contact.password" editable-form name="editableWebContact" onaftersave="update()">
+																								<div class="portlet yellow-gold box">
+																												<div class="portlet-title">
+																																<div class="caption">
+																																				<i class="fa fa-group"></i>@(companies:ContactDetails) Ecommerce
+																																</div>
+																																<div class="actions">
+																																				<a href="javascript:;" ng-click="editableWebContact.$show()" ng-show="!editableWebContact.$visible && editable" class="btn btn-default btn-sm">
                                         <i class="fa fa-pencil"></i> @(Edit) </a>
-                                </div>
-                                <div class="actions" ng-show="editableWebContact.$visible">
-                                    <button type="submit" ng-disabled="editableWebContact.$waiting" class="btn btn-default btn-sm">@(Save)</button>
-                                    <button type="button" ng-disabled="editableWebContact.$waiting" ng-click="editableWebContact.$cancel();
+																																</div>
+																																<div class="actions" ng-show="editableWebContact.$visible">
+																																				<button type="submit" ng-disabled="editableWebContact.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+																																				<button type="button" ng-disabled="editableWebContact.$waiting" ng-click="editableWebContact.$cancel();
                                                 findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
-                                </div>
-                            </div>
-                            <div class="portlet-body">
-                                <div class="form-group form-md-line-input">
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(Id):</div>
-                                        <div class="col-md-8 value">
-                                            {{contact._id|| "Non défini"}}
-                                        </div>
-                                    </div>
+																																</div>
+																												</div>
+																												<div class="portlet-body">
+																																<div class="form-group form-md-line-input">
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(Id):</div>
+																																								<div class="col-md-8 value">
+																																												{{contact._id|| "Non défini"}}
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(Email) :</div>
-                                        <div class="col-md-8 value">
-                                            {{contact.email|| "Non défini"}}
-                                        </div>
-                                    </div>
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(Email) :</div>
+																																								<div class="col-md-8 value">
+																																												{{contact.email|| "Non défini"}}
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(Password) :</div>
-                                        <div class="col-md-8 value">
-                                            <span editable-text="contact.password">
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(Password) :</div>
+																																								<div class="col-md-8 value">
+																																												<span editable-text="contact.password">
                                                     {{contact.password|| "Non défini"}}
                                                 </span>
-                                        </div>
-                                    </div>
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:Company) :</div>
-                                        <div class="col-md-8 value">
-                                            <a data-ng-href="/#!/societes/{{contact.societe.id}}" target="_blank" class="fa fa-institution"> {{contact.societe.name|| "Erreur non defini"}} </a>
-                                        </div>
-                                    </div>
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(companies:Company) :</div>
+																																								<div class="col-md-8 value">
+																																												<a data-ng-href="/#!/societes/{{contact.societe.id}}" target="_blank" class="fa fa-institution"> {{contact.societe.name|| "Erreur non defini"}} </a>
+																																								</div>
+																																				</div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(users:LastConnection) : </div>
-                                        <div class="col-md-8 value">
-                                            {{ (contact.NewConnection | date:"dd/MM/yyyy HH:mm") || 'empty'}}
-                                        </div>
-                                    </div>
+																																				<div class="row static-info">
+																																								<div class="col-md-4 name">@(users:LastConnection) : </div>
+																																								<div class="col-md-8 value">
+																																												{{ (contact.NewConnection | date:"dd/MM/yyyy HH:mm") || 'empty'}}
+																																								</div>
+																																				</div>
 
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-
+																																</div>
+																												</div>
+																								</div>
+																				</form>
+																</div>
 
 
-                <div class="col-md-6 col-sm-12">
-                    <form editable-form name="editablePhone" onaftersave="update()">
-                        <div class="portlet light portlet-form bordered">
-                            <div class="portlet-title">
-                                <div class="caption font-grey-gallery">
-                                    <i class="fa fa-share-alt font-grey-gallery"></i>@(companies:ParticularsContact)
-                                </div>
-                                <div class="actions">
-                                    <a href="javascript:;" ng-click="editablePhone.$show()" ng-show="!editablePhone.$visible && editable" class="btn btn-circle btn-default">
+
+
+																<div class="col-md-6 col-sm-12">
+																				<form editable-form name="editablePhone" onaftersave="update()">
+																								<div class="portlet light portlet-form bordered">
+																												<div class="portlet-title">
+																																<div class="caption font-grey-gallery">
+																																				<i class="fa fa-share-alt font-grey-gallery"></i>@(companies:ParticularsContact)
+																																</div>
+																																<div class="actions">
+																																				<a href="javascript:;" ng-click="editablePhone.$show()" ng-show="!editablePhone.$visible && editable" class="btn btn-circle btn-default">
                                         <i class="fa fa-pencil"></i> @(Edit) </a>
-                                </div>
-                                <div class="actions" ng-show="editablePhone.$visible">
-                                    <button type="submit" ng-disabled="editablePhone.$waiting" class="btn btn-circle btn-outline uppercase green">@(Save)</button>
-                                    <button type="button" ng-disabled="editablePhone.$waiting" ng-click="editablePhone.$cancel();
+																																</div>
+																																<div class="actions" ng-show="editablePhone.$visible">
+																																				<button type="submit" ng-disabled="editablePhone.$waiting" class="btn btn-circle btn-outline uppercase green">@(Save)</button>
+																																				<button type="button" ng-disabled="editablePhone.$waiting" ng-click="editablePhone.$cancel();
                                                 findOne();" class="btn btn-circle btn-outline uppercase red">@(Cancel)</button>
-                                </div>
-                            </div>
-                            <div class="portlet-body">
-                                <div class="form-group form-md-line-input">
-                                    <div class="row static-info">
-                                        <div class="col-md-3 name">@(companies:PhonePro) :</div>
-                                        <div class="col-md-1"><i class="fa fa-phone"></i></div>
-                                        <div class="col-md-8 value">
-                                            <span editable-text="contact.phone">
+																																</div>
+																												</div>
+																												<div class="portlet-body">
+																																<div class="form-group form-md-line-input">
+																																				<div class="row static-info">
+																																								<div class="col-md-3 name">@(companies:PhonePro) :</div>
+																																								<div class="col-md-1"><i class="fa fa-phone"></i></div>
+																																								<div class="col-md-8 value">
+																																												<span editable-text="contact.phone">
                                                     {{contact.phone}}
                                                 </span>
-                                        </div>
-                                    </div>
-                                    <div class="row static-info">
-                                        <div class="col-md-3 name">@(companies:PhonePerso) : </div>
-                                        <div class="col-md-1"><i class="fa fa-phone"></i></div>
-                                        <div class="col-md-8 value">
-                                            <span editable-text="contact.phone_perso">
+																																								</div>
+																																				</div>
+																																				<div class="row static-info">
+																																								<div class="col-md-3 name">@(companies:PhonePerso) : </div>
+																																								<div class="col-md-1"><i class="fa fa-phone"></i></div>
+																																								<div class="col-md-8 value">
+																																												<span editable-text="contact.phone_perso">
                                                     {{contact.phone_perso}}
                                                 </span>
-                                        </div>
-                                    </div>
-                                    <div class="row static-info">
-                                        <div class="col-md-3 name">@(companies:PhoneMobile) : </div>
-                                        <div class="col-md-1"><i class="fa fa-mobile"></i></div>
-                                        <div class="col-md-8 value">
-                                            <span editable-text="contact.phone_mobile">
+																																								</div>
+																																				</div>
+																																				<div class="row static-info">
+																																								<div class="col-md-3 name">@(companies:PhoneMobile) : </div>
+																																								<div class="col-md-1"><i class="fa fa-mobile"></i></div>
+																																								<div class="col-md-8 value">
+																																												<span editable-text="contact.phone_mobile">
                                                     {{contact.phone_mobile}}
                                                 </span>
-                                        </div>
-                                    </div>
-                                    <div class="row static-info">
-                                        <div class="col-md-3 name">@(Email) : </div>
-                                        <div class="col-md-1"><i class="fa fa-send"></i></div>
-                                        <div class="col-md-8 value">
-                                            <a ng-href="mailto:{{contact.email}}" target="_blank" editable-email="contact.email">
+																																								</div>
+																																				</div>
+																																				<div class="row static-info">
+																																								<div class="col-md-3 name">@(Email) : </div>
+																																								<div class="col-md-1"><i class="fa fa-send"></i></div>
+																																								<div class="col-md-8 value">
+																																												<a ng-href="mailto:{{contact.email}}" target="_blank" editable-email="contact.email">
                                                     {{contact.email}}
                                                 </a>
-                                        </div>
-                                    </div>
-                                    <div class="row static-info">
-                                        <div class="col-md-3 name">Twitter : </div>
-                                        <div class="col-md-1"><i class="fa fa-twitter"></i></div>
-                                        <div class="col-md-8 value">
-                                            <a ng-href="mailto:{{contact.email}}" target="_blank" editable-email="contact.email">
+																																								</div>
+																																				</div>
+																																				<div class="row static-info">
+																																								<div class="col-md-3 name">Twitter : </div>
+																																								<div class="col-md-1"><i class="fa fa-twitter"></i></div>
+																																								<div class="col-md-8 value">
+																																												<a ng-href="mailto:{{contact.email}}" target="_blank" editable-email="contact.email">
                                                     {{contact.email}}
                                                 </a>
-                                        </div>
-                                    </div>
-                                    <div class="row static-info">
-                                        <div class="col-md-3 name">LinkedIn : </div>
-                                        <div class="col-md-1"><i class="fa fa-linkedin"></i></div>
-                                        <div class="col-md-8 value">
-                                            <a ng-href="mailto:{{contact.email}}" target="_blank" editable-email="contact.email">
+																																								</div>
+																																				</div>
+																																				<div class="row static-info">
+																																								<div class="col-md-3 name">LinkedIn : </div>
+																																								<div class="col-md-1"><i class="fa fa-linkedin"></i></div>
+																																								<div class="col-md-8 value">
+																																												<a ng-href="mailto:{{contact.email}}" target="_blank" editable-email="contact.email">
                                                     {{contact.email}}
                                                 </a>
-                                        </div>
-                                    </div>
-                                    <div class="row static-info">
-                                        <div class="col-md-3 name">Skype : </div>
-                                        <div class="col-md-1"><i class="fa fa-skype"></i></div>
-                                        <div class="col-md-8 value">
-                                            <a ng-href="mailto:{{contact.email}}" target="_blank" editable-email="contact.email">
+																																								</div>
+																																				</div>
+																																				<div class="row static-info">
+																																								<div class="col-md-3 name">Skype : </div>
+																																								<div class="col-md-1"><i class="fa fa-skype"></i></div>
+																																								<div class="col-md-8 value">
+																																												<a ng-href="mailto:{{contact.email}}" target="_blank" editable-email="contact.email">
                                                     {{contact.email}}
                                                 </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+																																								</div>
+																																				</div>
+																																</div>
+																												</div>
+																								</div>
+																				</form>
+																</div>
 
 
 
 
-                <div class="col-md-6 col-sm-12">
-                    <form editable-form name="AddressContact" onaftersave="update()">
-                        <div class="portlet light">
+																<div class="col-md-6 col-sm-12">
+																				<form editable-form name="AddressContact" onaftersave="update()">
+																								<div class="portlet light">
 
-                            <div class="portlet-title">
-                                <div class="caption font-grey-gallery">
-                                    <i class="fa fa-envelope font-grey-gallery"></i> @(companies:AddressContact)
-                                </div>
-                                <div class="actions">
-                                    <a href="javascript:;" ng-click="AddressContact.$show()" ng-show="!AddressContact.$visible && editable" class="btn btn-circle btn-default">
+																												<div class="portlet-title">
+																																<div class="caption font-grey-gallery">
+																																				<i class="fa fa-envelope font-grey-gallery"></i> @(companies:AddressContact)
+																																</div>
+																																<div class="actions">
+																																				<a href="javascript:;" ng-click="AddressContact.$show()" ng-show="!AddressContact.$visible && editable" class="btn btn-circle btn-default">
                                         <i class="fa fa-pencil"></i> @(Edit) </a>
-                                </div>
-                                <div class="actions" ng-show="AddressContact.$visible">
-                                    <button type="submit" ng-disabled="AddressContact.$waiting" class="btn btn-circle btn-outline uppercase green">@(Save)</button>
-                                    <button type="button" ng-disabled="AddressContact.$waiting" ng-click="AddressContact.$cancel()" class="btn btn-circle btn-outline uppercase red">@(Cancel)</button>
-                                </div>
-                            </div>
-                            <div class="portlet-body" crm-address model="contact"></div>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-md-12 col-sm-12">
-                    <form editable-form name="contactNotes" onaftersave="update()">
-                        <div class="portlet light">
-                            <div class="portlet-title">
-                                <div class="caption font-dark">
-                                    <i class="fa fa-edit font-dark"></i> @(Notes)
-                                </div>
-                                <div class="actions">
-                                    <a href="javascript:;" ng-click="contactNotes.$show()" ng-show="!contactNotes.$visible && editable" class="btn btn-circle btn-default">
+																																</div>
+																																<div class="actions" ng-show="AddressContact.$visible">
+																																				<button type="submit" ng-disabled="AddressContact.$waiting" class="btn btn-circle btn-outline uppercase green">@(Save)</button>
+																																				<button type="button" ng-disabled="AddressContact.$waiting" ng-click="AddressContact.$cancel()" class="btn btn-circle btn-outline uppercase red">@(Cancel)</button>
+																																</div>
+																												</div>
+																												<div class="portlet-body" crm-address model="contact"></div>
+																								</div>
+																				</form>
+																</div>
+																<div class="col-md-12 col-sm-12">
+																				<form editable-form name="contactNotes" onaftersave="update()">
+																								<div class="portlet light">
+																												<div class="portlet-title">
+																																<div class="caption font-dark">
+																																				<i class="fa fa-edit font-dark"></i> @(Notes)
+																																</div>
+																																<div class="actions">
+																																				<a href="javascript:;" ng-click="contactNotes.$show()" ng-show="!contactNotes.$visible && editable" class="btn btn-circle btn-default">
                                         <i class="fa fa-pencil"></i> @(Edit) </a>
-                                </div>
-                                <div class="actions" ng-show="contactNotes.$visible">
-                                    <button type="submit" ng-disabled="contactNotes.$waiting" class="btn btn-circle btn-outline uppercase green">@(Save)</button>
-                                    <button type="button" ng-disabled="contactNotes.$waiting" ng-click="contactNotes.$cancel()" class="btn btn-circle btn-outline uppercase red">@(Cancel)</button>
-                                </div>
-                            </div>
-                            <div class="portlet-body">
-                                <div ng-if="!contactNotes.$visible" marked="contact.notes"></div>
-                                <div ng-if="contactNotes.$visible" markdown-editor ng-model="contact.notes"></div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+																																</div>
+																																<div class="actions" ng-show="contactNotes.$visible">
+																																				<button type="submit" ng-disabled="contactNotes.$waiting" class="btn btn-circle btn-outline uppercase green">@(Save)</button>
+																																				<button type="button" ng-disabled="contactNotes.$waiting" ng-click="contactNotes.$cancel()" class="btn btn-circle btn-outline uppercase red">@(Cancel)</button>
+																																</div>
+																												</div>
+																												<div class="portlet-body">
+																																<div ng-if="!contactNotes.$visible" marked="contact.notes"></div>
+																																<div ng-if="contactNotes.$visible" markdown-editor ng-model="contact.notes"></div>
+																												</div>
+																								</div>
+																				</form>
+																</div>
 
 
 
-            </div>
-        </div>
-    </div>
+												</div>
+								</div>
+				</div>
 </div>
 <!-- END MAIN CONTENT -->

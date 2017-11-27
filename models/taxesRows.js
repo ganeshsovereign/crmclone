@@ -27,61 +27,61 @@ International Registered Trademark & Property of ToManage SAS
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-    timestamps = require('mongoose-timestamp'),
-    Schema = mongoose.Schema,
-    _ = require('lodash'),
-    async = require('async'),
-    ObjectId = mongoose.Schema.Types.ObjectId;
+		timestamps = require('mongoose-timestamp'),
+		Schema = mongoose.Schema,
+		_ = require('lodash'),
+		async = require('async'),
+		ObjectId = mongoose.Schema.Types.ObjectId;
 
 var setPrice = MODULE('utils').setPrice;
 var setDate = MODULE('utils').setDate;
 
 var TaxesRowSchema = mongoose.Schema({
-    isremoved: {
-        type: Boolean
-    },
-    type: {
-        type: String,
-        enum: ["VAT"]
-    },
+		isremoved: {
+				type: Boolean
+		},
+		type: {
+				type: String,
+				enum: ["VAT"]
+		},
 
-    ID: Number,
-    ref: String,
+		ID: Number,
+		ref: String,
 
-    datec: {
-        type: Date,
-        default: Date.now
-    },
-    Status: {
-        type: String,
-        default: "DRAFT"
-    },
+		datec: {
+				type: Date,
+				default: Date.now
+		},
+		Status: {
+				type: String,
+				default: "DRAFT"
+		},
 
-    journalId: [Schema.Types.ObjectId], // Id transactions for accounting
+		journalId: [Schema.Types.ObjectId], // Id transactions for accounting
 
-    total_taxes: [{
-        _id: false,
-        taxeId: {
-            type: Schema.Types.ObjectId,
-            ref: 'taxes'
-        },
-        value: {
-            type: Number
-        }
-    }],
-    total: Number,
+		total_taxes: [{
+				_id: false,
+				taxeId: {
+						type: Schema.Types.ObjectId,
+						ref: 'taxes'
+				},
+				value: {
+						type: Number
+				}
+		}],
+		total: Number,
 
-    createdBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'Users'
-    },
-    editedBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'Users'
-    }
+		createdBy: {
+				type: Schema.Types.ObjectId,
+				ref: 'Users'
+		},
+		editedBy: {
+				type: Schema.Types.ObjectId,
+				ref: 'Users'
+		}
 
 }, {
-    collection: 'TaxesRows'
+		collection: 'TaxesRows'
 });
 
 TaxesRowSchema.plugin(timestamps);

@@ -1,32 +1,32 @@
 <div>
-    <div class="page-bar">
-        <ul class="page-breadcrumb">
-            <li>
-                <i class="fa fa-home"></i>
-                <a ui-sref="home">@(Home)</a>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span> @(ManagementEmployees)</span>
-            </li>
-        </ul>
+				<div class="page-bar">
+								<ul class="page-breadcrumb">
+												<li>
+																<i class="fa fa-home"></i>
+																<a ui-sref="home">@(Home)</a>
+																<i class="fa fa-angle-right"></i>
+												</li>
+												<li>
+																<span> @(ManagementEmployees)</span>
+												</li>
+								</ul>
 
-        <div class="page-toolbar">
-            <div class="btn-group pull-right">
-                <a class="btn yellow-lemon dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown"><i class="fa fa-share"></i> @(Tools)
+								<div class="page-toolbar">
+												<div class="btn-group pull-right">
+																<a class="btn yellow-lemon dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown"><i class="fa fa-share"></i> @(Tools)
                                                     <i class="fa fa-angle-down"></i>
                                                 </a>
-                <ul class="dropdown-menu pull-right">
-                    <li>
-                        <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
+																<ul class="dropdown-menu pull-right">
+																				<li>
+																								<a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
                                         @(PrintList) </a>
-                    </li>
-                    <li>
-                        <a href="#" ng-show="login.rights.employees.delete" confirmed-click="remove()" ng-confirm-click="@(employees:ConfirmDeleteEmployees)">
+																				</li>
+																				<li>
+																								<a href="#" ng-show="login.rights.employees.delete" confirmed-click="remove()" ng-confirm-click="@(employees:ConfirmDeleteEmployees)">
                             <i class="fa fa-mail-forward"></i>@(Delete)
                         </a>
-                    </li>
-                    <!--    <li>
+																				</li>
+																				<!--    <li>
                                         <a href="#">
                                             @(Delete) </a>
                                     </li>
@@ -34,13 +34,13 @@
                                         <a href="#">
                                             @(BuildPDF) </a>
                                     </li>-->
-                </ul>
-            </div>
-        </div>
-    </div>
+																</ul>
+												</div>
+								</div>
+				</div>
 
 
-    <!--<div class="portlet light portlet-form bordered">
+				<!--<div class="portlet light portlet-form bordered">
         <div class="portlet-title">
             <div class="caption">
                 <i class="fa fa-institution"></i>
@@ -160,22 +160,22 @@
         </div>
     </div>-->
 
-    <div class="portlet light portlet-form bordered">
-        <div class="portlet-title">
-            <!--<div class="caption">
+				<div class="portlet light portlet-form bordered">
+								<div class="portlet-title">
+												<!--<div class="caption">
                 <i class="fa fa-user font-blue"></i> @(users:ListOfEmployees)
             </div>-->
-            <div class="caption">
-                <i class="fa fa-user"></i>
-                <span class="caption-subject sbold uppercase"> @(users:ListOfEmployees)</span>
-            </div>
-            <div class="actions">
-                <button class="btn blue" ui-sref="employee.create">@(Add) <i class="fa fa-plus"></i></button>
-                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
-            </div>
-        </div>
-        <div class="portlet-body">
-            <!-- <div class="form-group form-md-line-input">
+												<div class="caption">
+																<i class="fa fa-user"></i>
+																<span class="caption-subject sbold uppercase"> @(users:ListOfEmployees)</span>
+												</div>
+												<div class="actions">
+																<button class="btn blue" ui-sref="employee.create">@(Add) <i class="fa fa-plus"></i></button>
+																<button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+												</div>
+								</div>
+								<div class="portlet-body">
+												<!-- <div class="form-group form-md-line-input">
                 <div class="row hidden-print">
                     <div class="form-group form-md-line-input">
 
@@ -199,31 +199,31 @@
                     </div>
                 </div>
             </div>-->
-            <div class="dataTables_wrapper table-responsive">
-                <div class="col-md-12">
-                    <table class="table dataTable table-hover" id="employeesList">
-                        <thead>
-                            <tr role="row" class="heading">
-                                <th width="2%">
-                                    <input type="checkbox" class="group-checkable" />
-                                </th>
-                                <th>@(Pictures) </th>
-                                <th>@(users:FirstName)</th>
-                                <th>@(users:LastName)</th>
-                                <th>@(Tel-Mobile)</th>
-                                <th>@(Email)</th>
-                                <th>@(users:Skype)</th>
-                                <th>@(users:Departement)</th>
-                                <th>@(users:Job)</th>
-                                <th>@(users:Manager)</th>
-                                <th>@(users:EditedBy)</th>
-                                <th>@(users:CreatedBy)</th>
-                                <th>@(Action)</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+												<div class="dataTables_wrapper table-responsive">
+																<div class="col-md-12">
+																				<table class="table dataTable table-hover" id="employeesList">
+																								<thead>
+																												<tr role="row" class="heading">
+																																<th width="2%">
+																																				<input type="checkbox" class="group-checkable" />
+																																</th>
+																																<th>@(Pictures) </th>
+																																<th>@(users:FirstName)</th>
+																																<th>@(users:LastName)</th>
+																																<th>@(Tel-Mobile)</th>
+																																<th>@(Email)</th>
+																																<th>@(users:Skype)</th>
+																																<th>@(users:Departement)</th>
+																																<th>@(users:Job)</th>
+																																<th>@(users:Manager)</th>
+																																<th>@(users:EditedBy)</th>
+																																<th>@(users:CreatedBy)</th>
+																																<th>@(Action)</th>
+																												</tr>
+																								</thead>
+																				</table>
+																</div>
+												</div>
+								</div>
+				</div>
 </div>

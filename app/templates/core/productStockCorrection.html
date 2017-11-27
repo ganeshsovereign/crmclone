@@ -1,86 +1,86 @@
 <script type="text/ng-template" id="searchproduct.html">
-    <a>
+				<a>
         <span bind-html-unsafe="match.model.ref | typeaheadHighlight:query"></span> - <span bind-html-unsafe="match.model.info.langs[0].name"></span>
     </a>
 </script>
 
 <div class="portlet portlet light bordered">
-    <div class="portlet-title">
-        <div class="caption">
-            <i class="fa fa-opencart"></i>
-            <span class="caption-subject dark bold uppercase"> {{title}}</span>
-        </div>
-        <div class="actions">
-            <a href="javascript:;" ng-click="tableform.$show()" ng-show="!tableform.$visible && location._id && !object._id" class="btn yellow-crusta">
+				<div class="portlet-title">
+								<div class="caption">
+												<i class="fa fa-opencart"></i>
+												<span class="caption-subject dark bold uppercase"> {{title}}</span>
+								</div>
+								<div class="actions">
+												<a href="javascript:;" ng-click="tableform.$show()" ng-show="!tableform.$visible && location._id && !object._id" class="btn yellow-crusta">
                 <i class="fa fa-pencil"></i> @(Edit) </a>
-        </div>
-        <div class="actions">
-            <div class="btn-form" ng-show="tableform.$visible">
-                <button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(linesModel)" class="btn blue"> @(Add) <i class="fa fa-plus"></i></button>
-            </div>
-        </div>
-    </div>
+								</div>
+								<div class="actions">
+												<div class="btn-form" ng-show="tableform.$visible">
+																<button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(linesModel)" class="btn blue"> @(Add) <i class="fa fa-plus"></i></button>
+												</div>
+								</div>
+				</div>
 
-    <div class="portlet-body">
-        <form editable-form name="tableform" onaftersave="create()" oncancel="findOne()">
-            <!-- table -->
-            <table class="table table-fixed table-striped table-bordered table-hover no-footer">
-                <thead>
-                    <tr role="row" class="heading">
-                        <th style="width: 50px;">@(products:ProductCode)</th>
-                        <th style="width: 80px;">@(Name)</th>
-                        <th style="width: 17px;">@(products:InStock)</th>
-                        <th style="width: 25px;">@(products:DirectCost)</th>
-                        <th style="width: 25px;">@(NewValue)</th>
-                        <th style="width: 20px;">@(Adjustment)</th>
-                        <th style="width: 10px;"><span ng-show="tableform.$visible"> </span></th>
-                    </tr>
-                </thead>
-                <tr ng-repeat="line in linesModel| filter:filterLine">
-                    <td>
-                        <div class="input-icon right">
-                            <i class="fa fa-warning font-red pull-right" ng-show="!line.product._id" title="@(products:ErrorProductBadRefOrLabel)"></i>
-                            <input ng-show="tableform.$visible" ng-class="{'has-error':$error, 'has-success': !$error}" type="text" ng-model="line.product.info.SKU" typeahead="product as product.ref for product in productAutoComplete($viewValue, 'ref')" typeahead-template-url="searchproduct.html"
-                                typeahead-on-select="addProduct($item, line.idLine, linesModel)" onbeforesave="checkLine(line.product)" />
+				<div class="portlet-body">
+								<form editable-form name="tableform" onaftersave="create()" oncancel="findOne()">
+												<!-- table -->
+												<table class="table table-fixed table-striped table-bordered table-hover no-footer">
+																<thead>
+																				<tr role="row" class="heading">
+																								<th style="width: 50px;">@(products:ProductCode)</th>
+																								<th style="width: 80px;">@(Name)</th>
+																								<th style="width: 17px;">@(products:InStock)</th>
+																								<th style="width: 25px;">@(products:DirectCost)</th>
+																								<th style="width: 25px;">@(NewValue)</th>
+																								<th style="width: 20px;">@(Adjustment)</th>
+																								<th style="width: 10px;"><span ng-show="tableform.$visible"> </span></th>
+																				</tr>
+																</thead>
+																<tr ng-repeat="line in linesModel| filter:filterLine">
+																				<td>
+																								<div class="input-icon right">
+																												<i class="fa fa-warning font-red pull-right" ng-show="!line.product._id" title="@(products:ErrorProductBadRefOrLabel)"></i>
+																												<input ng-show="tableform.$visible" ng-class="{'has-error':$error, 'has-success': !$error}" type="text" ng-model="line.product.info.SKU" typeahead="product as product.ref for product in productAutoComplete($viewValue, 'ref')" typeahead-template-url="searchproduct.html"
+																												    typeahead-on-select="addProduct($item, line.idLine, linesModel)" onbeforesave="checkLine(line.product)" />
 
-                            <a ng-hide="tableform.$visible" ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a>
+																												<a ng-hide="tableform.$visible" ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a>
 
-                        </div>
-                    </td>
-                    <td>
-                        {{ line.product.info.langs[0].name || 'empty' }}
-                    </td>
-                    <td class="center">
-                        {{ line.onHand || 0 }}
-                    </td>
-                    <td class="center">
-                        <input ng-show="tableform.$visible" class="form-control" name="cost" type="number" ng-model="line.cost" step="0.001" min="0" />
-                        <span ng-hide="tableform.$visible">{{ line.cost | currency }}</span>
-                    </td>
-                    <td class="center">
-                        <input ng-show="tableform.$visible" class="form-control" name="newOnHand" type="number" ng-model="line.newOnHand" step="0.001" ng-change="updateQty(line,'newOnHand')" />
-                        <span ng-hide="tableform.$visible">{{ line.newOnHand || '--' }}</span>
-                    </td>
-                    <td class="center">
-                        <input ng-show="tableform.$visible" class="form-control" name="qty" type="number" ng-model="line.qty" step="0.001" ng-change="updateQty(line,'qty')" />
-                        <span ng-hide="tableform.$visible">{{ line.qty || '--' }}</span>
-                    </td>
-                    <td>
-                        <div class="btn-toolbar" role="toolbar">
-                            <div class="btn-group btn-group">
-                                <button type="button" ng-show="tableform.$visible" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-            <!-- buttons -->
+																								</div>
+																				</td>
+																				<td>
+																								{{ line.product.info.langs[0].name || 'empty' }}
+																				</td>
+																				<td class="center">
+																								{{ line.onHand || 0 }}
+																				</td>
+																				<td class="center">
+																								<input ng-show="tableform.$visible" class="form-control" name="cost" type="number" ng-model="line.cost" step="0.001" min="0" />
+																								<span ng-hide="tableform.$visible">{{ line.cost | currency }}</span>
+																				</td>
+																				<td class="center">
+																								<input ng-show="tableform.$visible" class="form-control" name="newOnHand" type="number" ng-model="line.newOnHand" step="0.001" ng-change="updateQty(line,'newOnHand')" />
+																								<span ng-hide="tableform.$visible">{{ line.newOnHand || '--' }}</span>
+																				</td>
+																				<td class="center">
+																								<input ng-show="tableform.$visible" class="form-control" name="qty" type="number" ng-model="line.qty" step="0.001" ng-change="updateQty(line,'qty')" />
+																								<span ng-hide="tableform.$visible">{{ line.qty || '--' }}</span>
+																				</td>
+																				<td>
+																								<div class="btn-toolbar" role="toolbar">
+																												<div class="btn-group btn-group">
+																																<button type="button" ng-show="tableform.$visible" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
+																												</div>
+																								</div>
+																				</td>
+																</tr>
+												</table>
+												<!-- buttons -->
 
-            <div class="btn-form" ng-show="tableform.$visible">
-                <button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(linesModel)" class="btn blue "><i class="fa fa-plus"></i> @(AddNewLine)</button>
-                <button type="submit" ng-disabled="tableform.$waiting" class="btn green pull-right"> @(Save) <i class="fa fa-check"></i></button>
-                <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn red pull-right"><i class="fa fa-angle-left"></i> @(Cancel) </button>
-            </div>
-        </form>
-    </div>
+												<div class="btn-form" ng-show="tableform.$visible">
+																<button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(linesModel)" class="btn blue "><i class="fa fa-plus"></i> @(AddNewLine)</button>
+																<button type="submit" ng-disabled="tableform.$waiting" class="btn green pull-right"> @(Save) <i class="fa fa-check"></i></button>
+																<button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn red pull-right"><i class="fa fa-angle-left"></i> @(Cancel) </button>
+												</div>
+								</form>
+				</div>
 </div>

@@ -1,111 +1,111 @@
 <!-- BEGIN : LOGIN PAGE 5-2 -->
 <div class="user-login-5">
-    <div class="row bs-reset">
-        <div class="col-md-6 login-container bs-reset">
-            <img class="login-logo login-6" src="@{'logo-connect-3.png'}">
-            <div class="login-content">
-                <h1>ToManage ERP Login</h1>
-                <p> @(ConnectDescription) </p>
-                <form class="login-form" action="/login/" method="post">
-                    <div class="alert alert-danger display-hide">
-                        <button class="close" data-close="alert"></button>
-                        <span>@(Enteranyusernameandpassword) </span>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-5">
-                            <div class="form-group">
-                                <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
-                                <label class="control-label visible-ie8 visible-ie9">@(User)</label>
-                                <div class="input-icon">
-                                    <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="@(User)" id="username" name="username" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-5">
-                            <div class="form-group">
-                                <label class="control-label visible-ie8 visible-ie9">@(Password)</label>
-                                <div class="input-icon">
-                                    <input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="@(Password)" id="password" name="password" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-2">
-                            <div class="form-actions">
-                                <button type="submit" class="btn dark pull-right">@(Login) <i class="m-icon-swapright m-icon-white"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="login-options">
-                                <ul class="social-icons">
-                                    <li>
-                                        <a class="googleplus" data-original-title="Google Plus" href="/login/google/">
+				<div class="row bs-reset">
+								<div class="col-md-6 login-container bs-reset">
+												<img class="login-logo login-6" src="@{'logo-connect-3.png'}">
+												<div class="login-content">
+																<h1>ToManage ERP Login</h1>
+																<p> @(ConnectDescription) </p>
+																<form class="login-form" action="/login/" method="post">
+																				<div class="alert alert-danger display-hide">
+																								<button class="close" data-close="alert"></button>
+																								<span>@(Enteranyusernameandpassword) </span>
+																				</div>
+																				<div class="row">
+																								<div class="col-xs-5">
+																												<div class="form-group">
+																																<!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+																																<label class="control-label visible-ie8 visible-ie9">@(User)</label>
+																																<div class="input-icon">
+																																				<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="@(User)" id="username" name="username" />
+																																</div>
+																												</div>
+																								</div>
+																								<div class="col-xs-5">
+																												<div class="form-group">
+																																<label class="control-label visible-ie8 visible-ie9">@(Password)</label>
+																																<div class="input-icon">
+																																				<input class="form-control placeholder-no-fix" type="password" autocomplete="off" placeholder="@(Password)" id="password" name="password" />
+																																</div>
+																												</div>
+																								</div>
+																								<div class="col-xs-2">
+																												<div class="form-actions">
+																																<button type="submit" class="btn dark pull-right">@(Login) <i class="m-icon-swapright m-icon-white"></i></button>
+																												</div>
+																								</div>
+																				</div>
+																				<div class="row">
+																								<div class="col-sm-4">
+																												<div class="login-options">
+																																<ul class="social-icons">
+																																				<li>
+																																								<a class="googleplus" data-original-title="Google Plus" href="/login/google/">
                                         </a>
-                                    </li>
-                                    <li>
-                                        <a class="linkedin" data-original-title="Linkedin" href="/login/symeos/">
+																																				</li>
+																																				<li>
+																																								<a class="linkedin" data-original-title="Linkedin" href="/login/symeos/">
                                         </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-sm-8 text-right">
-                            <div class="forgot-password">
-                                <a href="javascript:;" id="forget-password" class="forget-password">@(PasswordForgotten)</a>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-                <!-- BEGIN FORGOT PASSWORD FORM -->
-                <form class="forget-form" action="javascript:;" method="post" style="display: none;">
-                    <h3>@(PasswordForgotten)</h3>
-                    <p> @(admin:Enteryoure-mailaddressbelowtoresetyourpassword). </p>
-                    <div class="form-group">
-                        <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email"> </div>
-                    <div class="form-actions">
-                        <button type="button" id="back-btn" class="btn grey btn-outline">@(Back)</button>
-                        <button type="submit" class="btn yellow-crusta uppercase pull-right">@(Submit)</button>
-                    </div>
-                </form>
-                <!-- END FORGOT PASSWORD FORM -->
-            </div>
-            <div class="login-footer">
-                <div class="row bs-reset">
-                    <div class="col-xs-5 bs-reset">
-                        <ul class="login-social">
-                            <li>
-                                <a href="https://www.facebook.com/ToManage.erp/" target="_blank">
+																																				</li>
+																																</ul>
+																												</div>
+																								</div>
+																								<div class="col-sm-8 text-right">
+																												<div class="forgot-password">
+																																<a href="javascript:;" id="forget-password" class="forget-password">@(PasswordForgotten)</a>
+																												</div>
+																								</div>
+																				</div>
+																</form>
+																<!-- BEGIN FORGOT PASSWORD FORM -->
+																<form class="forget-form" action="javascript:;" method="post" style="display: none;">
+																				<h3>@(PasswordForgotten)</h3>
+																				<p> @(admin:Enteryoure-mailaddressbelowtoresetyourpassword). </p>
+																				<div class="form-group">
+																								<input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="Email" name="email"> </div>
+																				<div class="form-actions">
+																								<button type="button" id="back-btn" class="btn grey btn-outline">@(Back)</button>
+																								<button type="submit" class="btn yellow-crusta uppercase pull-right">@(Submit)</button>
+																				</div>
+																</form>
+																<!-- END FORGOT PASSWORD FORM -->
+												</div>
+												<div class="login-footer">
+																<div class="row bs-reset">
+																				<div class="col-xs-5 bs-reset">
+																								<ul class="login-social">
+																												<li>
+																																<a href="https://www.facebook.com/ToManage.erp/" target="_blank">
                                     <i class="icon-social-facebook"></i>
                                 </a>
-                            </li>
-                            <li>
-                                <a href="https://twitter.com/ToManage_js" target="_blank">
+																												</li>
+																												<li>
+																																<a href="https://twitter.com/ToManage_js" target="_blank">
                                     <i class="icon-social-twitter"></i>
                                 </a>
-                            </li>
-                            <li>
-                                <a href="https://www.tomanage.fr/" target="_blank">
+																												</li>
+																												<li>
+																																<a href="https://www.tomanage.fr/" target="_blank">
                                     <i class="icon-social-dribbble"></i>
                                 </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-7 bs-reset">
-                        <div class="login-copyright text-right">
-                            <p>@(Copyright)</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 bs-reset">
-            <div class="login-bg" style="position: relative; z-index: 0; background: none;">
-                <div class="backstretch" style="left: 0px; top: 0px; overflow: hidden; margin: 0px; padding: 0px; height: 618px; width: 960px; z-index: -999998; position: absolute;">
-                    <img src="/assets/pages/img/login/bg1.jpg" style="position: absolute; margin: 0px; padding: 0px; border: none; width: 960px; height: 864px; max-height: none; max-width: none; z-index: -999999; left: 0px; top: 0px;">
-                </div>
-            </div>
-        </div>
-    </div>
+																												</li>
+																								</ul>
+																				</div>
+																				<div class="col-xs-7 bs-reset">
+																								<div class="login-copyright text-right">
+																												<p>@(Copyright)</p>
+																								</div>
+																				</div>
+																</div>
+												</div>
+								</div>
+								<div class="col-md-6 bs-reset">
+												<div class="login-bg" style="position: relative; z-index: 0; background: none;">
+																<div class="backstretch" style="left: 0px; top: 0px; overflow: hidden; margin: 0px; padding: 0px; height: 618px; width: 960px; z-index: -999998; position: absolute;">
+																				<img src="/assets/pages/img/login/bg1.jpg" style="position: absolute; margin: 0px; padding: 0px; border: none; width: 960px; height: 864px; max-height: none; max-width: none; z-index: -999999; left: 0px; top: 0px;">
+																</div>
+												</div>
+								</div>
+				</div>
 </div>
 <!-- END : LOGIN PAGE 5-2 -->

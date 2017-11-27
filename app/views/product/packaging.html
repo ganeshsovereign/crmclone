@@ -1,105 +1,105 @@
 <script type="text/ng-template" id="searchsupplierproduct.html">
-    <a>
+				<a>
         <span ng-bind-html="match.model.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.info.langs[0].name"></span> ({{match.model.directCost |currency}})
     </a>
 </script>
 <div class="row">
-    <div class="col-md-12">
-        <div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
+				<div class="col-md-12">
+								<div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
 
-        <div class="form-horizontal form-row-seperated">
-            <div class="portlet portlet light bordered">
-                <div class="portlet-title">
-                    <div class="caption font-yellow-crusta">
-                        <i class="fa fa-cubes font-yellow-crusta sbold"></i> @(products:pack)
-                    </div>
-                    <save mode="product._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
-                </div>
-                <div class="portlet-body">
-                    <div class="row">
-                        <div class="col-md-12">
+								<div class="form-horizontal form-row-seperated">
+												<div class="portlet portlet light bordered">
+																<div class="portlet-title">
+																				<div class="caption font-yellow-crusta">
+																								<i class="fa fa-cubes font-yellow-crusta sbold"></i> @(products:pack)
+																				</div>
+																				<save mode="product._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
+																</div>
+																<div class="portlet-body">
+																				<div class="row">
+																								<div class="col-md-12">
 
-                            <table class="table table-bordered table-hover">
-                                <thead>
-                                    <tr role="row" class="heading">
-                                        <th>
-                                            @(products:Ref)
-                                        </th>
-                                        <th>
-                                            @(Label)
-                                        </th>
-                                        <th>
-                                            @(Qty)
-                                        </th>
-                                        <th>
-                                            @(products:BuyingPriceHT)
-                                        </th>
-                                        <th>
-                                            @(AmountHT)
-                                        </th>
-                                        <th>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <input class="form-control" ng-model="newPack.id.info.SKU" typeahead="product as product.ref for product in productAutoComplete($viewValue)" typeahead-template-url="searchsupplierproduct.html" typeahead-on-select="addPackProduct($item,'pack')" placeholder="@(products:ProductRef)"
-                                            />
-                                        </td>
-                                        <td>
-                                            {{newPack.id.name}}
-                                        </td>
-                                        <td>
-                                            <input class="form-control" type="number" min="0" step="any" ng-model="newPack.qty" ng-change="changePackQty()" />
-                                        </td>
-                                        <td>
-                                            {{newPack.id.directCost|currency}}
-                                        </td>
-                                        <td>
-                                            {{newPack.total_ht|currency}}
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-circle default" ng-click="addPack('pack')">
+																												<table class="table table-bordered table-hover">
+																																<thead>
+																																				<tr role="row" class="heading">
+																																								<th>
+																																												@(products:Ref)
+																																								</th>
+																																								<th>
+																																												@(Label)
+																																								</th>
+																																								<th>
+																																												@(Qty)
+																																								</th>
+																																								<th>
+																																												@(products:BuyingPriceHT)
+																																								</th>
+																																								<th>
+																																												@(AmountHT)
+																																								</th>
+																																								<th>
+																																								</th>
+																																				</tr>
+																																</thead>
+																																<tbody>
+																																				<tr>
+																																								<td>
+																																												<input class="form-control" ng-model="newPack.id.info.SKU" typeahead="product as product.ref for product in productAutoComplete($viewValue)" typeahead-template-url="searchsupplierproduct.html" typeahead-on-select="addPackProduct($item,'pack')" placeholder="@(products:ProductRef)"
+																																												/>
+																																								</td>
+																																								<td>
+																																												{{newPack.id.name}}
+																																								</td>
+																																								<td>
+																																												<input class="form-control" type="number" min="0" step="any" ng-model="newPack.qty" ng-change="changePackQty()" />
+																																								</td>
+																																								<td>
+																																												{{newPack.id.directCost|currency}}
+																																								</td>
+																																								<td>
+																																												{{newPack.total_ht|currency}}
+																																								</td>
+																																								<td>
+																																												<button class="btn btn-circle default" ng-click="addPack('pack')">
                                                 <i class="fa fa-plus"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr ng-repeat="pack in product.pack">
-                                        <td>
-                                            <a class="with-tooltip" ui-sref="product.show({id: pack.id._id})" data-tooltip-options='{"position":"top"}' title="{{pack.id.info.SKU}}"><span class="fa fa-cubes"></span> {{pack.id.info.SKU}}</a>
-                                        </td>
-                                        <td>
-                                            {{pack.id.info.langs[0].name}}
-                                        </td>
-                                        <td>
-                                            <span editable-number="pack.qty" e-min="0" e-step="any" onaftersave="update()">
+																																								</td>
+																																				</tr>
+																																				<tr ng-repeat="pack in product.pack">
+																																								<td>
+																																												<a class="with-tooltip" ui-sref="product.show({id: pack.id._id})" data-tooltip-options='{"position":"top"}' title="{{pack.id.info.SKU}}"><span class="fa fa-cubes"></span> {{pack.id.info.SKU}}</a>
+																																								</td>
+																																								<td>
+																																												{{pack.id.info.langs[0].name}}
+																																								</td>
+																																								<td>
+																																												<span editable-number="pack.qty" e-min="0" e-step="any" onaftersave="update()">
                                                 {{pack.qty}}
                                             </span>
-                                        </td>
-                                        <td style="text-align: right; ">
-                                            {{pack.id.directCost| currency}}
-                                        </td>
-                                        <td style="text-align: right; ">
-                                            {{pack.id.directCost * pack.qty| currency}}
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-circle red" ng-click="deletePack($index,'pack')">
+																																								</td>
+																																								<td style="text-align: right; ">
+																																												{{pack.id.directCost| currency}}
+																																								</td>
+																																								<td style="text-align: right; ">
+																																												{{pack.id.directCost * pack.qty| currency}}
+																																								</td>
+																																								<td>
+																																												<button class="btn btn-circle red" ng-click="deletePack($index,'pack')">
                                                 <i class="fa fa-trash"></i> </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="4">@(Total)</td>
-                                        <td>{{product.directCost | currency}}</td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+																																								</td>
+																																				</tr>
+																																</tbody>
+																																<tfoot>
+																																				<tr>
+																																								<td colspan="4">@(Total)</td>
+																																								<td>{{product.directCost | currency}}</td>
+																																								<td></td>
+																																				</tr>
+																																</tfoot>
+																												</table>
+																								</div>
+																				</div>
+																</div>
+												</div>
+								</div>
+				</div>
 </div>

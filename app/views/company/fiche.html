@@ -1,55 +1,55 @@
 <div ng-if="societe.isremoved" class="alert alert-danger">
-    <strong>@(BeCareful)</strong>@(companies:CompanyDeleted)</div>
+				<strong>@(BeCareful)</strong>@(companies:CompanyDeleted)</div>
 
 <div class="page-bar" ng-init="findOne()">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="fa fa-home"></i>
-            <a ui-sref="home">@(Home)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>@(companies:ThirdParties)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <a ng-hide="societe.type == 'Person'" ui-sref="societe.list">@(companies:CustomerList)</a>
-            <a ng-hide="societe.type == 'Company'" ui-sref="contact.list">@(companies:ListOfContacts)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span ng-hide="societe.type == 'Company'"> @(companies:CustomerCardOf) {{societe.fullName}}</span>
-            <span ng-hide="societe.type == 'Person'"> @(companies:CardCompanyOf) {{societe.fullName}}</span>
-        </li>
+				<ul class="page-breadcrumb">
+								<li>
+												<i class="fa fa-home"></i>
+												<a ui-sref="home">@(Home)</a>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<span>@(companies:ThirdParties)</span>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<a ng-hide="societe.type == 'Person'" ui-sref="societe.list">@(companies:CustomerList)</a>
+												<a ng-hide="societe.type == 'Company'" ui-sref="contact.list">@(companies:ListOfContacts)</a>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<span ng-hide="societe.type == 'Company'"> @(companies:CustomerCardOf) {{societe.fullName}}</span>
+												<span ng-hide="societe.type == 'Person'"> @(companies:CardCompanyOf) {{societe.fullName}}</span>
+								</li>
 
-        <li>
-            <small ng-hide="!societe.salesPurchases.isActive" class="font-yellow-crusta sbold">@(Enabled)</small><small ng-show="!societe.salesPurchases.isActive" class="font-red">@(Disabled)</small>
-        </li>
-    </ul>
-    <div class="page-toolbar" ng-hide="societe.isremoved">
-        <div class="btn-group">
-            <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+								<li>
+												<small ng-hide="!societe.salesPurchases.isActive" class="font-yellow-crusta sbold">@(Enabled)</small><small ng-show="!societe.salesPurchases.isActive" class="font-red">@(Disabled)</small>
+								</li>
+				</ul>
+				<div class="page-toolbar" ng-hide="societe.isremoved">
+								<div class="btn-group">
+												<a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
                 <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
             </a>
-            <ul class="dropdown-menu pull-right">
-                <li>
-                    <a href="#" ng-click="clone()">
+												<ul class="dropdown-menu pull-right">
+																<li>
+																				<a href="#" ng-click="clone()">
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
-                </li>
-                <li ng-if="societe.sha1">
-                    <a ng-href="https://atlankit.extene.com/inputERP?__method=autoLogin&email={{societe.emails[0].email.toUpperCase()}}&token={{societe.sha1}}" target="_blank">
+																</li>
+																<li ng-if="societe.sha1">
+																				<a ng-href="https://atlankit.extene.com/inputERP?__method=autoLogin&email={{societe.emails[0].email.toUpperCase()}}&token={{societe.sha1}}" target="_blank">
                         <i class="fa fa-key"></i> @(Prestashop)
                     </a>
-                </li>
-                <li>
-                    <a href="#" class="font-red" ng-show="login.rights.societe.delete" confirmed-click="remove(societe)" ng-confirm-click="Supprimer la societe ?" title="Supprimer la societe">
+																</li>
+																<li>
+																				<a href="#" class="font-red" ng-show="login.rights.societe.delete" confirmed-click="remove(societe)" ng-confirm-click="Supprimer la societe ?" title="Supprimer la societe">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
-                </li>
-            </ul>
-        </div>
-    </div>
+																</li>
+												</ul>
+								</div>
+				</div>
 </div>
 
 <!--<h3 ng-show="societe.type == 'Person'" class="page-title" ng-class="{'font-red':!societe.salesPurchases.isActive}">

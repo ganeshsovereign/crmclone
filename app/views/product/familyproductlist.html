@@ -1,136 +1,136 @@
 <div class="page-bar" ng-init="findOne()">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="fa fa-home"></i>
-            <a ui-sref="home">@(Home)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>@(products:ProductsAndServices)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span> @(products:FamilyProducts) </span>
-        </li>
+				<ul class="page-breadcrumb">
+								<li>
+												<i class="fa fa-home"></i>
+												<a ui-sref="home">@(Home)</a>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<span>@(products:ProductsAndServices)</span>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<span> @(products:FamilyProducts) </span>
+								</li>
 
-    </ul>
-    <div class="page-toolbar">
-        <div class="btn-group">
-            <a class="btn purple-sharp dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+				</ul>
+				<div class="page-toolbar">
+								<div class="btn-group">
+												<a class="btn purple-sharp dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
                 <i class="fa fa-flag"></i> {{languages[_language].name}} <i class="fa fa-angle-down"></i>
             </a>
-            <ul class="dropdown-menu pull-right">
-                <li ng-repeat="s in languages">
-                    <a href="#" ng-click="setLanguage(s.idx)">
+												<ul class="dropdown-menu pull-right">
+																<li ng-repeat="s in languages">
+																				<a href="#" ng-click="setLanguage(s.idx)">
                         <i class="fa fa-copy"></i> {{s.name}}
                     </a>
 
-                </li>
-            </ul>
-        </div>
-        <div class="btn-group">
-            <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+																</li>
+												</ul>
+								</div>
+								<div class="btn-group">
+												<a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
                 <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
             </a>
-            <ul class="dropdown-menu pull-right">
-                <li>
-                    <a href="#" ng-click="refreshDirectory()">
+												<ul class="dropdown-menu pull-right">
+																<li>
+																				<a href="#" ng-click="refreshDirectory()">
                         <i class="fa fa-refresh"></i> @(Refresh)
                     </a>
-                </li>
-                <!--   <li>
+																</li>
+																<!--   <li>
                     <a href="#" ng-click="clone()">
                         <i class="fa fa-copy"></i> @(PrintPDF)
                     </a>
                 </li> -->
-                <li>
-                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+																<li>
+																				<a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
-                </li>
-            </ul>
-        </div>
-    </div>
+																</li>
+												</ul>
+								</div>
+				</div>
 </div>
 
 <div class="portlet light bordered">
-    <div class="portlet-title">
-        <div class="caption">
-            <i class="fa fa-bars"></i>
-            <span class="caption-subject dark sbold uppercase">@(products:FamilyProducts)</span>
-        </div>
-        <div class="actions">
-            <a class="btn blue" ui-sref="product.family.create">@(Add) <i class="fa fa-plus"></i></a>
-            <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
+				<div class="portlet-title">
+								<div class="caption">
+												<i class="fa fa-bars"></i>
+												<span class="caption-subject dark sbold uppercase">@(products:FamilyProducts)</span>
+								</div>
+								<div class="actions">
+												<a class="btn blue" ui-sref="product.family.create">@(Add) <i class="fa fa-plus"></i></a>
+												<a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
             </a>
-        </div>
-    </div>
-    <div class="tools">
-    </div>
-    <div class="portlet light">
-        <div class="form-body">
-            <tabset class="tabbable-line tabbable-full-width">
-                <tab heading="@(products:Sell)">
-                    <div class="table-responsive">
-                        <div class="dataTables_wrapper no-footer table-responsive">
-                            <div class="col-md-12">
-                                <table class="table table-striped table-bordered table-hover no-footer" id="familyProductList">
-                                    <thead>
-                                        <tr role="row" class="heading">
-                                            <th>@(products:Sequence)</th>
-                                            <th>@(Name)</th>
-                                            <th>@(products:QtyOfProductOnThisFamily)</th>
-                                            <th>@(CreatedAt)</th>
-                                            <th class="center" width="120px">@(Action)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="line in listObject | filter:{isCost:false}">
-                                            <td>{{line.sequence}}</td>
-                                            <td>{{line.name}}</td>
-                                            <td>{{line.countProducts}}</td>
-                                            <td>{{line.createdAt | date : "shortDate"}}</td>
-                                            <td>
-                                                <a class="btn green fa fa-pencil" ui-sref="product.family.show({id:line._id})" title="Editer"></a>
-                                                <button ng-if="line.countProducts == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteFamily)" confirmed-click="remove(line)"></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </tab>
-                <tab heading="@(products:Buy)">
-                    <div class="table-responsive">
-                        <div class="dataTables_wrapper no-footer table-responsive">
-                            <div class="col-md-12">
-                                <table class="table table-striped table-bordered table-hover no-footer" id="familyProductList">
-                                    <thead>
-                                        <tr role="row" class="heading">
-                                            <th>@(products:Sequence)</th>
-                                            <th>@(Name)</th>
-                                            <th>@(products:QtyOfProductOnThisFamily)</th>
-                                            <th>@(CreatedAt)</th>
-                                            <th class="center" width="120px">@(Action)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="line in listObject | filter:{isCost:true}">
-                                            <td>{{line.sequence}}</td>
-                                            <td>{{line.name}}</td>
-                                            <td>{{line.countCostProducts}}</td>
-                                            <td>{{line.createdAt | date : "shortDate"}}</td>
-                                            <td>
-                                                <a class="btn green fa fa-pencil" ui-sref="product.family.show({id:line._id})" title="Editer"></a>
-                                                <button ng-if="line.countCostProducts == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteFamily)" confirmed-click="remove(line)"></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </tab>
-        </div>
-    </div>
+								</div>
+				</div>
+				<div class="tools">
+				</div>
+				<div class="portlet light">
+								<div class="form-body">
+												<tabset class="tabbable-line tabbable-full-width">
+																<tab heading="@(products:Sell)">
+																				<div class="table-responsive">
+																								<div class="dataTables_wrapper no-footer table-responsive">
+																												<div class="col-md-12">
+																																<table class="table table-striped table-bordered table-hover no-footer" id="familyProductList">
+																																				<thead>
+																																								<tr role="row" class="heading">
+																																												<th>@(products:Sequence)</th>
+																																												<th>@(Name)</th>
+																																												<th>@(products:QtyOfProductOnThisFamily)</th>
+																																												<th>@(CreatedAt)</th>
+																																												<th class="center" width="120px">@(Action)</th>
+																																								</tr>
+																																				</thead>
+																																				<tbody>
+																																								<tr ng-repeat="line in listObject | filter:{isCost:false}">
+																																												<td>{{line.sequence}}</td>
+																																												<td>{{line.name}}</td>
+																																												<td>{{line.countProducts}}</td>
+																																												<td>{{line.createdAt | date : "shortDate"}}</td>
+																																												<td>
+																																																<a class="btn green fa fa-pencil" ui-sref="product.family.show({id:line._id})" title="Editer"></a>
+																																																<button ng-if="line.countProducts == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteFamily)" confirmed-click="remove(line)"></button>
+																																												</td>
+																																								</tr>
+																																				</tbody>
+																																</table>
+																												</div>
+																								</div>
+																				</div>
+																</tab>
+																<tab heading="@(products:Buy)">
+																				<div class="table-responsive">
+																								<div class="dataTables_wrapper no-footer table-responsive">
+																												<div class="col-md-12">
+																																<table class="table table-striped table-bordered table-hover no-footer" id="familyProductList">
+																																				<thead>
+																																								<tr role="row" class="heading">
+																																												<th>@(products:Sequence)</th>
+																																												<th>@(Name)</th>
+																																												<th>@(products:QtyOfProductOnThisFamily)</th>
+																																												<th>@(CreatedAt)</th>
+																																												<th class="center" width="120px">@(Action)</th>
+																																								</tr>
+																																				</thead>
+																																				<tbody>
+																																								<tr ng-repeat="line in listObject | filter:{isCost:true}">
+																																												<td>{{line.sequence}}</td>
+																																												<td>{{line.name}}</td>
+																																												<td>{{line.countCostProducts}}</td>
+																																												<td>{{line.createdAt | date : "shortDate"}}</td>
+																																												<td>
+																																																<a class="btn green fa fa-pencil" ui-sref="product.family.show({id:line._id})" title="Editer"></a>
+																																																<button ng-if="line.countCostProducts == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteFamily)" confirmed-click="remove(line)"></button>
+																																												</td>
+																																								</tr>
+																																				</tbody>
+																																</table>
+																												</div>
+																								</div>
+																				</div>
+																</tab>
+								</div>
+				</div>

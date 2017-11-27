@@ -27,69 +27,69 @@ International Registered Trademark & Property of ToManage SAS
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+		Schema = mongoose.Schema;
 
 var productTypesSchema = new Schema({
-    code: String,
-    langs: [{
-        _id: false,
-        name: String,
-        label: {
-            type: String,
-            default: ''
-        } // On select in product
-    }],
-    //options: [{ type: Schema.Types.ObjectId, ref: 'productOptions' }], //variants
-    //attributes: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }],
-    inventory: {
-        type: Boolean,
-        default: false
-    },
-    isProduct: {
-        type: Boolean,
-        default: true
-    }, //Product
-    isService: {
-        type: Boolean,
-        default: false
-    }, //Product
-    isBundle: {
-        type: Boolean,
-        default: false
-    }, //Pack promo
-    isPackaging: {
-        type: Boolean,
-        default: false
-    }, //Packaging of a product
-    isDynamic: {
-        type: Boolean,
-        default: false
-    }, //Dynamic forms
-    dynamic: {
-        name: {
-            type: String,
-            default: ""
-        }, //Module name
-        template: String, //url For productLine
-        configurator: String // Module name for product configurator /templates/_{{module}}/configurator.html
-    },
-    isEShop: {
-        type: Boolean,
-        default: false
-    }, // Enable eshop on PIM
+		code: String,
+		langs: [{
+				_id: false,
+				name: String,
+				label: {
+						type: String,
+						default: ''
+				} // On select in product
+		}],
+		//options: [{ type: Schema.Types.ObjectId, ref: 'productOptions' }], //variants
+		//attributes: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }],
+		inventory: {
+				type: Boolean,
+				default: false
+		},
+		isProduct: {
+				type: Boolean,
+				default: true
+		}, //Product
+		isService: {
+				type: Boolean,
+				default: false
+		}, //Product
+		isBundle: {
+				type: Boolean,
+				default: false
+		}, //Pack promo
+		isPackaging: {
+				type: Boolean,
+				default: false
+		}, //Packaging of a product
+		isDynamic: {
+				type: Boolean,
+				default: false
+		}, //Dynamic forms
+		dynamic: {
+				name: {
+						type: String,
+						default: ""
+				}, //Module name
+				template: String, //url For productLine
+				configurator: String // Module name for product configurator /templates/_{{module}}/configurator.html
+		},
+		isEShop: {
+				type: Boolean,
+				default: false
+		}, // Enable eshop on PIM
 
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    isActive: {
-        type: Boolean,
-        default: true
-    },
-    sequence: {
-        type: Number,
-        default: 0
-    } // sort list
+		createdAt: {
+				type: Date,
+				default: Date.now
+		},
+		isActive: {
+				type: Boolean,
+				default: true
+		},
+		sequence: {
+				type: Number,
+				default: 0
+		} // sort list
 });
 
 exports.Schema = mongoose.model('productTypes', productTypesSchema, 'productTypes');

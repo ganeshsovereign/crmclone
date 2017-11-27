@@ -1,102 +1,102 @@
 <div>
-    <div class="page-bar">
-        <ul class="page-breadcrumb">
-            <li>
-                <i class="fa fa-home"></i>
-                <a ui-sref="home">@(Home)</a>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span>@(products:Stock)</span>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span>@(products:Inventory)</span>
-            </li>
-        </ul>
+				<div class="page-bar">
+								<ul class="page-breadcrumb">
+												<li>
+																<i class="fa fa-home"></i>
+																<a ui-sref="home">@(Home)</a>
+																<i class="fa fa-angle-right"></i>
+												</li>
+												<li>
+																<span>@(products:Stock)</span>
+																<i class="fa fa-angle-right"></i>
+												</li>
+												<li>
+																<span>@(products:Inventory)</span>
+												</li>
+								</ul>
 
-        <div class="page-toolbar">
-            <div class="btn-group pull-right">
-                <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown"><i class="fa fa-share"></i> @(Tools)
+								<div class="page-toolbar">
+												<div class="btn-group pull-right">
+																<a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown"><i class="fa fa-share"></i> @(Tools)
                                                     <i class="fa fa-angle-down"></i>
                                                 </a>
-                <ul class="dropdown-menu pull-right">
-                </ul>
-            </div>
-        </div>
-    </div>
+																<ul class="dropdown-menu pull-right">
+																</ul>
+												</div>
+								</div>
+				</div>
 
-    <div class="portlet light portlet-form bordered">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-line-chart"></i>
-                <span class="caption-subject dark bold uppercase"> @(products:Inventory)</span>
-            </div>
-        </div>
-        <div class="tools">
-        </div>
-        <div class="portlet-body">
-            <tabset class="tabbable-line tabbable-full-width">
-                <!--
+				<div class="portlet light portlet-form bordered">
+								<div class="portlet-title">
+												<div class="caption">
+																<i class="fa fa-line-chart"></i>
+																<span class="caption-subject dark bold uppercase"> @(products:Inventory)</span>
+												</div>
+								</div>
+								<div class="tools">
+								</div>
+								<div class="portlet-body">
+												<tabset class="tabbable-line tabbable-full-width">
+																<!--
             Low Stock
             -->
-                <tab heading="@(products:LowStock)">
-                    <div class="dataTables_wrapper table-responsive">
+																<tab heading="@(products:LowStock)">
+																				<div class="dataTables_wrapper table-responsive">
 
-                        <table class="table table-striped table-hover no-footer" id="stockLowLevel">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th>@(Ref)</th>
-                                    <th width="35%">@(Name)</th>
-                                    <th>@(products:InStock)</th>
-                                    <th>@(products:LowAlertLevel)</th>
-                                    <th>@(Différence)</th>
-                                    <th>@(orders:Expected)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="line in listObjectLowLevel">
-                                    <td>
-                                        <a ui-sref="product.show({id:line._id})">{{line.sku}}</a>
-                                    </td>
-                                    <td>{{line.name}}</td>
-                                    <td>{{line.onHand || 0}}</td>
-                                    <td>{{line.minStockLevel || '--'}} </td>
-                                    <td>{{line.minStockLevel - line.onHand}}</td>
-                                    <td>{{line.awaiting || '--'}} </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </tab>
-                <!--
+																								<table class="table table-striped table-hover no-footer" id="stockLowLevel">
+																												<thead>
+																																<tr role="row" class="heading">
+																																				<th>@(Ref)</th>
+																																				<th width="35%">@(Name)</th>
+																																				<th>@(products:InStock)</th>
+																																				<th>@(products:LowAlertLevel)</th>
+																																				<th>@(Différence)</th>
+																																				<th>@(orders:Expected)</th>
+																																</tr>
+																												</thead>
+																												<tbody>
+																																<tr ng-repeat="line in listObjectLowLevel">
+																																				<td>
+																																								<a ui-sref="product.show({id:line._id})">{{line.sku}}</a>
+																																				</td>
+																																				<td>{{line.name}}</td>
+																																				<td>{{line.onHand || 0}}</td>
+																																				<td>{{line.minStockLevel || '--'}} </td>
+																																				<td>{{line.minStockLevel - line.onHand}}</td>
+																																				<td>{{line.awaiting || '--'}} </td>
+																																</tr>
+																												</tbody>
+																								</table>
+																				</div>
+																</tab>
+																<!--
             Incoming Stock
             -->
-                <tab heading="@(products:IncomingStock)">
-                    <div class="dataTables_wrapper table-responsive">
-                        <table class="table table-striped table-hover no-footer" id="stockExpected">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th>@(Ref)</th>
-                                    <th width="35%">@(Name)</th>
-                                    <th>@(orders:Orders)</th>
-                                    <th>@(products:OnHand)</th>
-                                    <th>@(orders:Expected) @(sendings:Receivings)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="line in listObjectInComing">
-                                    <td><a ui-sref="product.show({id:line._id})">{{line.sku}}</a></td>
-                                    <td>{{line.products}}</td>
-                                    <td><a ui-sref="ordersupplier.show({id:line.purchaseOrder._id})">{{line.purchaseOrder.ref}}</a></td>
-                                    <td>{{line.onHand}}</td>
-                                    <td>{{line.incomingStock}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </tab>
-            </tabset>
-        </div>
-    </div>
+																<tab heading="@(products:IncomingStock)">
+																				<div class="dataTables_wrapper table-responsive">
+																								<table class="table table-striped table-hover no-footer" id="stockExpected">
+																												<thead>
+																																<tr role="row" class="heading">
+																																				<th>@(Ref)</th>
+																																				<th width="35%">@(Name)</th>
+																																				<th>@(orders:Orders)</th>
+																																				<th>@(products:OnHand)</th>
+																																				<th>@(orders:Expected) @(sendings:Receivings)</th>
+																																</tr>
+																												</thead>
+																												<tbody>
+																																<tr ng-repeat="line in listObjectInComing">
+																																				<td><a ui-sref="product.show({id:line._id})">{{line.sku}}</a></td>
+																																				<td>{{line.products}}</td>
+																																				<td><a ui-sref="ordersupplier.show({id:line.purchaseOrder._id})">{{line.purchaseOrder.ref}}</a></td>
+																																				<td>{{line.onHand}}</td>
+																																				<td>{{line.incomingStock}}</td>
+																																</tr>
+																												</tbody>
+																								</table>
+																				</div>
+																</tab>
+												</tabset>
+								</div>
+				</div>
 </div>

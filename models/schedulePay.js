@@ -27,19 +27,19 @@ International Registered Trademark & Property of ToManage SAS
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+		Schema = mongoose.Schema;
 
 /**
  * Cart Schema
  */
 
 var scheduledPaySchema = new Schema({
-    name: {
-        type: String,
-        default: ''
-    }
+		name: {
+				type: String,
+				default: ''
+		}
 }, {
-    collection: 'scheduledPays'
+		collection: 'scheduledPays'
 });
 
 exports.Schema = mongoose.model('scheduledPay', scheduledPaySchema);

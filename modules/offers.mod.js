@@ -26,69 +26,69 @@ exports.version = '1.00';
 exports.enabled = true;
 exports.description = "Gestion des devis et demandes d'achats";
 exports.rights = [{
-        "desc": "Lire les propositons commerciales clients",
-        "perm": {
-            "read": true
-        }
-    },
-    {
-        "desc": "Creer/modifier les propositions commerciales clients",
-        "perm": {
-            "create": false
-        }
-    },
-    {
-        "desc": "Valider les propositions commerciales clients",
-        "perm": {
-            "validate": false
-        }
-    },
-    {
-        "desc": "Re-ouvrir les propositions commerciales clients",
-        "perm": {
-            "reopen": false
-        }
-    },
-    {
-        "desc": "Envoyer les propositions commerciales clients",
-        "perm": {
-            "send": true
-        }
-    },
-    {
-        "desc": "Cloturer les propositions commerciales clients",
-        "perm": {
-            "closed": false
-        }
-    },
-    {
-        "desc": "Supprimer les propositions commerciales clients",
-        "perm": {
-            "delete": false
-        }
-    },
-    {
-        "desc": "Exporter les propositions commerciales clients et attributs",
-        "perm": {
-            "export": false
-        }
-    }
+				"desc": "Lire les propositons commerciales clients",
+				"perm": {
+						"read": true
+				}
+		},
+		{
+				"desc": "Creer/modifier les propositions commerciales clients",
+				"perm": {
+						"create": false
+				}
+		},
+		{
+				"desc": "Valider les propositions commerciales clients",
+				"perm": {
+						"validate": false
+				}
+		},
+		{
+				"desc": "Re-ouvrir les propositions commerciales clients",
+				"perm": {
+						"reopen": false
+				}
+		},
+		{
+				"desc": "Envoyer les propositions commerciales clients",
+				"perm": {
+						"send": true
+				}
+		},
+		{
+				"desc": "Cloturer les propositions commerciales clients",
+				"perm": {
+						"closed": false
+				}
+		},
+		{
+				"desc": "Supprimer les propositions commerciales clients",
+				"perm": {
+						"delete": false
+				}
+		},
+		{
+				"desc": "Exporter les propositions commerciales clients et attributs",
+				"perm": {
+						"export": false
+				}
+		}
 ];
 exports.menus = {
-    "menu:orders": {
-        "submenus": {
-            "menu:offerlist": {
-                "position": 40,
-                "perms": "offer.read",
-                route: "offer.list",
-                params: {
-                    forSales: 1
-                },
-                "enabled": "$conf->offer->enabled",
-                "usertype": 2,
-                "icon": "fa-calculator",
-                "title": "orders:CommercialProposals"
-            }
-        }
-    }
+		"menu:orders": {
+				"submenus": {
+						"menu:offerlist": {
+								"position": 40,
+								"perms": "offer.read",
+								route: "offer.list",
+								params: {
+										forSales: 1
+								},
+								"enabled": "$conf->offer->enabled",
+								"usertype": 2,
+								"icon": "fa-calculator",
+								"title": "orders:CommercialProposals"
+						}
+				}
+		}
 };

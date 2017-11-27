@@ -1,90 +1,90 @@
 <!-- BEGIN PORTLET-->
 <div class="portlet light " ng-if="login.rights.box.ca">
-    <div class="portlet-title">
-        <div class="caption caption-md">
-            <i class="icon-bar-chart font-green-haze hide"></i>
-            <span class="caption-subject font-green-haze bold uppercase">@(orders:ChargesDetails)</span>
-            <span class="caption-helper hide">@(WeeklyStats)...</span>
-        </div>
-        <div class="actions">
-            <div class="btn-group btn-group-devided" data-toggle="buttons">
-                <label class="btn btn-transparent grey-salsa btn-circle btn-sm active">
+				<div class="portlet-title">
+								<div class="caption caption-md">
+												<i class="icon-bar-chart font-green-haze hide"></i>
+												<span class="caption-subject font-green-haze bold uppercase">@(orders:ChargesDetails)</span>
+												<span class="caption-helper hide">@(WeeklyStats)...</span>
+								</div>
+								<div class="actions">
+												<div class="btn-group btn-group-devided" data-toggle="buttons">
+																<label class="btn btn-transparent grey-salsa btn-circle btn-sm active">
                     <input type="radio" name="options" class="toggle" id="option2">@(Dates)</label>
-                <label class="btn btn-transparent grey-salsa btn-circle btn-sm">
+																<label class="btn btn-transparent grey-salsa btn-circle btn-sm">
                     <input type="radio" name="options" class="toggle" id="option2">@(Estimated)</label>
-            </div>
-        </div>
-    </div>
-    <div class="portlet-body">
-        <div class="row number-stats margin-bottom-30">
-            <div class="col-md-6 col-sm-6 col-xs-6">
-                <div class="stat-left">
-                    <div class="stat-chart">
-                        <div id="sparkline_bar"></div>
-                    </div>
-                    <div class="stat-number">
-                        <div class="title">
-                            @(TotalHT)
-                        </div>
-                        <div class="number">
-                            {{ dataDebit.charge.total_ht | number:2}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-6">
-                <div class="stat-right">
-                    <div class="stat-chart">
-                        <div id="sparkline_bar2"></div>
-                    </div>
-                    <div class="stat-number">
-                        <div class="title">
-                            @(PercentageOfCA)
-                        </div>
-                        <div class="number">
-                            {{ dataDebit.charge.total_ht / dataCaTotal * 100 | percent:0}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="table-scrollable table-scrollable-borderless scroller" scroller style="height:318px;">
-            <table class="table table-hover table-light">
-                <thead>
-                    <tr class="uppercase">
-                        <th colspan="2">
-                            @(compta:Accounts)
-                        </th>
-                        <th class="text-align-reverse">
-                            Total HT
-                        </th>
-                        <th class="text-align-reverse">
-                            Total N-1 HT
-                        </th>
-                        <th class="text-align-reverse">
-                            @(Repartition)
-                        </th>
-                    </tr>
-                </thead>
-                <tr ng-repeat="charge in dataDebit.charge.data| orderBy :'-total_ht'">
-                    <td class="fit">
-                        <!--    <img class="user-pic" src="../../../assets/admin/layout/img/avatar4.jpg">-->
-                    </td>
-                    <td>
-                        <a href="#" ui-sref="societe.show({id:charge.supplier._id})" class="primary-link">{{charge.supplier.name.last}}</a>
-                    </td>
-                    <td class="text-align-reverse">
-                        {{charge.total_ht| currency}}
-                    </td>
-                    <td class="text-align-reverse">
-                        {{charge.total_ht_1| currency}} <small>({{(charge.total_ht_1 - charge.total_ht)*100/charge.total_ht_1 | percent:0}})</small>
-                    </td>
-                    <td class="text-align-reverse">
-                        <span class="bold font-green-haze">{{charge.total_ht / dataDebit.charge.total_ht * 100| percent:0}}</span>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
+												</div>
+								</div>
+				</div>
+				<div class="portlet-body">
+								<div class="row number-stats margin-bottom-30">
+												<div class="col-md-6 col-sm-6 col-xs-6">
+																<div class="stat-left">
+																				<div class="stat-chart">
+																								<div id="sparkline_bar"></div>
+																				</div>
+																				<div class="stat-number">
+																								<div class="title">
+																												@(TotalHT)
+																								</div>
+																								<div class="number">
+																												{{ dataDebit.charge.total_ht | number:2}}
+																								</div>
+																				</div>
+																</div>
+												</div>
+												<div class="col-md-6 col-sm-6 col-xs-6">
+																<div class="stat-right">
+																				<div class="stat-chart">
+																								<div id="sparkline_bar2"></div>
+																				</div>
+																				<div class="stat-number">
+																								<div class="title">
+																												@(PercentageOfCA)
+																								</div>
+																								<div class="number">
+																												{{ dataDebit.charge.total_ht / dataCaTotal * 100 | percent:0}}
+																								</div>
+																				</div>
+																</div>
+												</div>
+								</div>
+								<div class="table-scrollable table-scrollable-borderless scroller" scroller style="height:318px;">
+												<table class="table table-hover table-light">
+																<thead>
+																				<tr class="uppercase">
+																								<th colspan="2">
+																												@(compta:Accounts)
+																								</th>
+																								<th class="text-align-reverse">
+																												Total HT
+																								</th>
+																								<th class="text-align-reverse">
+																												Total N-1 HT
+																								</th>
+																								<th class="text-align-reverse">
+																												@(Repartition)
+																								</th>
+																				</tr>
+																</thead>
+																<tr ng-repeat="charge in dataDebit.charge.data| orderBy :'-total_ht'">
+																				<td class="fit">
+																								<!--    <img class="user-pic" src="../../../assets/admin/layout/img/avatar4.jpg">-->
+																				</td>
+																				<td>
+																								<a href="#" ui-sref="societe.show({id:charge.supplier._id})" class="primary-link">{{charge.supplier.name.last}}</a>
+																				</td>
+																				<td class="text-align-reverse">
+																								{{charge.total_ht| currency}}
+																				</td>
+																				<td class="text-align-reverse">
+																								{{charge.total_ht_1| currency}} <small>({{(charge.total_ht_1 - charge.total_ht)*100/charge.total_ht_1 | percent:0}})</small>
+																				</td>
+																				<td class="text-align-reverse">
+																								<span class="bold font-green-haze">{{charge.total_ht / dataDebit.charge.total_ht * 100| percent:0}}</span>
+																				</td>
+																</tr>
+												</table>
+								</div>
+				</div>
 </div>
 <!-- END PORTLET-->

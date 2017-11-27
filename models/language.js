@@ -27,24 +27,24 @@ International Registered Trademark & Property of ToManage SAS
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+		Schema = mongoose.Schema;
 
 /**
  * Emailing Schema
  */
 var LanguageSchema = mongoose.Schema({
-    name: String,
-    code: {
-        type: String,
-        unique: true
-    },
-    idx: {
-        type: Number,
-        default: 0,
-        unique: true
-    },
+		name: String,
+		code: {
+				type: String,
+				unique: true
+		},
+		idx: {
+				type: Number,
+				default: 0,
+				unique: true
+		},
 }, {
-    collection: 'languages'
+		collection: 'languages'
 });
 
 

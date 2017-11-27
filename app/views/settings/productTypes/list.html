@@ -1,56 +1,56 @@
 <div ui-view=""></div>
 
 <div class="portlet light bordered">
-    <div class="portlet-title">
-        <div class="caption ">
-            <i class="icon-settings font-grey-gallery"></i>
-            <span class="caption-subject font-grey-gallery bold uppercase">@(products:ProductTypes)</span>
-        </div>
-        <div class="actions">
-            <a class="btn blue" ui-sref="settings.product.types.create">@(Add) <i class="fa fa-plus"></i></a>
-            <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
+				<div class="portlet-title">
+								<div class="caption ">
+												<i class="icon-settings font-grey-gallery"></i>
+												<span class="caption-subject font-grey-gallery bold uppercase">@(products:ProductTypes)</span>
+								</div>
+								<div class="actions">
+												<a class="btn blue" ui-sref="settings.product.types.create">@(Add) <i class="fa fa-plus"></i></a>
+												<a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
             </a>
-        </div>
-    </div>
-    <div class="tools">
-    </div>
-    <div class="portlet light">
-        <div class="form-body">
-            <div class="table-responsive">
-                <div class="dataTables_wrapper no-footer table-responsive">
-                    <div class="col-md-12">
-                        <table class="table table-striped table-bordered table-hover no-footer" id="productTypesList">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th>@(Code)</th>
-                                    <th>@(Name)</th>
-                                    <th width="15%" class="text-center">@(products:EShop)</th>
-                                    <th width="15%" class="text-center">@(products:Inventory)</th>
-                                    <th width="10%" class="text-center">@(products:Quantity)</th>
-                                    <th width="10%" class="text-center">@(CreatedAt)</th>
-                                    <th width="10%" class="text-center">@(Action)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="line in listObject">
-                                    <td>{{line.sequence}}</td>
-                                    <td>{{line.name}}</td>
-                                    <td class="text-center"><span ng-show="line.isEShop == true" class="fa fa-check font-blue"></span></td>
-                                    <td class="text-center"><span ng-show="line.inventory == true" class="fa fa-check font-blue"></span></td>
-                                    <!--<input type="checkbox" id="isActive" class="md-check" ng-model="line.inventory" disabled ng-checked="line.inventory"></td>-->
+								</div>
+				</div>
+				<div class="tools">
+				</div>
+				<div class="portlet light">
+								<div class="form-body">
+												<div class="table-responsive">
+																<div class="dataTables_wrapper no-footer table-responsive">
+																				<div class="col-md-12">
+																								<table class="table table-striped table-bordered table-hover no-footer" id="productTypesList">
+																												<thead>
+																																<tr role="row" class="heading">
+																																				<th>@(Code)</th>
+																																				<th>@(Name)</th>
+																																				<th width="15%" class="text-center">@(products:EShop)</th>
+																																				<th width="15%" class="text-center">@(products:Inventory)</th>
+																																				<th width="10%" class="text-center">@(products:Quantity)</th>
+																																				<th width="10%" class="text-center">@(CreatedAt)</th>
+																																				<th width="10%" class="text-center">@(Action)</th>
+																																</tr>
+																												</thead>
+																												<tbody>
+																																<tr ng-repeat="line in listObject">
+																																				<td>{{line.sequence}}</td>
+																																				<td>{{line.name}}</td>
+																																				<td class="text-center"><span ng-show="line.isEShop == true" class="fa fa-check font-blue"></span></td>
+																																				<td class="text-center"><span ng-show="line.inventory == true" class="fa fa-check font-blue"></span></td>
+																																				<!--<input type="checkbox" id="isActive" class="md-check" ng-model="line.inventory" disabled ng-checked="line.inventory"></td>-->
 
-                                    <td class="text-center">{{line.countProducts}}</td>
-                                    <td class="text-center">{{line.createdAt | date : "shortDate"}}</th>
-                                        <td>
-                                            <a class="btn green fa fa-pencil" ui-sref="settings.product.types.show({id:line._id})" title="Editer"></a>
-                                            <button ng-if="line.countProducts == 0" class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteProduct)" confirmed-click="remove(line)"></button>
-                                        </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+																																				<td class="text-center">{{line.countProducts}}</td>
+																																				<td class="text-center">{{line.createdAt | date : "shortDate"}}</th>
+																																								<td>
+																																												<a class="btn green fa fa-pencil" ui-sref="settings.product.types.show({id:line._id})" title="Editer"></a>
+																																												<button ng-if="line.countProducts == 0" class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteProduct)" confirmed-click="remove(line)"></button>
+																																								</td>
+																																</tr>
+																												</tbody>
+																								</table>
+																				</div>
+																</div>
+												</div>
+								</div>
+				</div>
 </div>

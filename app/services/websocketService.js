@@ -52,91 +52,91 @@ International Registered Trademark & Property of ToManage SAS
 
 MetronicApp.factory('websocketService', ['$rootScope', '$timeout', function($rootScope, $timeout) {
 
-    var _ws;
-    var _username = '';
-    var messages = [];
-    var users = [];
+		var _ws;
+		var _username = '';
+		var messages = [];
+		var users = [];
 
-    function onMessage(e) {
-        var data = JSON.parse(decodeURIComponent(e.data));
+		function onMessage(e) {
+				var data = JSON.parse(decodeURIComponent(e.data));
 
-        $rootScope.$apply(function() {
+				$rootScope.$apply(function() {
 
-            if (data.type === 'users') {
-                users = data.message;
-                $rootScope.$broadcast('websocket', 'users', users);
-                return;
-            }
+						if (data.type === 'users') {
+								users = data.message;
+								$rootScope.$broadcast('websocket', 'users', users);
+								return;
+						}
 
-            if (data.type === 'task') {
-                $rootScope.$broadcast('websocket', data.type, data.message);
-                return;
-            }
+						if (data.type === 'task') {
+								$rootScope.$broadcast('websocket', data.type, data.message);
+								return;
+						}
 
-            if (data.type === 'refresh') {
-                $rootScope.$broadcast('websocket', 'refresh', data);
-                console.log('Notify ', data);
-                return;
-            }
+						if (data.type === 'refresh') {
+								$rootScope.$broadcast('websocket', 'refresh', data);
+								console.log('Notify ', data);
+								return;
+						}
 
-            if (data.type === 'go') {
-                console.log('Go ', data);
-                $rootScope.$state.go(data.data.go, {
-                    id: data.data._id
-                });
-                return;
-            }
+						if (data.type === 'go') {
+								console.log('Go ', data);
+								$rootScope.$state.go(data.data.go, {
+										id: data.data._id
+								});
+								return;
+						}
 
-            if (data.type === 'notify') {
-                $rootScope.$broadcast('websocket', data.type, data.message);
-                console.log('notify');
-                /*if (data.users.length)
-                    angular.forEach(data.users, function(value, key) {
-                        if (value === $rootScope.login._id)
-                            $rootScope.$broadcast('websocket', data.type, data.message);
-                    });*/
+						if (data.type === 'notify') {
+								$rootScope.$broadcast('websocket', data.type, data.message);
+								console.log('notify');
+								/*if (data.users.length)
+								    angular.forEach(data.users, function(value, key) {
+								        if (value === $rootScope.login._id)
+								            $rootScope.$broadcast('websocket', data.type, data.message);
+								    });*/
 
-                return;
-            }
+								return;
+						}
 
-            messages.splice(0, 0, {
-                user: data.user,
-                message: data.message,
-                date: data.date
-            });
-            $rootScope.$broadcast('websocket', 'message', messages);
-        });
-    }
+						messages.splice(0, 0, {
+								user: data.user,
+								message: data.message,
+								date: data.date
+						});
+						$rootScope.$broadcast('websocket', 'message', messages);
+				});
+		}
 
-    return {
-        login: function(url, username) {
+		return {
+				login: function(url, username) {
 
-            _username = username;
+						_username = username;
 
-            //_ws = new WebSocket(url);
-            _ws = new ReconnectingWebSocket(url); //auto reconnect
-            _ws.onmessage = onMessage;
-            _ws.onopen = function() {
-                _ws.send(encodeURIComponent(JSON.stringify({
-                    type: 'change',
-                    message: _username
-                })));
-            };
+						//_ws = new WebSocket(url);
+						_ws = new ReconnectingWebSocket(url); //auto reconnect
+						_ws.onmessage = onMessage;
+						_ws.onopen = function() {
+								_ws.send(encodeURIComponent(JSON.stringify({
+										type: 'change',
+										message: _username
+								})));
+						};
 
-        },
-        logoff: function() {
-            _ws.close();
-            _ws = null;
-            _username = '';
-            users = [];
-            $rootScope.$broadcast('websocket', 'users', users);
-        },
-        send: function(message) {
-            _ws.send(encodeURIComponent(JSON.stringify({
-                type: 'message',
-                message: message
-            })));
-        }
-    };
+				},
+				logoff: function() {
+						_ws.close();
+						_ws = null;
+						_username = '';
+						users = [];
+						$rootScope.$broadcast('websocket', 'users', users);
+				},
+				send: function(message) {
+						_ws.send(encodeURIComponent(JSON.stringify({
+								type: 'message',
+								message: message
+						})));
+				}
+		};
 
 }]);

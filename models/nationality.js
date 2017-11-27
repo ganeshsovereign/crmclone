@@ -27,34 +27,34 @@ International Registered Trademark & Property of ToManage SAS
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+		Schema = mongoose.Schema;
 
 /**
  * Emailing Schema
  */
 var nationalitySchema = new Schema({
-    _id: String,
-    langs: [{
-        _id: false,
-        name: {
-            type: String,
-            default: ''
-        }
-    }],
+		_id: String,
+		langs: [{
+				_id: false,
+				name: {
+						type: String,
+						default: ''
+				}
+		}],
 }, {
-    toObject: {
-        virtuals: true
-    },
-    toJSON: {
-        virtuals: true
-    },
-    collection: 'nationality'
+		toObject: {
+				virtuals: true
+		},
+		toJSON: {
+				virtuals: true
+		},
+		collection: 'nationality'
 });
 
 nationalitySchema.virtual('name')
-    .get(function() {
-        return this.langs[0].name;
-    });
+		.get(function() {
+				return this.langs[0].name;
+		});
 
 
 exports.Schema = mongoose.model('nationality', nationalitySchema);

@@ -1,87 +1,87 @@
 <td>
-    {{line.idLine}}
+				{{line.idLine}}
 </td>
 
 
 <td>
-    <div class="input-icon right">
-        <i class="fa fa-warning font-red pull-right" ng-show="!line.product._id" title="@(products:ErrorProductBadRefOrLabel)"></i>
+				<div class="input-icon right">
+								<i class="fa fa-warning font-red pull-right" ng-show="!line.product._id" title="@(products:ErrorProductBadRefOrLabel)"></i>
 
-        <product-id ng-if="edit" name="productId" for-sales="forSales" price-list="priceList" ng-model="line.product" required="true" on-select="addProduct($item, line)" placeholder="@(product:Ref)" bootstrap="true"></product-id>
+								<product-id ng-if="edit" name="productId" for-sales="forSales" price-list="priceList" ng-model="line.product" required="true" on-select="addProduct($item, line)" placeholder="@(product:Ref)" bootstrap="true"></product-id>
 
-        <a ng-hide="edit" ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a> - <span class="bold">{{ line.product.info.langs[0].name}}</span>
-    </div>
+								<a ng-hide="edit" ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a> - <span class="bold">{{ line.product.info.langs[0].name}}</span>
+				</div>
 
-    <div ng-if="!forSales">
-        <div class="form-group form-md-line-input margin-top-10">
-            <input type="text" class="form-control input-sm" id="refProductSupplier" ng-model="line.refProductSupplier" ng-disabled="!edit" maxlength="10">
-            <label for="refProductSupplier">@(products:SupplierRef) </label>
-        </div>
-    </div>
+				<div ng-if="!forSales">
+								<div class="form-group form-md-line-input margin-top-10">
+												<input type="text" class="form-control input-sm" id="refProductSupplier" ng-model="line.refProductSupplier" ng-disabled="!edit" maxlength="10">
+												<label for="refProductSupplier">@(products:SupplierRef) </label>
+								</div>
+				</div>
 
-    <a href="#" ng-hide="!edit || line.description || openDescription" ng-click="openDescription = 1"><i class="fa fa-plus"></i></a>
+				<a href="#" ng-hide="!edit || line.description || openDescription" ng-click="openDescription = 1"><i class="fa fa-plus"></i></a>
 
-    <textarea ng-if="edit && (line.description || openDescription)" ng-model="line.description" class="form-control" rows="4" cols="50"></textarea>
-    <pre ng-hide="edit" class="no-padding small">{{line.description}}</pre>
+				<textarea ng-if="edit && (line.description || openDescription)" ng-model="line.description" class="form-control" rows="4" cols="50"></textarea>
+				<pre ng-hide="edit" class="no-padding small">{{line.description}}</pre>
 </td>
 
 <td class="align-right">
-    <input ng-if="edit" type="number" ng-model="line.qty" class="form-control" ng-change="calculMontantHT(line)" step="any" />
-    <span ng-hide="edit"> {{ line.qty || 0 }} <small>{{line.product.unit}}</small></span>
-    <div ng-if="line.product.info.productType.inventory">
-        <hr>
-        <div>{{line.allocated || '0'}} Alloués</div>
-        <div>{{line.onHand || '0'}} Disponibles</div>
-        <div>{{line.fulfilled || '0'}} Expediés</div>
-    </div>
+				<input ng-if="edit" type="number" ng-model="line.qty" class="form-control" ng-change="calculMontantHT(line)" step="any" />
+				<span ng-hide="edit"> {{ line.qty || 0 }} <small>{{line.product.unit}}</small></span>
+				<div ng-if="line.product.info.productType.inventory">
+								<hr>
+								<div>{{line.allocated || '0'}} Alloués</div>
+								<div>{{line.onHand || '0'}} Disponibles</div>
+								<div>{{line.fulfilled || '0'}} Expediés</div>
+				</div>
 </td>
 
 <td class="align-right">
-    <div class="checkbox-list" ng-show="edit">
-        <label><input type="checkbox" ng-change="calculMontantHT(line)" ng-model="line.priceSpecific" ng-checked="line.priceSpecific"/> Mod. </label>
-    </div>
-    <a href="#" tooltip="Tarif specific" ng-show="line.priceSpecific && !edit"><i class="fa fa-warning font-yellow-gold"></i></a>
-    <input type="number" ng-show="edit" ng-disabled="!line.priceSpecific" class="form-control" ng-model="line.pu_ht" min="0" step="0.001" ng-change="calculMontantHT(line)" />
-    <span ng-show="!edit">{{ line.pu_ht || 0 | number:3}}</span>
-</td>
-
-
-<td class="align-right">
-    <input type="number" ng-show="edit" ng-disabled="!line.priceSpecific" class="form-control" ng-model="line.discount" min="0" step="0.01" ng-change="calculMontantHT(line)" />
-    <span ng-hide="edit">{{ line.discount || 0 | percent:3}}</span>
+				<div class="checkbox-list" ng-show="edit">
+								<label><input type="checkbox" ng-change="calculMontantHT(line)" ng-model="line.priceSpecific" ng-checked="line.priceSpecific"/> Mod. </label>
+				</div>
+				<a href="#" tooltip="Tarif specific" ng-show="line.priceSpecific && !edit"><i class="fa fa-warning font-yellow-gold"></i></a>
+				<input type="number" ng-show="edit" ng-disabled="!line.priceSpecific" class="form-control" ng-model="line.pu_ht" min="0" step="0.001" ng-change="calculMontantHT(line)" />
+				<span ng-show="!edit">{{ line.pu_ht || 0 | number:3}}</span>
 </td>
 
 
 <td class="align-right">
-    <div class="row" ng-repeat="tax in line.total_taxes">
-        <div class="col-md-12" ng-if="tax.taxeId.rate">
-            <select ng-if="edit" ng-model="tax.taxeId._id" class="form-control" ng-change="calculMontantHT(line)" ng-options="s._id as s.name for s in taxes | filter : {isFixValue:false}"></select>
-            <span ng-hide="edit">{{ tax.value | currency}} ({{tax.taxeId.rate | percent:1}})</span>
-        </div>
-        <div class="col-md-12" ng-if="tax.taxeId.isFixValue">
-            <span>{{ tax.value | currency}} ({{tax.taxeId.code}})</span>
-        </div>
-    </div>
+				<input type="number" ng-show="edit" ng-disabled="!line.priceSpecific" class="form-control" ng-model="line.discount" min="0" step="0.01" ng-change="calculMontantHT(line)" />
+				<span ng-hide="edit">{{ line.discount || 0 | percent:3}}</span>
 </td>
 
 
 <td class="align-right">
-    <input type="number" ng-show="edit" ng-disabled="true" class="form-control" ng-model="line.total_ht" step="0.01" />
-    <span ng-hide="edit">{{ line.total_ht | number:2 }}</span>
+				<div class="row" ng-repeat="tax in line.total_taxes">
+								<div class="col-md-12" ng-if="tax.taxeId.rate">
+												<select ng-if="edit" ng-model="tax.taxeId._id" class="form-control" ng-change="calculMontantHT(line)" ng-options="s._id as s.name for s in taxes | filter : {isFixValue:false}"></select>
+												<span ng-hide="edit">{{ tax.value | currency}} ({{tax.taxeId.rate | percent:1}})</span>
+								</div>
+								<div class="col-md-12" ng-if="tax.taxeId.isFixValue">
+												<span>{{ tax.value | currency}} ({{tax.taxeId.code}})</span>
+								</div>
+				</div>
+</td>
+
+
+<td class="align-right">
+				<input type="number" ng-show="edit" ng-disabled="true" class="form-control" ng-model="line.total_ht" step="0.01" />
+				<span ng-hide="edit">{{ line.total_ht | number:2 }}</span>
 </td>
 
 <td>
-    <div class="btn-toolbar" role="toolbar">
-        <div class="btn-group btn-group">
-            <button type="button" ng-show="!edit && editable" ng-disabled="$index == 0" ng-click="upDownLine($index, 'UP', linesModel)" class="btn btn-icon-only btn-xs fa fa-angle-up" title="@(Up)"></button>
-            <button type="button" ng-show="!edit && editable" ng-disabled="$index == (linesModel.length - 1)" ng-click="upDownLine($index, 'DOWN', linesModel)" class="btn btn-icon-only btn-xs fa fa-angle-down" title="@(Down)"></button>
-        </div>
-        <div class="btn-group btn-group">
-            <!--<button type="button" ng-show="tableform.$visible && line.product.info.productType.isDynamic" ng-click="editLine(line, line.idLine, linesModel)" class="btn btn-default btn-icon-only btn-sm fa fa-pencil" title="@(Edit)"></button>-->
-            <button type="button" ng-show="edit" ng-click="copyLine(line, linesModel)" class="btn btn-default btn-icon-only btn-sm fa fa-copy" title="@(ToClone)"></button>
-            <button type="button" ng-show="edit" ng-click="addComment($index)" class="btn btn-info btn-icon-only btn-sm fa fa-comment" title="@(AddComment)"></button>
-            <button type="button" ng-show="edit" ng-click="AddSubTotal($index)" class="btn btn-default btn-icon-only btn-sm fa fa-bars" title="@(AddSubTotal)"></button>
-            <button type="button" ng-show="edit" ng-disabled="line.allocated" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
-        </div>
-    </div>
+				<div class="btn-toolbar" role="toolbar">
+								<div class="btn-group btn-group">
+												<button type="button" ng-show="!edit && editable" ng-disabled="$index == 0" ng-click="upDownLine($index, 'UP', linesModel)" class="btn btn-icon-only btn-xs fa fa-angle-up" title="@(Up)"></button>
+												<button type="button" ng-show="!edit && editable" ng-disabled="$index == (linesModel.length - 1)" ng-click="upDownLine($index, 'DOWN', linesModel)" class="btn btn-icon-only btn-xs fa fa-angle-down" title="@(Down)"></button>
+								</div>
+								<div class="btn-group btn-group">
+												<!--<button type="button" ng-show="tableform.$visible && line.product.info.productType.isDynamic" ng-click="editLine(line, line.idLine, linesModel)" class="btn btn-default btn-icon-only btn-sm fa fa-pencil" title="@(Edit)"></button>-->
+												<button type="button" ng-show="edit" ng-click="copyLine(line, linesModel)" class="btn btn-default btn-icon-only btn-sm fa fa-copy" title="@(ToClone)"></button>
+												<button type="button" ng-show="edit" ng-click="addComment($index)" class="btn btn-info btn-icon-only btn-sm fa fa-comment" title="@(AddComment)"></button>
+												<button type="button" ng-show="edit" ng-click="AddSubTotal($index)" class="btn btn-default btn-icon-only btn-sm fa fa-bars" title="@(AddSubTotal)"></button>
+												<button type="button" ng-show="edit" ng-disabled="line.allocated" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
+								</div>
+				</div>
 </td>

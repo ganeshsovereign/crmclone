@@ -25,16 +25,16 @@ International Registered Trademark & Property of ToManage SAS
 
 angular.module("MetronicApp").controller('HomeController', ['$rootScope', '$scope', '$http', '$timeout', function($rootScope, $scope, $http, $timeout) {
 
-    $scope.$on('$viewContentLoaded', function() {
-        // initialize core components
-        Metronic.initAjax();
+		$scope.$on('$viewContentLoaded', function() {
+				// initialize core components
+				Metronic.initAjax();
 
-        $rootScope.settings.layout.pageBodySolid = false;
+				$rootScope.settings.layout.pageBodySolid = false;
 
-    });
+		});
 
-    if (!$rootScope.login.home)
-        $rootScope.$state.go("dashboard");
-    else $rootScope.$state.go($rootScope.login.home);
+		if (!$rootScope.login.home)
+				$rootScope.$state.go("dashboard");
+		else $rootScope.$state.go($rootScope.login.home);
 
 }]);

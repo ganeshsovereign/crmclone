@@ -27,25 +27,25 @@ International Registered Trademark & Property of ToManage SAS
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+		Schema = mongoose.Schema;
 
 var GroupCategoriesSchema = new Schema({
-    name: String,
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    channels: [{
-        _id: false,
-        channel: {
-            type: Schema.Types.ObjectId,
-            ref: 'integrations',
-            default: null
-        },
-        integrationId: String
-    }]
+		name: String,
+		createdAt: {
+				type: Date,
+				default: Date.now
+		},
+		channels: [{
+				_id: false,
+				channel: {
+						type: Schema.Types.ObjectId,
+						ref: 'integrations',
+						default: null
+				},
+				integrationId: String
+		}]
 }, {
-    collection: 'groupCategory'
+		collection: 'groupCategory'
 });
 
 exports.Schema = mongoose.model('groupCategory', GroupCategoriesSchema);

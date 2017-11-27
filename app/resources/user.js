@@ -24,55 +24,55 @@ International Registered Trademark & Property of ToManage SAS
 "use strict";
 
 MetronicApp.config(function($stateProvider, $urlRouterProvider) {
-    $stateProvider.state('user', {
-            url: "/user",
-            abstract: true,
-            templateUrl: "/views/settings/user/index.html"
-        })
-        .state('user.list', {
-            url: "",
-            templateUrl: "/views/settings/user/list.html",
-            data: {
-                pageTitle: 'Liste des utilisateurs'
-            },
-            controller: "UserController"
-        })
-        .state('user.create', {
-            parent: "user",
-            url: "/create.html",
-            templateUrl: "/views/settings/user/fiche.html",
-            data: {
-                pageTitle: 'Nouvel utilisateur'
-            },
-            controller: "UserController"
-        })
-        .state('user.show', {
-            parent: "user",
-            url: "/{id}",
-            templateUrl: "/views/settings/user/fiche.html",
-            data: {
-                pageTitle: 'Fiche collaborateur'
-            },
-            controller: "UserController"
-        });
+		$stateProvider.state('user', {
+						url: "/user",
+						abstract: true,
+						templateUrl: "/views/settings/user/index.html"
+				})
+				.state('user.list', {
+						url: "",
+						templateUrl: "/views/settings/user/list.html",
+						data: {
+								pageTitle: 'Liste des utilisateurs'
+						},
+						controller: "UserController"
+				})
+				.state('user.create', {
+						parent: "user",
+						url: "/create.html",
+						templateUrl: "/views/settings/user/fiche.html",
+						data: {
+								pageTitle: 'Nouvel utilisateur'
+						},
+						controller: "UserController"
+				})
+				.state('user.show', {
+						parent: "user",
+						url: "/{id}",
+						templateUrl: "/views/settings/user/fiche.html",
+						data: {
+								pageTitle: 'Fiche collaborateur'
+						},
+						controller: "UserController"
+				});
 });
 
 
 MetronicApp.factory("Users", ['$resource', function($resource) {
-    return {
-        users: $resource('/erp/api/users/:Id', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            }
-        }),
-        absences: $resource('/erp/api/user/absence/:Id', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            }
-        })
-    };
+		return {
+				users: $resource('/erp/api/users/:Id', {
+						Id: '@_id'
+				}, {
+						update: {
+								method: 'PUT'
+						}
+				}),
+				absences: $resource('/erp/api/user/absence/:Id', {
+						Id: '@_id'
+				}, {
+						update: {
+								method: 'PUT'
+						}
+				})
+		};
 }]);

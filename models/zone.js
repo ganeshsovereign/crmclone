@@ -27,33 +27,33 @@ International Registered Trademark & Property of ToManage SAS
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-    timestamps = require('mongoose-timestamp'),
-    Schema = mongoose.Schema,
-    ObjectId = mongoose.Schema.Types.ObjectId;
+		timestamps = require('mongoose-timestamp'),
+		Schema = mongoose.Schema,
+		ObjectId = mongoose.Schema.Types.ObjectId;
 
 var zonesSchema = new Schema({
-    name: {
-        type: String,
-        default: ''
-    },
-    warehouse: {
-        type: ObjectId,
-        ref: 'warehouse',
-        default: null
-    },
-    createdBy: {
-        type: ObjectId,
-        ref: 'Users',
-        default: null
-    },
-    editedBy: {
-        type: ObjectId,
-        ref: 'Users',
-        default: null
-    },
+		name: {
+				type: String,
+				default: ''
+		},
+		warehouse: {
+				type: ObjectId,
+				ref: 'warehouse',
+				default: null
+		},
+		createdBy: {
+				type: ObjectId,
+				ref: 'Users',
+				default: null
+		},
+		editedBy: {
+				type: ObjectId,
+				ref: 'Users',
+				default: null
+		},
 
 }, {
-    collection: 'zones'
+		collection: 'zones'
 });
 
 zonesSchema.plugin(timestamps);

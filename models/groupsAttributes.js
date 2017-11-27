@@ -27,18 +27,18 @@ International Registered Trademark & Property of ToManage SAS
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+		Schema = mongoose.Schema;
 
 var GroupAttributesSchema = new Schema({
-    code: String,
-    langs: [{
-        _id: false,
-        name: String
-    }],
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
+		code: String,
+		langs: [{
+				_id: false,
+				name: String
+		}],
+		createdAt: {
+				type: Date,
+				default: Date.now
+		}
 });
 
 exports.Schema = mongoose.model('groupAttributes', GroupAttributesSchema, 'groupAttributes');

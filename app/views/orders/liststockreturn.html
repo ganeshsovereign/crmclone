@@ -1,65 +1,65 @@
 <div>
-    <div class="page-bar">
-        <ul class="page-breadcrumb">
-            <li>
-                <i class="fa fa-home"></i>
-                <a ui-sref="home">@(Home)</a>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span>@(orders:Logistics)</span>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span>@(orders:StockReturn)</span>
-            </li>
-        </ul>
-        <div class="page-toolbar">
-            <div class="btn-group">
-                <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+				<div class="page-bar">
+								<ul class="page-breadcrumb">
+												<li>
+																<i class="fa fa-home"></i>
+																<a ui-sref="home">@(Home)</a>
+																<i class="fa fa-angle-right"></i>
+												</li>
+												<li>
+																<span>@(orders:Logistics)</span>
+																<i class="fa fa-angle-right"></i>
+												</li>
+												<li>
+																<span>@(orders:StockReturn)</span>
+												</li>
+								</ul>
+								<div class="page-toolbar">
+												<div class="btn-group">
+																<a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
                     <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
                 </a>
-                <ul class="dropdown-menu pull-right">
+																<ul class="dropdown-menu pull-right">
 
-                </ul>
-            </div>
-        </div>
-    </div>
+																</ul>
+												</div>
+								</div>
+				</div>
 
-    <div class="portlet light bordered">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-refresh"></i>
-                <span class="caption-subject dark sbold uppercase">@(orders:ListStockReturn)</span>
-            </div>
-            <div class="actions">
-                <!--<a class="btn blue" ui-sref="stockreturn.create">@(Add) <i class="fa fa-plus"></i></a>-->
-                <a class="btn btn-icon-only btn-default" ng-click="find(true)" href="javascript:;"><i class="fa fa-refresh"></i>
+				<div class="portlet light bordered">
+								<div class="portlet-title">
+												<div class="caption">
+																<i class="fa fa-refresh"></i>
+																<span class="caption-subject dark sbold uppercase">@(orders:ListStockReturn)</span>
+												</div>
+												<div class="actions">
+																<!--<a class="btn blue" ui-sref="stockreturn.create">@(Add) <i class="fa fa-plus"></i></a>-->
+																<a class="btn btn-icon-only btn-default" ng-click="find(true)" href="javascript:;"><i class="fa fa-refresh"></i>
             </a>
-            </div>
-        </div>
-        <div class="portlet light">
-            <div class="form-body">
-                <div class="table-responsive">
-                    <div class="dataTables_wrapper no-footer table-responsive">
-                        <div class="col-md-12">
-                            <table class="table dataTable no-footer table-hover" id="stockreturnList">
-                                <thead>
-                                    <tr role="row" class="heading">
-                                        <th width="2%">
-                                            <input type="checkbox" class="group-checkable" />
-                                        </th>
-                                        <th>@(Ref)</th>
-                                        <th>@(companies:Company)</th>
-                                        <th>@(orders:Order)</th>
-                                        <th>@(orders:ReceivedAt)</th>
-                                        <th>@(Qty)</th>
-                                        <th>@(Status)</th>
-                                        <th>@(companies:Entity)</th>
-                                        <th>@(DateCreation)</th>
-                                    </tr>
-                                </thead>
-                                <!--<tbody>
+												</div>
+								</div>
+								<div class="portlet light">
+												<div class="form-body">
+																<div class="table-responsive">
+																				<div class="dataTables_wrapper no-footer table-responsive">
+																								<div class="col-md-12">
+																												<table class="table dataTable no-footer table-hover" id="stockreturnList">
+																																<thead>
+																																				<tr role="row" class="heading">
+																																								<th width="2%">
+																																												<input type="checkbox" class="group-checkable" />
+																																								</th>
+																																								<th>@(Ref)</th>
+																																								<th>@(companies:Company)</th>
+																																								<th>@(orders:Order)</th>
+																																								<th>@(orders:ReceivedAt)</th>
+																																								<th>@(Qty)</th>
+																																								<th>@(Status)</th>
+																																								<th>@(companies:Entity)</th>
+																																								<th>@(DateCreation)</th>
+																																				</tr>
+																																</thead>
+																																<!--<tbody>
                                 <tr ng-repeat="line in litObjectStockreturn">
                                     <td>{{line}}</td>
                                     <td>{{line}}</td>
@@ -68,11 +68,11 @@
                                     <td>{{line}}</td>
                                 </tr>
                             </tbody>-->
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+																												</table>
+																								</div>
+																				</div>
+																</div>
+												</div>
+								</div>
+				</div>
 </div>

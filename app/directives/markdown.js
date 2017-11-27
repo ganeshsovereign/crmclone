@@ -22,148 +22,148 @@ International Registered Trademark & Property of ToManage SAS
 
 
 MetronicApp.directive("markdownEditor", function($rootScope) {
-    return {
-        restrict: "A",
-        require: 'ngModel',
-        scope: {
-            data: '=ngModel',
-            ngShow: '=',
-            height: '='
-        },
-        template: '<div id="markdownEditor"></div>',
-        link: function(scope, element, attrs, ngModel) {
+		return {
+				restrict: "A",
+				require: 'ngModel',
+				scope: {
+						data: '=ngModel',
+						ngShow: '=',
+						height: '='
+				},
+				template: '<div id="markdownEditor"></div>',
+				link: function(scope, element, attrs, ngModel) {
 
-            var obj = false; // Test if it's an object for fiche.societe.report or a single value
-            var newData;
-            if (typeof scope.data === 'object') {
-                obj = true;
+						var obj = false; // Test if it's an object for fiche.societe.report or a single value
+						var newData;
+						if (typeof scope.data === 'object') {
+								obj = true;
 
-                newData = {
-                    new: scope.data.new,
-                    old: scope.data.new,
-                    datec: new Date(),
-                    author: $rootScope.login._id
-                };
-            }
+								newData = {
+										new: scope.data.new,
+										old: scope.data.new,
+										datec: new Date(),
+										author: $rootScope.login._id
+								};
+						}
 
-            $('#markdownEditor').markdown({
-                savable: false,
-                language: "fr",
-                resize: "vertical",
-                height: scope.height || 200,
-                onChange: function(e) {
-                    if (obj)
-                        newData.new = e.getContent();
-                    else
-                        newData = e.getContent();
+						$('#markdownEditor').markdown({
+								savable: false,
+								language: "fr",
+								resize: "vertical",
+								height: scope.height || 200,
+								onChange: function(e) {
+										if (obj)
+												newData.new = e.getContent();
+										else
+												newData = e.getContent();
 
-                    ngModel.$setViewValue(newData);
-                },
-                onShow: function(e) {
-                    if (obj)
-                        e.setContent(newData.new);
-                    else
-                        e.setContent(scope.data);
-                },
-                onBlur: function(e) {
-                    //$(element).remove();
-                }
-            });
+										ngModel.$setViewValue(newData);
+								},
+								onShow: function(e) {
+										if (obj)
+												e.setContent(newData.new);
+										else
+												e.setContent(scope.data);
+								},
+								onBlur: function(e) {
+										//$(element).remove();
+								}
+						});
 
 
-        }
-    };
+				}
+		};
 });
 
 MetronicApp.provider('marked', function() {
 
-    var self = this;
+		var self = this;
 
-    /**
-     * @ngdoc method
-     * @name markedProvider#setOptions
-     * @methodOf hc.marked.service:markedProvider
-     *
-     * @param {object} opts Default options for [marked](https://github.com/chjj/marked#options-1).
-     */
+		/**
+		 * @ngdoc method
+		 * @name markedProvider#setOptions
+		 * @methodOf hc.marked.service:markedProvider
+		 *
+		 * @param {object} opts Default options for [marked](https://github.com/chjj/marked#options-1).
+		 */
 
-    self.setOptions = function(opts) { // Store options for later
-        this.defaults = opts;
-    };
+		self.setOptions = function(opts) { // Store options for later
+				this.defaults = opts;
+		};
 
-    self.$get = ['$window',
-        function($window) {
-            var m = $window.marked || marked;
+		self.$get = ['$window',
+				function($window) {
+						var m = $window.marked || marked;
 
-            self.setOptions = m.setOptions;
-            m.setOptions(self.defaults);
+						self.setOptions = m.setOptions;
+						m.setOptions(self.defaults);
 
-            return m;
-        }
-    ];
+						return m;
+				}
+		];
 
 });
 
 MetronicApp.directive('marked', ['marked',
-    function(marked) {
-        return {
-            restrict: 'AE',
-            replace: true,
-            scope: {
-                opts: '=',
-                marked: '='
-            },
-            link: function(scope, element, attrs) {
-                set(scope.marked || element.text() || '');
+		function(marked) {
+				return {
+						restrict: 'AE',
+						replace: true,
+						scope: {
+								opts: '=',
+								marked: '='
+						},
+						link: function(scope, element, attrs) {
+								set(scope.marked || element.text() || '');
 
-                function set(val) {
-                    element.html(marked(val || '', scope.opts || null));
-                }
+								function set(val) {
+										element.html(marked(val || '', scope.opts || null));
+								}
 
-                if (attrs.marked) {
-                    scope.$watch('marked', set);
-                }
+								if (attrs.marked) {
+										scope.$watch('marked', set);
+								}
 
-            }
-        };
-    }
+						}
+				};
+		}
 ]);
 
 MetronicApp.directive("markdownDiff", function() {
-    return {
-        restrict: "A",
-        scope: {
-            origin: '=',
-            new: '='
-        },
-        template: '<pre id="displayDiff"></pre>',
-        link: function(scope, element, attrs) {
-            if (scope.origin !== scope.new)
-                check();
+		return {
+				restrict: "A",
+				scope: {
+						origin: '=',
+						new: '='
+				},
+				template: '<pre id="displayDiff"></pre>',
+				link: function(scope, element, attrs) {
+						if (scope.origin !== scope.new)
+								check();
 
-            function check() {
+						function check() {
 
-                //displayDiff.empty();
-                $('#displayDiff').empty();
+								//displayDiff.empty();
+								$('#displayDiff').empty();
 
-                var diff = JsDiff.diffChars(scope.origin, scope.new);
+								var diff = JsDiff.diffChars(scope.origin, scope.new);
 
-                diff.forEach(function(part) {
-                    // green for additions, red for deletions
-                    // grey for common parts
-                    var color = part.added ? 'font-green-seagreen' :
-                        part.removed ? 'font-red' : 'font-grey-cascade';
-                    var span = document.createElement('span');
-                    span.setAttribute('class', color);
-                    span.appendChild(document
-                        .createTextNode(part.value));
-                    displayDiff.appendChild(span);
-                });
-            }
+								diff.forEach(function(part) {
+										// green for additions, red for deletions
+										// grey for common parts
+										var color = part.added ? 'font-green-seagreen' :
+												part.removed ? 'font-red' : 'font-grey-cascade';
+										var span = document.createElement('span');
+										span.setAttribute('class', color);
+										span.appendChild(document
+												.createTextNode(part.value));
+										displayDiff.appendChild(span);
+								});
+						}
 
-            if (attrs.origin)
-                scope.$watch('origin', check);
+						if (attrs.origin)
+								scope.$watch('origin', check);
 
-        }
-    };
+				}
+		};
 });

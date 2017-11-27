@@ -25,83 +25,83 @@ International Registered Trademark & Property of ToManage SAS
 
 MetronicApp.config(function($stateProvider, $urlRouterProvider) {
 
-    // Menu employees
-    $stateProvider.state('employee', {
-            url: "/employee",
-            abstract: true,
-            templateUrl: "/views/employees/index.html"
-        })
-        .state('employee.list', {
-            url: "",
-            templateUrl: "/views/employees/list.html",
-            data: {
-                pageTitle: 'Liste des collaborateurs'
-            },
-            controller: "EmployeeController"
-        })
-        .state('employee.show', {
-            url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/employees/fiche.html",
-            data: {
-                pageTitle: 'Fiche Collaborateur'
-            },
-            controller: "EmployeeController"
-        })
-        .state('employee.create', {
-            parent: "employee",
-            url: "/create.html",
-            templateUrl: "/views/employees/main.html",
-            data: {
-                pageTitle: 'Nouveau Collaborateur'
-            },
-            controller: "EmployeeController"
-        })
-        // Main
-        .state("employee.show.main", {
-            templateUrl: "/views/employees/main.html",
-            data: {
-                pageTitle: 'Main'
-            }
-        })
-        // Files
-        .state('employee.show.files', {
-            url: "/files",
-            templateUrl: "/views/employees/files.html",
-            data: {
-                pageTitle: 'Images / Documents'
-            }
-        })
-        // Personnal Information
-        .state("employee.show.personnalinformation", {
-            url: "/PersonnalInformation",
-            templateUrl: "/views/employees/personal.html",
-            data: {
-                pageTitle: 'PersonnalInformation'
-            }
-        }) // Job
-        .state("employee.show.job", {
-            url: "/Job",
-            templateUrl: "/views/employees/job.html",
-            data: {
-                pageTitle: 'Job'
-            }
-        })
-        // Assignees
-        .state("employee.show.assignees", {
-            url: "/assignees",
-            templateUrl: "/views/employees/assignees.html",
-            data: {
-                pageTitle: 'Affectation'
-            }
-        });
+		// Menu employees
+		$stateProvider.state('employee', {
+						url: "/employee",
+						abstract: true,
+						templateUrl: "/views/employees/index.html"
+				})
+				.state('employee.list', {
+						url: "",
+						templateUrl: "/views/employees/list.html",
+						data: {
+								pageTitle: 'Liste des collaborateurs'
+						},
+						controller: "EmployeeController"
+				})
+				.state('employee.show', {
+						url: "/{id:[0-9a-z]{24}}",
+						templateUrl: "/views/employees/fiche.html",
+						data: {
+								pageTitle: 'Fiche Collaborateur'
+						},
+						controller: "EmployeeController"
+				})
+				.state('employee.create', {
+						parent: "employee",
+						url: "/create.html",
+						templateUrl: "/views/employees/main.html",
+						data: {
+								pageTitle: 'Nouveau Collaborateur'
+						},
+						controller: "EmployeeController"
+				})
+				// Main
+				.state("employee.show.main", {
+						templateUrl: "/views/employees/main.html",
+						data: {
+								pageTitle: 'Main'
+						}
+				})
+				// Files
+				.state('employee.show.files', {
+						url: "/files",
+						templateUrl: "/views/employees/files.html",
+						data: {
+								pageTitle: 'Images / Documents'
+						}
+				})
+				// Personnal Information
+				.state("employee.show.personnalinformation", {
+						url: "/PersonnalInformation",
+						templateUrl: "/views/employees/personal.html",
+						data: {
+								pageTitle: 'PersonnalInformation'
+						}
+				}) // Job
+				.state("employee.show.job", {
+						url: "/Job",
+						templateUrl: "/views/employees/job.html",
+						data: {
+								pageTitle: 'Job'
+						}
+				})
+				// Assignees
+				.state("employee.show.assignees", {
+						url: "/assignees",
+						templateUrl: "/views/employees/assignees.html",
+						data: {
+								pageTitle: 'Affectation'
+						}
+				});
 });
 
 MetronicApp.factory("Employees", ['$resource', function($resource) {
-    return $resource('/erp/api/employees/:Id', {
-        Id: '@_id'
-    }, {
-        update: {
-            method: 'PUT'
-        }
-    });
+		return $resource('/erp/api/employees/:Id', {
+				Id: '@_id'
+		}, {
+				update: {
+						method: 'PUT'
+				}
+		});
 }]);

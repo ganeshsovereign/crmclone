@@ -1,124 +1,124 @@
 <div class="page-bar" ng-init="findOne()">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="fa fa-home"></i>
-            <a ui-sref="home">@(Home)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>@(products:ProductsAndServices)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span> @(products:ProductCategories) </span>
-        </li>
+				<ul class="page-breadcrumb">
+								<li>
+												<i class="fa fa-home"></i>
+												<a ui-sref="home">@(Home)</a>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<span>@(products:ProductsAndServices)</span>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<span> @(products:ProductCategories) </span>
+								</li>
 
-    </ul>
-    <div class="page-toolbar">
-        <div class="btn-group">
-            <a class="btn purple-sharp dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+				</ul>
+				<div class="page-toolbar">
+								<div class="btn-group">
+												<a class="btn purple-sharp dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
                 <i class="fa fa-flag"></i> {{languages[_language].name}} <i class="fa fa-angle-down"></i>
             </a>
-            <ul class="dropdown-menu pull-right">
-                <li ng-repeat="s in languages">
-                    <a href="#" ng-click="setLanguage(s.idx)">
+												<ul class="dropdown-menu pull-right">
+																<li ng-repeat="s in languages">
+																				<a href="#" ng-click="setLanguage(s.idx)">
                         <i class="fa fa-copy"></i> {{s.name}}
                     </a>
 
-                </li>
-            </ul>
-        </div>
-        <div class="btn-group">
-            <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+																</li>
+												</ul>
+								</div>
+								<div class="btn-group">
+												<a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
                 <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
             </a>
-            <ul class="dropdown-menu pull-right">
-                <li>
-                    <a href="#" ng-click="refreshDirectory()">
+												<ul class="dropdown-menu pull-right">
+																<li>
+																				<a href="#" ng-click="refreshDirectory()">
                         <i class="fa fa-refresh"></i> @(Refresh)
                     </a>
-                </li>
-                <!--   <li>
+																</li>
+																<!--   <li>
                     <a href="#" ng-click="clone()">
                         <i class="fa fa-copy"></i> @(PrintPDF)
                     </a>
                 </li> -->
-                <li>
-                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+																<li>
+																				<a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
-                </li>
-            </ul>
-        </div>
-    </div>
+																</li>
+												</ul>
+								</div>
+				</div>
 </div>
 
 <script type="text/ng-template" id="myModalContent.html">
-    <div class="modal-header">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="icon-pencil"></i>
-                <span class="caption-subject dark bold uppercase"> @(categories:CreateCat)</span></span>
-                <button type="button" class="bootbox-close-button close" ng-click="cancel()" aria-hidden="true">×</button>
-            </div>
-        </div>
-    </div>
-    </div>
-    <form class="modal-body form" ng-submit="ok()">
-        <div class="form-horizontal">
-            <div class="form-body">
-                <div class="col-md-5">
-                    <div class="portlet light bordered">
-                        <div class="form-group form-md-line-input">
-                            <input required class="form-control" ng-model="category.langs[0].name" placeholder="@(Name)" type="text">
-                            <label for="name">@(categories:Category) : META Title <span class="required">* </span></label>
-                        </div>
-                        <div class="form-group form-md-line-input">
-                            <input required class="form-control" ng-model="category.langs[0].url" placeholder="url-link" type="text">
-                            <label for="name">@(Url) <span class="required">* </span></label>
-                        </div>
-                        <div class="form-group form-md-line-input">
-                            <textarea class="form-control" ng-model="category.langs[0].meta.description" type="text"></textarea>
-                            <label for="name">META @(Description) <span class="required">* </span></label>
-                        </div>
-                        <div class="md-checkbox has-success">
-                            <input type="checkbox" id="isActive" class="md-check" ng-model="category.enabled" ng-checked="category.enabled">
-                            <label for="isActive">
+				<div class="modal-header">
+								<div class="portlet-title">
+												<div class="caption">
+																<i class="icon-pencil"></i>
+																<span class="caption-subject dark bold uppercase"> @(categories:CreateCat)</span></span>
+																<button type="button" class="bootbox-close-button close" ng-click="cancel()" aria-hidden="true">×</button>
+												</div>
+								</div>
+				</div>
+				</div>
+				<form class="modal-body form" ng-submit="ok()">
+								<div class="form-horizontal">
+												<div class="form-body">
+																<div class="col-md-5">
+																				<div class="portlet light bordered">
+																								<div class="form-group form-md-line-input">
+																												<input required class="form-control" ng-model="category.langs[0].name" placeholder="@(Name)" type="text">
+																												<label for="name">@(categories:Category) : META Title <span class="required">* </span></label>
+																								</div>
+																								<div class="form-group form-md-line-input">
+																												<input required class="form-control" ng-model="category.langs[0].url" placeholder="url-link" type="text">
+																												<label for="name">@(Url) <span class="required">* </span></label>
+																								</div>
+																								<div class="form-group form-md-line-input">
+																												<textarea class="form-control" ng-model="category.langs[0].meta.description" type="text"></textarea>
+																												<label for="name">META @(Description) <span class="required">* </span></label>
+																								</div>
+																								<div class="md-checkbox has-success">
+																												<input type="checkbox" id="isActive" class="md-check" ng-model="category.enabled" ng-checked="category.enabled">
+																												<label for="isActive">
                                     <span></span>
                                     <span class="check"></span>
                                     <span class="box"></span> @(Enabled)</label>
-                        </div>
-                        <div class="form-group form-md-line-input">
-                            <label for="">@(Groups)</label>
-                            <div class="md-checkbox-inline">
-                                <div class="md-checkbox" ng-repeat="value in groupCategoryList">
-                                    <input type="checkbox" class="md-check" name="checkedObj[]" id="{{value._id}}" ng-click="toggleSelection(category.groups, value._id)" ng-checked="category.groups.indexOf(value._id) >= 0" />
-                                    <label for="{{value._id}}">
+																								</div>
+																								<div class="form-group form-md-line-input">
+																												<label for="">@(Groups)</label>
+																												<div class="md-checkbox-inline">
+																																<div class="md-checkbox" ng-repeat="value in groupCategoryList">
+																																				<input type="checkbox" class="md-check" name="checkedObj[]" id="{{value._id}}" ng-click="toggleSelection(category.groups, value._id)" ng-checked="category.groups.indexOf(value._id) >= 0" />
+																																				<label for="{{value._id}}">
                                                 <span></span>
                                                 <span class="check"></span>
                                                 <span class="box"></span> {{value.name}} </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-7">
-                    <div class="form-horizontal form-row-seperated">
-                        <div class="portlet light bordered">
-                            <div class="form-group form-md-line-input ">
-                                <textarea class="form-control" ng-model="category.langs[0].body" rows="10"></textarea>
-                                <label for="MetaDes">@(Description)</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" ng-click="cancel()" class="btn btn red">@(Cancel)</button>
-            <button type="submit" class="btn green">@(Save)</button>
-        </div>
-    </form>
+																																</div>
+																												</div>
+																								</div>
+																				</div>
+																</div>
+																<div class="col-md-7">
+																				<div class="form-horizontal form-row-seperated">
+																								<div class="portlet light bordered">
+																												<div class="form-group form-md-line-input ">
+																																<textarea class="form-control" ng-model="category.langs[0].body" rows="10"></textarea>
+																																<label for="MetaDes">@(Description)</label>
+																												</div>
+																								</div>
+																				</div>
+																</div>
+												</div>
+								</div>
+								<div class="modal-footer">
+												<button type="button" ng-click="cancel()" class="btn btn red">@(Cancel)</button>
+												<button type="submit" class="btn green">@(Save)</button>
+								</div>
+				</form>
 </script>
 
 <!--
@@ -167,64 +167,64 @@
 -->
 
 <div class="row">
-    <div class="col-md-12">
-        <div class="portlet light bordered" ng-init="init()">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-share-alt "></i>
-                    <span class="caption-subject dark sbold uppercase">@(products:ProductCategories)</span>
-                </div>
-                <div class="actions">
-                    <div class="btn-group">
-                        <a class="btn blue" ng-click="addEditCategory(category)"> @(Add) <i class="fa fa-plus"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="portlet-body">
-                <div class="table-toolbar">
-                    <div class="row">
-                        <div class="col-md-9">
-                            <div class="btn-group">
-                                <button class="btn btn-default" ng-click="expandAll()"><i class="fa fa-plus-square"></i> @(categories:ExpandAll)</button>
-                                <button class="btn btn-default" ng-click="collapseAll()"><i class="fa fa-minus-square"></i> @(categories:CollapseAll)</button>
-                                <button title="@(Refresh)" class="btn btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="btn-group pull-right">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+				<div class="col-md-12">
+								<div class="portlet light bordered" ng-init="init()">
+												<div class="portlet-title">
+																<div class="caption">
+																				<i class="fa fa-share-alt "></i>
+																				<span class="caption-subject dark sbold uppercase">@(products:ProductCategories)</span>
+																</div>
+																<div class="actions">
+																				<div class="btn-group">
+																								<a class="btn blue" ng-click="addEditCategory(category)"> @(Add) <i class="fa fa-plus"></i></a>
+																				</div>
+																</div>
+												</div>
+												<div class="portlet-body">
+																<div class="table-toolbar">
+																				<div class="row">
+																								<div class="col-md-9">
+																												<div class="btn-group">
+																																<button class="btn btn-default" ng-click="expandAll()"><i class="fa fa-plus-square"></i> @(categories:ExpandAll)</button>
+																																<button class="btn btn-default" ng-click="collapseAll()"><i class="fa fa-minus-square"></i> @(categories:CollapseAll)</button>
+																																<button title="@(Refresh)" class="btn btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+																												</div>
+																								</div>
+																								<div class="col-md-3">
+																												<div class="btn-group pull-right">
+																												</div>
+																								</div>
+																				</div>
+																</div>
 
-                <!-- Nested node template -->
-                <script type="text/ng-template" id="nodes_renderer.html">
-                    <div ui-tree-handle class="tree-node tree-node-content">
-                        <a class="" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)"><span class="fa" ng-class="{'fa-plus-square-o': collapsed,'fa-minus-square-o': !collapsed}"></span></a> {{node.langs[0].name}}
-                        <span style="margin-left: 20px;" class="font-blue">{{node.langs[0].linker}}</span> <small class="h6" ng-show="node.productsCount">({{node.productsCount}} @(products:Products))</small>
+																<!-- Nested node template -->
+																<script type="text/ng-template" id="nodes_renderer.html">
+																				<div ui-tree-handle class="tree-node tree-node-content">
+																								<a class="" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)"><span class="fa" ng-class="{'fa-plus-square-o': collapsed,'fa-minus-square-o': !collapsed}"></span></a> {{node.langs[0].name}}
+																								<span style="margin-left: 20px;" class="font-blue">{{node.langs[0].linker}}</span> <small class="h6" ng-show="node.productsCount">({{node.productsCount}} @(products:Products))</small>
 
-                        <a class="pull-right btn red btn-xs" data-nodrag ng-click="removeItem(this)"><span class="fa fa-trash"></span></a>
-                        <a class="pull-right btn blue btn-xs" ng-hide="depth(this) == 5" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;">@(Add) <span class="fa fa-plus"></span></a>
-                        <a class="pull-right btn default btn-xs" data-nodrag ng-click="addEditCategory(this.$modelValue)" style="margin-right: 8px;"><span class="fa fa-pencil"></span></a>
-                        <h6 class="">{{node.langs[0].description}}</h6>
-                    </div>
-                    <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
-                        <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
-                        </li>
-                    </ol>
-                </script>
+																								<a class="pull-right btn red btn-xs" data-nodrag ng-click="removeItem(this)"><span class="fa fa-trash"></span></a>
+																								<a class="pull-right btn blue btn-xs" ng-hide="depth(this) == 5" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;">@(Add) <span class="fa fa-plus"></span></a>
+																								<a class="pull-right btn default btn-xs" data-nodrag ng-click="addEditCategory(this.$modelValue)" style="margin-right: 8px;"><span class="fa fa-pencil"></span></a>
+																								<h6 class="">{{node.langs[0].description}}</h6>
+																				</div>
+																				<ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+																								<li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
+																								</li>
+																				</ol>
+																</script>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div ui-tree="treeOptions" id="tree-root" data-max-depth="5">
-                            <ol ui-tree-nodes ng-model="categories">
-                                <li ng-repeat="node in categories" ui-tree-node ng-include="'nodes_renderer.html'"></li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
+																<div class="row">
+																				<div class="col-md-12">
+																								<div ui-tree="treeOptions" id="tree-root" data-max-depth="5">
+																												<ol ui-tree-nodes ng-model="categories">
+																																<li ng-repeat="node in categories" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+																												</ol>
+																								</div>
+																				</div>
+																</div>
 
-            </div>
-        </div>
-    </div>
+												</div>
+								</div>
+				</div>
 </div>

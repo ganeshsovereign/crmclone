@@ -1,22 +1,22 @@
 <div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="fa fa-home"></i>
-            <a ui-sref="home">@(Home)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <a ui-sref="societe.list">@(companies:CompanyList)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>@(companies:NewCompany)</span>
-        </li>
-    </ul>
+				<ul class="page-breadcrumb">
+								<li>
+												<i class="fa fa-home"></i>
+												<a ui-sref="home">@(Home)</a>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<a ui-sref="societe.list">@(companies:CompanyList)</a>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<span>@(companies:NewCompany)</span>
+								</li>
+				</ul>
 </div>
 
 <h3 class="page-title">
-    <i class="fa fa-institution font-yellow-crusta"></i> @(companies:NewCompany)
+				<i class="fa fa-institution font-yellow-crusta"></i> @(companies:NewCompany)
 </h3>
 
 
@@ -24,154 +24,154 @@
 
 
 <form ng-submit="create()" role="form">
-    <div class="row">
-        <div class="col-md-12 col-sm-12">
+				<div class="row">
+								<div class="col-md-12 col-sm-12">
 
-            <!-- BEGIN PARAMETRES GENERAUX -->
-            <div class="portlet light portlet-form bordered">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-institution"></i> @(GeneralParameters)
-                    </div>
-                </div>
-                <div class="portlet-body form">
-                    <div class="form-horizontal">
-                        <div class="form-body">
-                            <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <select class="form-control" data-ng-model="societe.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
-                                    <label for="form_control_1">@(companies:Entity)</label>
-                                    <div class="form-control-focus"> </div>
-                                </div>
-                                <div class="form-group form-md-line-input">
-                                    <select class="form-control" data-ng-model="societe.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
-                                    <label for="form_control_1">@(companies:Entity)</label>
-                                    <div class="form-control-focus"> </div>
-                                </div>
-                            </div>
-                            <div ng-if="login.multiEntities" class="form-group">
-                                <label class="col-md-1 control-label">@(companies:Entity)</label>
-                                <div class="col-md-5">
-                                    <select class="form-control" data-ng-model="societe.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
-                                </div>
-                                <label class="col-md-1 control-label">@(commercial:Commercial)</label>
-                                <div class="col-md-5">
-                                    <select class="form-control" ng-model="societe.commercial_id" ng-init="loadUsers()" data-ng-options="user as user.name for user in userList">
+												<!-- BEGIN PARAMETRES GENERAUX -->
+												<div class="portlet light portlet-form bordered">
+																<div class="portlet-title">
+																				<div class="caption">
+																								<i class="fa fa-institution"></i> @(GeneralParameters)
+																				</div>
+																</div>
+																<div class="portlet-body form">
+																				<div class="form-horizontal">
+																								<div class="form-body">
+																												<div class="col-md-6">
+																																<div class="form-group form-md-line-input">
+																																				<select class="form-control" data-ng-model="societe.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
+																																				<label for="form_control_1">@(companies:Entity)</label>
+																																				<div class="form-control-focus"> </div>
+																																</div>
+																																<div class="form-group form-md-line-input">
+																																				<select class="form-control" data-ng-model="societe.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
+																																				<label for="form_control_1">@(companies:Entity)</label>
+																																				<div class="form-control-focus"> </div>
+																																</div>
+																												</div>
+																												<div ng-if="login.multiEntities" class="form-group">
+																																<label class="col-md-1 control-label">@(companies:Entity)</label>
+																																<div class="col-md-5">
+																																				<select class="form-control" data-ng-model="societe.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
+																																</div>
+																																<label class="col-md-1 control-label">@(commercial:Commercial)</label>
+																																<div class="col-md-5">
+																																				<select class="form-control" ng-model="societe.commercial_id" ng-init="loadUsers()" data-ng-options="user as user.name for user in userList">
                                 </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-1 control-label" for="form_control_1">Statut</label>
-                                <div class="col-md-5">
-                                    <select class="form-control" name="">
+																																</div>
+																												</div>
+																												<div class="form-group">
+																																<label class="col-md-1 control-label" for="form_control_1">Statut</label>
+																																<div class="col-md-5">
+																																				<select class="form-control" name="">
                                                             <option value="">Contact professionnel</option>
                                                             <option value="">Contact particulier</option>
                                                         </select>
-                                    <div class="form-control-focus"> </div>
-                                </div>
-                                <div ng-class="{'has-error':societe.idprof2 && !validSiret, 'has-success': validSiret}">
-                                    <label class="col-md-1 control-label">@(companies:ProfId2FR)</label>
-                                    <div class="col-md-5">
-                                        <div class="input-icon right input-inline input-medium">
-                                            <i class="fa" ng-class="{'fa-warning': societe.idprof2 && !validSiret, 'fa-check': validSiret}"></i>
-                                            <input ng-disabled="noSiret" type="text" data-ng-model="societe.idprof2" data-ng-change="isValidSiret()" id="code" class="form-control input-inline input-medium" placeholder="@(companies:ProfId2FR) sans espace" autocomplete="off" />
-                                        </div>
-                                        <span class="help-inline">
+																																				<div class="form-control-focus"> </div>
+																																</div>
+																																<div ng-class="{'has-error':societe.idprof2 && !validSiret, 'has-success': validSiret}">
+																																				<label class="col-md-1 control-label">@(companies:ProfId2FR)</label>
+																																				<div class="col-md-5">
+																																								<div class="input-icon right input-inline input-medium">
+																																												<i class="fa" ng-class="{'fa-warning': societe.idprof2 && !validSiret, 'fa-check': validSiret}"></i>
+																																												<input ng-disabled="noSiret" type="text" data-ng-model="societe.idprof2" data-ng-change="isValidSiret()" id="code" class="form-control input-inline input-medium" placeholder="@(companies:ProfId2FR) sans espace" autocomplete="off" />
+																																								</div>
+																																								<span class="help-inline">
                                         <label class="checkbox">
                                             <input ng-model="noSiret" ng-change="societe.idprof2 = ''" type="checkbox"/>
                                             @(companies:PublicCorparation)/@(companies:Fundation)
                                         </label>
                                     </span>
-                                        <span class="help-block">
+																																								<span class="help-block">
                                         <div ng-show="societe.idprof2 == null || societe.idprof2 == '' && !noSiret"> @(companies:AccountDuplicateControle)</div>
                                         <div class="alert alert-warning" ng-show="societe.idprof2 && !validSiret"> Code incorrect.</div>
                                         <div class="alert alert-danger" ng-show="validSiret && siretFound"> Ce code existe déjà dans la base : {{siretFound.name}} (@(companies:Entity) : {{siretFound.entity}}).</div>
                                         <div class="alert alert-success" ng-show="validSiret && !siretFound"> Code correct.</div>
                                     </span>
-                                    </div>
-                                </div>
+																																				</div>
+																																</div>
 
-                            </div>
+																												</div>
 
-                            <div class="form-group">
-                                <label class="col-md-1 control-label">@(companies:Company)</label>
-                                <div class="col-md-5">
-                                    <input class="form-control" required data-ng-model="societe.name" placeholder="@(companies:CompanyName)" type="text" autocomplete="off">
-                                </div>
-                                <label class="col-md-1 control-label">@(companies:SocGroupShort)</label>
-                                <div class="col-md-5">
-                                    <input class="form-control" placeholder="@(companies:SocGroup)" ng-model="societe.caFamily" typeahead="ca as ca for ca in AutoComplete($viewValue,'api/societe/autocomplete/caFamily', societe.entity)" type="text" autocomplete="off" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-1 control-label">@(Address)</label>
-                                <div class="col-md-11">
-                                    <div crm-address mode="create" model="societe"></div>
-                                </div>
-                            </div>
+																												<div class="form-group">
+																																<label class="col-md-1 control-label">@(companies:Company)</label>
+																																<div class="col-md-5">
+																																				<input class="form-control" required data-ng-model="societe.name" placeholder="@(companies:CompanyName)" type="text" autocomplete="off">
+																																</div>
+																																<label class="col-md-1 control-label">@(companies:SocGroupShort)</label>
+																																<div class="col-md-5">
+																																				<input class="form-control" placeholder="@(companies:SocGroup)" ng-model="societe.caFamily" typeahead="ca as ca for ca in AutoComplete($viewValue,'api/societe/autocomplete/caFamily', societe.entity)" type="text" autocomplete="off" />
+																																</div>
+																												</div>
+																												<div class="form-group">
+																																<label class="col-md-1 control-label">@(Address)</label>
+																																<div class="col-md-11">
+																																				<div crm-address mode="create" model="societe"></div>
+																																</div>
+																												</div>
 
 
 
-                            <div class="form-group">
+																												<div class="form-group">
 
-                                <label class="col-md-1 control-label">@(companies:SupplierStatus) </label>
-                                <div class="radio-list col-md-4">
-                                    <span>
+																																<label class="col-md-1 control-label">@(companies:SupplierStatus) </label>
+																																<div class="radio-list col-md-4">
+																																				<span>
                                         <input type="radio" name="supplierStatus" required ng-model="societe.fournisseur" value="NO" class=""/> @(None)
                                         <input type="radio" name="supplierStatus" required ng-model="societe.fournisseur" value="SUPPLIER" class=""/> @(companies:Supplier)
                                         <input type="radio" name="supplierStatus" required ng-model="societe.fournisseur" value="SUBCONTRACTOR" class=""/> @(companies:Subcontractor)
                                     </span>
-                                </div>
-                                <label class="col-md-2 control-label">@(companies:ProspectStatus)</label>
-                                <div class="radio-list col-md-5 value">
-                                    <span>
+																																</div>
+																																<label class="col-md-2 control-label">@(companies:ProspectStatus)</label>
+																																<div class="radio-list col-md-5 value">
+																																				<span>
                                         <input type="radio" name="prospectStatus" required ng-model="societe.Status" value="ST_NEVER" class=""/> @(None)
                                         <input type="radio" name="prospectStatus" required ng-model="societe.Status" value="ST_PFROI" class=""/> @(companies:Prospect)
                                         <input type="radio" name="prospectStatus" required ng-model="societe.Status" value="ST_CINF3" class=""/> @(companies:Customer)
                                     </span>
-                                </div>
+																																</div>
 
-                            </div>
-
-
-                            <div class="form-group">
-                                <label class="col-md-1 control-label">@(companies:Phone)</label>
-                                <div class="col-md-5">
-                                    <input class="form-control" ng-model="societe.phone" placeholder="@(companies:Phone) @(General)" type="text">
-                                </div>
-                                <label class="col-md-1 control-label">@(companies:Mobile)</label>
-                                <div class="col-md-5">
-                                    <input class="form-control" ng-model="societe.phone" placeholder="@(companies:Phone) @(General)" type="text">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-1 control-label">@(companies:Fax)</label>
-                                <div class="col-md-5">
-                                    <input class="form-control" ng-model="societe.fax" placeholder="@(companies:Fax) @(General)" type="text">
-                                </div>
-                                <label class="col-md-1 control-label">@(Email)</label>
-                                <div class="col-md-5">
-                                    <input class="form-control" ng-model="societe.email" placeholder="@(AdressEmail) @(General)" type="email">
-                                </div>
-                            </div>
+																												</div>
 
 
+																												<div class="form-group">
+																																<label class="col-md-1 control-label">@(companies:Phone)</label>
+																																<div class="col-md-5">
+																																				<input class="form-control" ng-model="societe.phone" placeholder="@(companies:Phone) @(General)" type="text">
+																																</div>
+																																<label class="col-md-1 control-label">@(companies:Mobile)</label>
+																																<div class="col-md-5">
+																																				<input class="form-control" ng-model="societe.phone" placeholder="@(companies:Phone) @(General)" type="text">
+																																</div>
+																												</div>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+																												<div class="form-group">
+																																<label class="col-md-1 control-label">@(companies:Fax)</label>
+																																<div class="col-md-5">
+																																				<input class="form-control" ng-model="societe.fax" placeholder="@(companies:Fax) @(General)" type="text">
+																																</div>
+																																<label class="col-md-1 control-label">@(Email)</label>
+																																<div class="col-md-5">
+																																				<input class="form-control" ng-model="societe.email" placeholder="@(AdressEmail) @(General)" type="email">
+																																</div>
+																												</div>
 
-    </div>
 
-    <div class="form-actions">
-        <div class="row">
-            <div class="col-md-offset-5 col-md-7">
-                <button type="submit" class="btn blue">@(Create)</button>
-                <a ui-sref="societe.list" class="btn default">@(Cancel)</a>
-            </div>
-        </div>
-    </div>
+
+																								</div>
+																				</div>
+																</div>
+												</div>
+								</div>
+
+				</div>
+
+				<div class="form-actions">
+								<div class="row">
+												<div class="col-md-offset-5 col-md-7">
+																<button type="submit" class="btn blue">@(Create)</button>
+																<a ui-sref="societe.list" class="btn default">@(Cancel)</a>
+												</div>
+								</div>
+				</div>
 </form>

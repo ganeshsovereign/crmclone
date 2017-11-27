@@ -27,16 +27,16 @@ International Registered Trademark & Property of ToManage SAS
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-    timestamps = require('mongoose-timestamp'),
-    Schema = mongoose.Schema;
+		timestamps = require('mongoose-timestamp'),
+		Schema = mongoose.Schema;
 
 
 /**
  * Bank Category Schema
  */
 var bankCategorySchema = new Schema({
-    name: String,
-    description: String
+		name: String,
+		description: String
 });
 
 exports.Schema = mongoose.model('BankCategory', bankCategorySchema, 'BankCategory');

@@ -1,101 +1,101 @@
 <div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="fa fa-home"></i>
-            <a ui-sref="home">@(Home)</a>
-            <i class="fa fa-angle-right"></i></li>
-        <li>
-            <span>@(compta:MenuFinancial)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>@(compta:BankAccounts)</span>
-        </li>
-    </ul>
-    <div class="page-toolbar">
-        <div report-date-range ng-model="date" class="date pull-right btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
-    </div>
+				<ul class="page-breadcrumb">
+								<li>
+												<i class="fa fa-home"></i>
+												<a ui-sref="home">@(Home)</a>
+												<i class="fa fa-angle-right"></i></li>
+								<li>
+												<span>@(compta:MenuFinancial)</span>
+												<i class="fa fa-angle-right"></i>
+								</li>
+								<li>
+												<span>@(compta:BankAccounts)</span>
+								</li>
+				</ul>
+				<div class="page-toolbar">
+								<div report-date-range ng-model="date" class="date pull-right btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
+				</div>
 </div>
 <h3 class="page-title">
-    @(bank:Banks) <small>@(compta:BankAccounts)</small>
+				@(bank:Banks) <small>@(compta:BankAccounts)</small>
 </h3>
 
 <div class="row">
-    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 margin-bottom-10">
-        <div class="dashboard-stat blue">
-            <div class="visual">
-                <i class="fa fa-briefcase fa-icon-medium"></i>
-            </div>
-            <div class="details">
-                <div class="number"> {{qtyWaiting}} </div>
-                <div class="desc"> @(compta:PaymentWaiting) </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-        <div class="dashboard-stat" ng-class="{red: bankSolde < 0, green:bankSolde >= 0}">
-            <div class="visual">
-                <i class="fa fa-shopping-cart"></i>
-            </div>
-            <div class="details">
-                <div class="number"> {{bankSolde| currency}} </div>
-                <div class="desc"> @(compta:BalanceBank) {{date.end| date:"dd/MM/yyyy"}}</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-        <div class="dashboard-stat" ng-class="{red: balance < 0, green: balance >= 0}">
-            <div class="visual">
-                <i class="fa fa-group fa-icon-medium"></i>
-            </div>
-            <div class="details">
-                <div class="number"> {{balance| currency}} </div>
-                <div class="desc"> @(compta:BalanceAccount)</div>
-            </div>
-        </div>
-    </div>
+				<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 margin-bottom-10">
+								<div class="dashboard-stat blue">
+												<div class="visual">
+																<i class="fa fa-briefcase fa-icon-medium"></i>
+												</div>
+												<div class="details">
+																<div class="number"> {{qtyWaiting}} </div>
+																<div class="desc"> @(compta:PaymentWaiting) </div>
+												</div>
+								</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+								<div class="dashboard-stat" ng-class="{red: bankSolde < 0, green:bankSolde >= 0}">
+												<div class="visual">
+																<i class="fa fa-shopping-cart"></i>
+												</div>
+												<div class="details">
+																<div class="number"> {{bankSolde| currency}} </div>
+																<div class="desc"> @(compta:BalanceBank) {{date.end| date:"dd/MM/yyyy"}}</div>
+												</div>
+								</div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+								<div class="dashboard-stat" ng-class="{red: balance < 0, green: balance >= 0}">
+												<div class="visual">
+																<i class="fa fa-group fa-icon-medium"></i>
+												</div>
+												<div class="details">
+																<div class="number"> {{balance| currency}} </div>
+																<div class="desc"> @(compta:BalanceAccount)</div>
+												</div>
+								</div>
+				</div>
 </div>
 
 <div>
-    <div class="portlet box green">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-random"></i>@(compta:BankAccounts)
-            </div>
-        </div>
-        <div class="tools">
-        </div>
-        <div class="portlet-body">
-            <div class="table-toolbar">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="btn-group">
-                            <button class="btn blue" ng-click="addEntries = 1">@(compta:AddEntry) <i class="fa fa-plus"></i></button>
-                            <button class="btn yellow" ng-click="bankTransfer = 1">@(compta:BankTransfer) <i class="fa fa-plus"></i></button>
-                            <button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="col-md-3">
-                            <select ng-model="journal" ng-disabled="account" ng-change="find();" ng-options="s as s for s in journaux track by s" class="form-control">
+				<div class="portlet box green">
+								<div class="portlet-title">
+												<div class="caption">
+																<i class="fa fa-random"></i>@(compta:BankAccounts)
+												</div>
+								</div>
+								<div class="tools">
+								</div>
+								<div class="portlet-body">
+												<div class="table-toolbar">
+																<div class="row">
+																				<div class="col-md-4">
+																								<div class="btn-group">
+																												<button class="btn blue" ng-click="addEntries = 1">@(compta:AddEntry) <i class="fa fa-plus"></i></button>
+																												<button class="btn yellow" ng-click="bankTransfer = 1">@(compta:BankTransfer) <i class="fa fa-plus"></i></button>
+																												<button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
+																								</div>
+																				</div>
+																				<div class="col-md-5">
+																								<div class="col-md-3">
+																												<select ng-model="journal" ng-disabled="account" ng-change="find();" ng-options="s as s for s in journaux track by s" class="form-control">
                             </select>
-                        </div>
-                        <div class="col-md-5" ng-if="account">
-                            <select ng-model="account" ng-change="find();" ng-options="s as s.name for s in banks track by s.compta_bank" class="form-control">
+																								</div>
+																								<div class="col-md-5" ng-if="account">
+																												<select ng-model="account" ng-change="find();" ng-options="s as s.name for s in banks track by s.compta_bank" class="form-control">
                             </select>
-                        </div>
-                        <div class="col-md-4">
-                            <!--<select ng-show="login.multiEntities" ng-model="entity" ng-change="changeEntity(entity);
+																								</div>
+																								<div class="col-md-4">
+																												<!--<select ng-show="login.multiEntities" ng-model="entity" ng-change="changeEntity(entity);
                                     find();" ng-options="s.id as s.name for s in entityList" class="form-control">
                             </select>-->
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="checkbox-inline">
+																								</div>
+																				</div>
+																				<div class="col-md-2">
+																								<label class="checkbox-inline">
                             <input type="checkbox" uniform ng-model="noreconcilliation" ng-checked="noreconcilliation" ng-change="find()"> Operations a venir </label>
-                    </div>
-                    <div class="col-md-1">
-                        <!--<div class="btn-group pull-right">
+																				</div>
+																				<div class="col-md-1">
+																								<!--<div class="btn-group pull-right">
                             <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
                             </button>
                             <ul class="dropdown-menu pull-right">
@@ -119,203 +119,203 @@
                                 </li>
                             </ul>
                         </div>-->
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-8"></div>
-                    <div class="col-md-4 col-sm-12">
-                        <div id="orderList_filter" class="dataTables_filter">
-                            <label>@(Search) : <input type="number" step="any" ng-model="search" ng-model-options="{debounce: {'default': 500, 'blur': 0}}" class="form-control input-small input-sm input-inline" placeholder="@(Amount)" aria-controls="orderList"></label>
-                        </div>
-                        <div class="table-group-actions pull-right">
+																				</div>
+																</div>
+																<div class="row">
+																				<div class="col-md-8"></div>
+																				<div class="col-md-4 col-sm-12">
+																								<div id="orderList_filter" class="dataTables_filter">
+																												<label>@(Search) : <input type="number" step="any" ng-model="search" ng-model-options="{debounce: {'default': 500, 'blur': 0}}" class="form-control input-small input-sm input-inline" placeholder="@(Amount)" aria-controls="orderList"></label>
+																								</div>
+																								<div class="table-group-actions pull-right">
 
-                        </div>
+																								</div>
 
-                    </div>
-                </div>
-                <div class="form" ng-show="addEntries">
-                    <div class="form-horizontal" role="form">
-                        <div class="form-body">
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(compta:JournalNum)</label>
-                                <div class="col-md-4">
-                                    <select ng-model="entry.journal" ng-options="s as s for s in journaux track by s" class="form-control">
+																				</div>
+																</div>
+																<div class="form" ng-show="addEntries">
+																				<div class="form-horizontal" role="form">
+																								<div class="form-body">
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(compta:JournalNum)</label>
+																																<div class="col-md-4">
+																																				<select ng-model="entry.journal" ng-options="s as s for s in journaux track by s" class="form-control">
                                     </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(compta:Piece)</label>
-                                <div class="col-md-4">
-                                    <input class="form-control" ng-model="entry.pieceAccounting" disabled placeholder="Automatic" type="text">
-                                </div>
-                            </div>
+																																</div>
+																												</div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(compta:Piece)</label>
+																																<div class="col-md-4">
+																																				<input class="form-control" ng-model="entry.pieceAccounting" disabled placeholder="Automatic" type="text">
+																																</div>
+																												</div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(compta:Libelle)</label>
-                                <div class="col-md-4">
-                                    <input class="form-control" maxlength="30" ng-model="entry.libelleAccounting" type="text">
-                                </div>
-                            </div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(compta:Libelle)</label>
+																																<div class="col-md-4">
+																																				<input class="form-control" maxlength="30" ng-model="entry.libelleAccounting" type="text">
+																																</div>
+																												</div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(Date)</label>
-                                <div class="col-md-4">
-                                    <input date-input ng-model="entry.datec" />
-                                </div>
-                            </div>
-                        </div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(Date)</label>
+																																<div class="col-md-4">
+																																				<input date-input ng-model="entry.datec" />
+																																</div>
+																												</div>
+																								</div>
 
-                        <div class="form-body">
-                            <div class="row form-horizontal" ng-repeat="line in entry.lines">
-                                <div class="col-md-5">
-                                    <input type="text" ng-model="line.account" placeholder="@(compta:AccountNumber)" typeahead="account for account in getAccountsList($viewValue)" class="form-control">
-                                </div>
-                                <div class="col-md-3">
-                                    <input class="form-control" ng-model="line.debit" ng-disabled="line.credit" placeholder="@(compta:Debit)" ng-change="refreshBalance()" type="number" step="0.01" min="0">
-                                </div>
-                                <div class="col-md-3">
-                                    <input class="form-control" ng-model="line.credit" ng-disabled="line.debit" placeholder="@(compta:Credit)" ng-change="refreshBalance()" type="number" step="0.01" min="0">
-                                </div>
-                                <div class="col-md-1">
-                                    <button ng-show="$index + 1 == entry.lines.length" class="btn blue" ng-click="addEntry()"><i class="fa fa-plus"></i></button>
-                                </div>
-                            </div>
+																								<div class="form-body">
+																												<div class="row form-horizontal" ng-repeat="line in entry.lines">
+																																<div class="col-md-5">
+																																				<input type="text" ng-model="line.account" placeholder="@(compta:AccountNumber)" typeahead="account for account in getAccountsList($viewValue)" class="form-control">
+																																</div>
+																																<div class="col-md-3">
+																																				<input class="form-control" ng-model="line.debit" ng-disabled="line.credit" placeholder="@(compta:Debit)" ng-change="refreshBalance()" type="number" step="0.01" min="0">
+																																</div>
+																																<div class="col-md-3">
+																																				<input class="form-control" ng-model="line.credit" ng-disabled="line.debit" placeholder="@(compta:Credit)" ng-change="refreshBalance()" type="number" step="0.01" min="0">
+																																</div>
+																																<div class="col-md-1">
+																																				<button ng-show="$index + 1 == entry.lines.length" class="btn blue" ng-click="addEntry()"><i class="fa fa-plus"></i></button>
+																																</div>
+																												</div>
 
-                            <div class="row">
-                                <div class="col-md-9"></div>
-                                <div class="col-md-3">
-                                    <div class="text-right">
-                                        @(compta:Balance) : {{entryBalance| currency}}
-                                    </div>
-                                </div>
-                            </div>
+																												<div class="row">
+																																<div class="col-md-9"></div>
+																																<div class="col-md-3">
+																																				<div class="text-right">
+																																								@(compta:Balance) : {{entryBalance| currency}}
+																																				</div>
+																																</div>
+																												</div>
 
-                            <div class="form-actions">
-                                <div class="row">
-                                    <div class="col-md-offset-5 col-md-7">
-                                        <button ng-click="saveEntry(entry)" ng-disabled="entryBalance !== 0 || entry.lines.length == 0" class="btn blue">@(Add)</button>
-                                        <button class="btn default" ng-click="addEntries = 0">@(Cancel)</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+																												<div class="form-actions">
+																																<div class="row">
+																																				<div class="col-md-offset-5 col-md-7">
+																																								<button ng-click="saveEntry(entry)" ng-disabled="entryBalance !== 0 || entry.lines.length == 0" class="btn blue">@(Add)</button>
+																																								<button class="btn default" ng-click="addEntries = 0">@(Cancel)</button>
+																																				</div>
+																																</div>
+																												</div>
+																								</div>
+																				</div>
+																</div>
 
-                <div class="form" ng-show="bankTransfer">
-                    <div class="form-horizontal" role="form">
-                        <div class="form-body">
+																<div class="form" ng-show="bankTransfer">
+																				<div class="form-horizontal" role="form">
+																								<div class="form-body">
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(Date)</label>
-                                <div class="col-md-4">
-                                    <input date-input ng-model="entry.datec" />
-                                </div>
-                            </div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(Date)</label>
+																																<div class="col-md-4">
+																																				<input date-input ng-model="entry.datec" />
+																																</div>
+																												</div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(compta:Debit)</label>
-                                <div class="col-md-4">
-                                    <select ng-model="entry.accountDebit" ng-options="s as s.name for s in banks track by s.compta_bank" class="form-control">
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(compta:Debit)</label>
+																																<div class="col-md-4">
+																																				<select ng-model="entry.accountDebit" ng-options="s as s.name for s in banks track by s.compta_bank" class="form-control">
                                     </select>
-                                </div>
-                            </div>
+																																</div>
+																												</div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(compta:Credit)</label>
-                                <div class="col-md-4">
-                                    <select ng-model="entry.accountCredit" ng-options="s as s.name for s in banks track by s.compta_bank" class="form-control">
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(compta:Credit)</label>
+																																<div class="col-md-4">
+																																				<select ng-model="entry.accountCredit" ng-options="s as s.name for s in banks track by s.compta_bank" class="form-control">
                                     </select>
-                                </div>
-                            </div>
+																																</div>
+																												</div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(compta:Amount)</label>
-                                <div class="col-md-4">
-                                    <input class="form-control" ng-model="entry.amount" placeholder="@(compta:Amount)" type="number" step="0.01" min="0">
-                                </div>
-                            </div>
+																												<div class="form-group">
+																																<label class="col-md-4 control-label">@(compta:Amount)</label>
+																																<div class="col-md-4">
+																																				<input class="form-control" ng-model="entry.amount" placeholder="@(compta:Amount)" type="number" step="0.01" min="0">
+																																</div>
+																												</div>
 
-                        </div>
+																								</div>
 
-                        <div class="form-body">
+																								<div class="form-body">
 
-                            <div class="form-actions">
-                                <div class="row">
-                                    <div class="col-md-offset-5 col-md-7">
-                                        <button ng-click="saveBankTransfer(entry)" class="btn blue">@(Add)</button>
-                                        <button class="btn default" ng-click="bankTransfer = 0">@(Cancel)</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="table-scrollable">
-                    <table class="table table-condensed table-striped table-hover">
-                        <thead>
-                            <tr role="row" class="heading">
-                                <th></th>
-                                <th>@(Date)</th>
-                                <th class="text-right">@(compta:Piece)</th>
-                                <th class="text-right">@(compta:DateReconcilliation)</th>
-                                <th>@(Ref)</th>
-                                <th>@(Libelle)</th>
-                                <th class="text-right">@(compta:Debit)</th>
-                                <th class="text-right">@(compta:Credit)</th>
-                                <th class="text-right">@(DateModification)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="entry in entries| filterAmount:search" ng-class='{success:entry.reconcilliation}'>
-                                <td>
-                                    <!-- uniform -->
-                                    <input ng-model="entry.exported" type="checkbox" ng-checked="entry.exported" disabled/>
-                                </td>
-                                <td>
-                                    {{entry.datetime| date:"dd/MM/yyyy"}}
-                                </td>
-                                <td class="text-right">
-                                    <div ng-hide="entry.meta.invoice._id">{{entry.seq}}</div>
-                                </td>
-                                <td>
-                                    <a href="#" editable-bsdate="entry.reconcilliation" e-datepicker-popup="dd/MM/yyyy" eb-min-date="{{minDate}}" eb-max-date="{{maxDate}}" eb-onbeforesave="checkReconcilliation($data)" onaftersave="addReconcilliation(entry._journal, $data)">{{entry.reconcilliation|| 'En attente' | date:'@(main:date.format.java.day)'}}</a>
-                                </td>
-                                <td>
-                                    <span ng-if="entry.meta.product" ui-sref="product.show({id:entry.meta.product._id})">{{entry.meta.product.info.SKU}}</span>
-                                    <a ng-if="entry.meta.supplier" ui-sref="societe.show({id:entry.meta.supplier._id})"><i class="fa fa-institution"></i> {{entry.meta.supplier.fullName}}</a>
-                                    <div ng-if="entry.meta.tax"> {{entry.meta.tax.code}} </div>
-                                </td>
-                                <td>
-                                    <div>{{entry.memo}}</div>
-                                    <div ng-repeat="line in entry.meta.bills">
-                                        <a ui-sref="bill.show({id:line.invoice._id, forSales:line.invoice.forSales})">{{line.invoice.ref}} : {{line.amount| currency}}</a>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div ng-if="entry.credit" class="text-right">{{entry.credit| currency}}</div>
-                                    <!-- inverse debit/credit car compta-->
-                                </td>
-                                <td>
-                                    <div ng-if="entry.debit" class="text-right">{{entry.debit| currency}}</div>
-                                    <!-- inverse debit/credit car compta-->
-                                </td>
-                                <td>
-                                    <div class="text-right">{{entry.timestamp| date:'@(main:date.format.java.dayhour)'}}</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="6" class="text-right h5">@(Total)</td>
-                                <td class="text-right h5">{{credit| currency}}</td>
-                                <td class="text-right h5">{{debit| currency}}</td>
-                                <td colspan="2"></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+																												<div class="form-actions">
+																																<div class="row">
+																																				<div class="col-md-offset-5 col-md-7">
+																																								<button ng-click="saveBankTransfer(entry)" class="btn blue">@(Add)</button>
+																																								<button class="btn default" ng-click="bankTransfer = 0">@(Cancel)</button>
+																																				</div>
+																																</div>
+																												</div>
+																								</div>
+																				</div>
+																</div>
+																<div class="table-scrollable">
+																				<table class="table table-condensed table-striped table-hover">
+																								<thead>
+																												<tr role="row" class="heading">
+																																<th></th>
+																																<th>@(Date)</th>
+																																<th class="text-right">@(compta:Piece)</th>
+																																<th class="text-right">@(compta:DateReconcilliation)</th>
+																																<th>@(Ref)</th>
+																																<th>@(Libelle)</th>
+																																<th class="text-right">@(compta:Debit)</th>
+																																<th class="text-right">@(compta:Credit)</th>
+																																<th class="text-right">@(DateModification)</th>
+																												</tr>
+																								</thead>
+																								<tbody>
+																												<tr ng-repeat="entry in entries| filterAmount:search" ng-class='{success:entry.reconcilliation}'>
+																																<td>
+																																				<!-- uniform -->
+																																				<input ng-model="entry.exported" type="checkbox" ng-checked="entry.exported" disabled/>
+																																</td>
+																																<td>
+																																				{{entry.datetime| date:"dd/MM/yyyy"}}
+																																</td>
+																																<td class="text-right">
+																																				<div ng-hide="entry.meta.invoice._id">{{entry.seq}}</div>
+																																</td>
+																																<td>
+																																				<a href="#" editable-bsdate="entry.reconcilliation" e-datepicker-popup="dd/MM/yyyy" eb-min-date="{{minDate}}" eb-max-date="{{maxDate}}" eb-onbeforesave="checkReconcilliation($data)" onaftersave="addReconcilliation(entry._journal, $data)">{{entry.reconcilliation|| 'En attente' | date:'@(main:date.format.java.day)'}}</a>
+																																</td>
+																																<td>
+																																				<span ng-if="entry.meta.product" ui-sref="product.show({id:entry.meta.product._id})">{{entry.meta.product.info.SKU}}</span>
+																																				<a ng-if="entry.meta.supplier" ui-sref="societe.show({id:entry.meta.supplier._id})"><i class="fa fa-institution"></i> {{entry.meta.supplier.fullName}}</a>
+																																				<div ng-if="entry.meta.tax"> {{entry.meta.tax.code}} </div>
+																																</td>
+																																<td>
+																																				<div>{{entry.memo}}</div>
+																																				<div ng-repeat="line in entry.meta.bills">
+																																								<a ui-sref="bill.show({id:line.invoice._id, forSales:line.invoice.forSales})">{{line.invoice.ref}} : {{line.amount| currency}}</a>
+																																				</div>
+																																</td>
+																																<td>
+																																				<div ng-if="entry.credit" class="text-right">{{entry.credit| currency}}</div>
+																																				<!-- inverse debit/credit car compta-->
+																																</td>
+																																<td>
+																																				<div ng-if="entry.debit" class="text-right">{{entry.debit| currency}}</div>
+																																				<!-- inverse debit/credit car compta-->
+																																</td>
+																																<td>
+																																				<div class="text-right">{{entry.timestamp| date:'@(main:date.format.java.dayhour)'}}</div>
+																																</td>
+																												</tr>
+																								</tbody>
+																								<tfoot>
+																												<tr>
+																																<td colspan="6" class="text-right h5">@(Total)</td>
+																																<td class="text-right h5">{{credit| currency}}</td>
+																																<td class="text-right h5">{{debit| currency}}</td>
+																																<td colspan="2"></td>
+																												</tr>
+																								</tfoot>
+																				</table>
+																</div>
+												</div>
+								</div>
+				</div>
 </div>
