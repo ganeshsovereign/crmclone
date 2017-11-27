@@ -167,7 +167,7 @@ MetronicApp.directive('productLines', ['$http', '$modal', '$timeout',
 														method: 'GET',
 														url: '/erp/api/product/warehouse/getAvailability',
 														params: {
-																warehouse: scope.warehouse,
+																warehouse: (scope.warehouse && scope.warehouse._id ? scope.warehouse._id : scope.warehouse),
 																product: line.product._id
 														}
 												}).success(function(data, status) {

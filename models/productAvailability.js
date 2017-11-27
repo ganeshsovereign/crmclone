@@ -205,6 +205,8 @@ AvailabilitySchema.statics.updateByQuery = function(options, callback) {
 				};
 		}
 
+		//console.log(query);
+
 		this.update(query, body, settings || {}, function(err, availability) {
 				if (err)
 						return callback(err);
