@@ -3447,7 +3447,8 @@ PricesList.prototype = {
 				var self = this;
 				var PriceListModel = MODEL('priceList').Schema;
 				var query = {
-						$and: []
+						$and: [],
+						$or : []
 				};
 
 				if (self.query.cost)
@@ -3456,23 +3457,25 @@ PricesList.prototype = {
 						});
 
 				if (self.query.isGlobalDiscount)
-						query.$and.push({
+						query.$or.push({
 								isGlobalDiscount: (self.query.isGlobalDiscount == 'true' ? true : false)
 						});
 
 				if (self.query.isCoef)
-						query.$and.push({
+						query.$or.push({
 								isCoef: (self.query.isCoef == 'true' ? true : false)
 						});
 
 				if (self.query.isFixed)
-						query.$and.push({
+						query.$or.push({
 								isFixed: (self.query.isFixed == 'true' ? true : false)
 						});
 
 				if (query.$and.length == 0)
 						delete query.$and;
 
+				if (query.$or.length == 0)
+						delete query.$or;
 
 				//console.log(query);
 
