@@ -1658,8 +1658,7 @@ baseSchema.statics.getById = function(id, callback) {
 
 						if (order.orderRows.length > 0)
 								firstCreateDelivery = false;
-						console.log("LENGTH1", order.orderRows.length);
-						// /!\
+
 						order.orderRows = _.map(orderRows, function(item) {
 								if (!firstCreateDelivery)
 										delete item.qty;
@@ -1674,7 +1673,6 @@ baseSchema.statics.getById = function(id, callback) {
 								return item;
 						});
 						//return console.log(order.orderRows);
-						console.log("LENGTH2", order.orderRows.length);
 
 						//Add onHand in delivery lines
 						order.orderRows = _.map(order.orderRows, function(item) {
@@ -1695,7 +1693,6 @@ baseSchema.statics.getById = function(id, callback) {
 										fulfilled: data.fulfilled
 								});
 						});
-						console.log("LENGTH3", order.orderRows.length);
 
 						//console.log(order.orderRows);
 						return callback(err, order);

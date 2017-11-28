@@ -19,8 +19,6 @@ limitations under the License.
 International Registered Trademark & Property of ToManage SAS
 */
 
-
-
 exports.name = "societe";
 exports.version = "1.00";
 exports.enabled = true;

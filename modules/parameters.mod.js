@@ -42,6 +42,24 @@ exports.rights = [{
 				"perm": {
 						"delete": false
 				}
+		},
+		{
+				"desc": "Connexion des utilisateurs",
+				"perm": {
+						"infologin": false
+				}
+		},
+		{
+				"desc": "Liste de absences",
+				"perm": {
+						"absence": false
+				}
+		},
+		{
+				"desc": "indicateur du mois",
+				"perm": {
+						"indicateur": false
+				}
 		}
 ];
 exports.menus = {

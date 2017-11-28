@@ -33,92 +33,6 @@ var menus = {};
 var rights = [];
 
 exports.install = function() {
-
-		console.log("ToManage modules install...");
-
-		F.global.filters = {};
-
-		//F.once('i18n', function() {
-		fs.readdirSync(__dirname + '/../modules').forEach(function(file) {
-				if (file === "index.js")
-						return;
-				if (!file.endsWith('.mod.js'))
-						return;
-
-				var data = require(__dirname + '/../modules/' + file);
-
-				if (!data.enabled)
-						return;
-
-				/* Load rights */
-				let right = {};
-				right[data.name] = data.rights;
-				rights.push({
-						name: data.name,
-						desc: data.description,
-						rights: right
-				});
-
-				/* Load Menu : 3 levels MAX */
-				for (var i in data.menus) {
-						if (data.menus[i].enabled == false)
-								continue;
-						if (data.menus[i].title)
-								data.menus[i].title = i18n.t(data.menus[i].title);
-						if (data.menus[i].submenus) {
-								for (var j in data.menus[i].submenus) {
-										if (data.menus[i].submenus[j].enabled == false)
-												continue;
-										if (data.menus[i].submenus[j].title)
-												data.menus[i].submenus[j].title = i18n.t(data.menus[i].submenus[j].title);
-										if (data.menus[i].submenus[j].submenus) {
-												for (var k in data.menus[i].submenus[j].submenus) {
-														if (data.menus[i].submenus[j].submenus[k].enabled == false)
-																continue;
-														if (data.menus[i].submenus[j].submenus[k].title)
-																data.menus[i].submenus[j].submenus[k].title = i18n.t(data.menus[i].submenus[j].submenus[k].title);
-												}
-										}
-								}
-						}
-				}
-
-				menus = _.defaults(menus, data.menus);
-
-				F.global.filters = _.extend(F.global.filters, data.filters);
-
-				for (var i in data.menus) {
-						// Convert for old menu speedealing
-						if (menus[i].url && menus[i].url[0] === "#") {
-								menus[i].url = "/" + menus[i].url;
-								menus[i].target = "_self";
-						}
-
-						if (data.menus[i].submenus) {
-								menus[i] = _.defaults(menus[i], data.menus[i]);
-								menus[i].submenus = _.defaults(menus[i].submenus, data.menus[i].submenus);
-
-								for (var j in data.menus[i].submenus) {
-										// Convert for old menu speedealing
-										if (menus[i].submenus[j].url && menus[i].submenus[j].url[0] === "#") {
-												menus[i].submenus[j].url = "/" + menus[i].submenus[j].url;
-												menus[i].submenus[j].target = "_self";
-										}
-
-										if (data.menus[i].submenus[j].submenus) {
-												menus[i].submenus[j] = _.defaults(menus[i].submenus[j], data.menus[i].submenus[j]);
-												menus[i].submenus[j].submenus = _.defaults(menus[i].submenus[j].submenus, data.menus[i].submenus[j].submenus);
-
-										}
-								}
-						}
-				}
-
-				//console.dir(menus);
-		});
-
-		//});
-
 		F.route('/erp/api/menus', menu, ['authorize']);
 		F.route('/erp/api/rights', right, ['authorize']);
 };
@@ -240,3 +154,91 @@ function menu() {
 		}
 		self.json(result);
 }
+
+F.on('load', function() {
+		console.log("ToManage load modules...");
+
+		F.global.filters = {};
+
+		fs.readdirSync(__dirname + '/../modules').forEach(function(file) {
+				if (file === "index.js")
+						return;
+				if (!file.endsWith('.mod.js'))
+						return;
+
+				var moduleName = file.split('.')[0];
+				if (moduleName[0] == '_')
+						moduleName = moduleName.substring(1);
+
+				var data = MODULE(moduleName);
+
+				if (!data.enabled)
+						return;
+
+				/* Load rights */
+				let right = {};
+				right[data.name] = data.rights;
+				rights.push({
+						name: data.name,
+						desc: data.description,
+						rights: right
+				});
+
+				/* Load Menu : 3 levels MAX */
+				for (var i in data.menus) {
+						if (data.menus[i].enabled == false)
+								continue;
+						if (data.menus[i].title)
+								data.menus[i].title = i18n.t(data.menus[i].title);
+						if (data.menus[i].submenus) {
+								for (var j in data.menus[i].submenus) {
+										if (data.menus[i].submenus[j].enabled == false)
+												continue;
+										if (data.menus[i].submenus[j].title)
+												data.menus[i].submenus[j].title = i18n.t(data.menus[i].submenus[j].title);
+										if (data.menus[i].submenus[j].submenus) {
+												for (var k in data.menus[i].submenus[j].submenus) {
+														if (data.menus[i].submenus[j].submenus[k].enabled == false)
+																continue;
+														if (data.menus[i].submenus[j].submenus[k].title)
+																data.menus[i].submenus[j].submenus[k].title = i18n.t(data.menus[i].submenus[j].submenus[k].title);
+												}
+										}
+								}
+						}
+				}
+
+				menus = _.defaults(menus, data.menus);
+
+				F.global.filters = _.extend(F.global.filters, data.filters);
+
+				for (var i in data.menus) {
+						// Convert for old menu speedealing
+						if (menus[i].url && menus[i].url[0] === "#") {
+								menus[i].url = "/" + menus[i].url;
+								menus[i].target = "_self";
+						}
+
+						if (data.menus[i].submenus) {
+								menus[i] = _.defaults(menus[i], data.menus[i]);
+								menus[i].submenus = _.defaults(menus[i].submenus, data.menus[i].submenus);
+
+								for (var j in data.menus[i].submenus) {
+										// Convert for old menu speedealing
+										if (menus[i].submenus[j].url && menus[i].submenus[j].url[0] === "#") {
+												menus[i].submenus[j].url = "/" + menus[i].submenus[j].url;
+												menus[i].submenus[j].target = "_self";
+										}
+
+										if (data.menus[i].submenus[j].submenus) {
+												menus[i].submenus[j] = _.defaults(menus[i].submenus[j], data.menus[i].submenus[j]);
+												menus[i].submenus[j].submenus = _.defaults(menus[i].submenus[j].submenus, data.menus[i].submenus[j].submenus);
+
+										}
+								}
+						}
+				}
+
+				//console.dir(menus);
+		});
+});
