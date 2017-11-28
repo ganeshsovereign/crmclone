@@ -33,7 +33,8 @@
     "Status": {
         "IsCustomer": "Client",
         "IsProspect": "Prospect",
-        "IsSubcontractor": "Sous-traitant"
+        "IsSubcontractor": "Sous-traitant",
+        "IsSupplier":"Fournissseur"
     },
     "Company": "Société",
     "CompanyName": "Nom de la société",
