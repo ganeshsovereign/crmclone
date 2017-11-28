@@ -361,6 +361,18 @@
 					</div>
 				</div>
 
+				<div class="portlet light">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group form-md-line-input">
+							<select class="form-control" id="entity" ng-model="object.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
+							<label for="entity">@(companies:Entity)</label>
+						</div>
+						<crm-id label="@(companies:Customer)" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
+					</div>
+				</div>
+			</div>
+
 				<div class="profile-usermenu">
 					<ul class="nav" ng-if="module('offer')">
 						<li ng-class="{active: $state.includes(module() +'.show.detail')}">
@@ -395,16 +407,33 @@
 			</div>
 
 			<div class="portlet light">
-				<div class="row list-separated profile-stat">
+				<div class="portlet-title">
+					<div class="caption font-green-sharp">
+                                            <i class="fa fa-file-pdf-o font-green-sharp"></i>
+                                            <span class="caption-subject"> @(orders:PDFModels)</span>
+                                            <span class="caption-helper"></span>
+                                        </div>
+				</div>
+				<div class="portlet-body">
+				<div class="row">
 					<div class="col-md-12">
 						<div class="form-group form-md-line-input">
+							<div class="input-group input-group-sm">
+							<div class="input-group-control">
 							<select class="form-control" id="entity" ng-model="object.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
-							<label for="entity">@(companies:Entity)</label>
+							<label for="entity"></i> @(orders:PDFModels)</label>
 						</div>
-						<crm-id label="@(companies:Customer)" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
+						<span class="input-group-btn btn-right">
+								<button class="btn green-haze" type="button">@(Generate)</button>
+						</span>
 					</div>
 				</div>
+			</div>
+					</div>
+				</div>
+			</div>
 
+			<div class="portlet light">
 				<div class="row list-separated profile-stat">
 					<div class=" col-md-6 col-sm-6 col-xs-6">
 						<div class="uppercase profile-stat-title"> <i class="icon-calendar font-yellow-crusta"></i> {{object.createdAt|date:'dd/MM/yyyy HH:mm'}} </div>
@@ -431,6 +460,7 @@
 					</div>
 				</div>
 			</div>
+
 			<div ng-if="object._id" ng-include="'/templates/gridfs/fileAll.html'" ng-controller="FileCtrl" onload="init('order', object)"></div>
 		</div>
 		<div ui-view class="profile-content fade-in-up"></div>
