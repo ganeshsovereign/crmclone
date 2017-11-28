@@ -35,8 +35,8 @@
 														<label for="form_control_1">@(compta:CustomerAccountancyCodeShort) </label>
 													</div>
 
-													<div ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor" class="form-group form-md-line-input" maxlength="10">
-														<input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.supplierAccount">
+													<div ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor" class="form-group form-md-line-input">
+														<input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.supplierAccount" maxlength="10">
 														<label for="form_control_1">@(compta:SupplierAccountancyCodeShort) </label>
 													</div>
 
