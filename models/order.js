@@ -3783,7 +3783,12 @@ F.on('order:recalculateStatus', function(data, callback) {
 				Availability = MODEL('productsAvailability').Schema;
 				OrderModel = exports.Schema.Order;
 
-				var stockStatus = {};
+				var stockStatus = {
+					allocateStatus:"NOR",
+fulfillStatus:"NOR",
+invoiceStatus:"NOT",
+shippingStatus:"NOR"
+				};
 
 				if (docs && docs.length && docs[0].order.Status != "DRAFT" && docs[0].order.Status != "NEW") {
 						stockStatus.invoiceStatus = 'NOT'; //NO invoice
@@ -4191,6 +4196,13 @@ F.on('order:recalculateStatus', function(data, callback) {
 														// Classify CLOSED
 														if (status.fulfillStatus == 'ALL' && status.allocateStatus == 'ALL' && status.shippingStatus == 'ALL' && (status.invoiceStatus == 'ALL' || status.invoiceStatus == 'NOR'))
 																query.Status = 'CLOSED';
+
+														else if (status.fulfillStatus == 'NOR' && status.allocateStatus == 'NOR' && status.shippingStatus == 'NOR') {
+														 	if( status.invoiceStatus == 'ALL')
+																		query.Status = 'CLOSED';
+																	else if(query.Status == 'CLOSED')
+																		query.Status = 'VALIDATED';
+																}
 
 														OrderModel.findByIdAndUpdate(data.order._id, query, {
 																new: true
