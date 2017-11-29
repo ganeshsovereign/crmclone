@@ -5341,6 +5341,44 @@ F.on('load', function() {
 												//wCb(err, conf);
 										});
 								});
+						},
+						//Set defaultPriceList SP to true
+						function(conf, wCb) {
+								if (conf.version >= 0.66)
+										return wCb(null, conf);
+
+								function defaultPriceList(aCb) {
+										const PriceListModel = MODEL('priceList').Schema;
+
+										console.log("update defaultPriceList");
+
+										PriceListModel.update({
+												priceListCode: "SP"
+										}, {
+												$set: {
+														defaultPriceList: true
+												}
+										}, aCb);
+
+								}
+
+								async.waterfall([defaultPriceList], function(err) {
+										if (err)
+												return console.log(err);
+
+										Dict.findByIdAndUpdate('const', {
+												'values.version': 0.66
+										}, {
+												new: true
+										}, function(err, doc) {
+												if (err)
+														return console.log(err);
+
+												console.log("ToManage updated to {0}".format(0.66));
+												wCb(err, doc.values);
+												//wCb(err, conf);
+										});
+								});
 						}
 				],
 				function(err, doc) {

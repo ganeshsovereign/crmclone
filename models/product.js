@@ -1855,14 +1855,86 @@ function prepare_subcategories(name) {
 F.on('load', function() {
 		// Refresh pack prices from directCost
 
-		const ProductModel = MODEL('product').Schema;
+		const ProductModel = exports.Schema;
 		const round = MODULE('utils').round;
 		const ProductPricesModel = MODEL('productPrices').Schema;
 		const PriceListModel = MODEL('priceList').Schema;
 
+		F.on('product:update', function(data) {
+				console.log("Update emit product", data.product);
+
+				if (!data.product || !data.product._id)
+						return;
+
+				async.waterfall([
+								function(wCb) {
+										PriceListModel.find({
+												defaultPriceList: true
+										}, "_id", function(err, priceLists) {
+												priceLists = _.map(priceLists, function(elem) {
+														return elem._id;
+												});
+
+												ProductPricesModel.find({
+														product: data.product._id,
+														priceLists: {
+																$in: priceLists
+														}
+												}, function(err, products) {
+														if (products && products.length >= 2)
+																return wCb(null, "No need create"); //no need create
+
+														wCb(err, true);
+												});
+										});
+								},
+								function(products, wCb) {
+										if (products != true)
+												return wCb();
+
+										PriceListModel.find({
+												defaultPriceList: true
+										}, "_id", function(err, priceLists) {
+												priceLists.forEach(function(elem) {
+														ProductPricesModel.findOne({
+																product: data.product._id,
+																priceLists: elem._id
+														}, function(err, doc) {
+																if (doc)
+																		return;
+
+																var price = new ProductPricesModel({
+																		"priceLists": elem._id,
+																		"product": data.product._id,
+																		"editedBy": null,
+																		"createdBy": null,
+																		"qtyMin": 0,
+																		"discount": 0,
+																		"prices": [{
+																				"coefTotal": 1,
+																				"coef": 1,
+																				"price": 0,
+																				"count": 0
+																		}]
+																});
+
+																price.save(function(err, doc) {});
+														});
+												});
+										});
+										return wCb();
+								}
+						],
+						function(err) {
+								if (err)
+										console.log(err);
+						});
+
+		});
+
 		F.on('product:updateDirectCost', function(data) {
 				//console.log(data);
-				console.log("Update emit product", data.product);
+				console.log("Update DirectCost emit product", data.product);
 
 				if (!data.product || !data.product._id)
 						return;

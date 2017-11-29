@@ -1176,12 +1176,18 @@ Object.prototype = {
 										if (query.isBuy)
 												request.push({
 														$match: {
-																'priceLists.cost': true
+																'priceLists.cost': true,
+																$or: [{
+																		'priceLists.defaultPriceList': true
+																}, {
+																		'priceLists._id': ObjectId(self.body.priceList)
+																}]
 														}
 												});
 										if (query.isSell)
 												request.push({
 														$match: {
+																'priceLists.cost': false,
 																$or: [{
 																		'priceLists.defaultPriceList': true
 																}, {
