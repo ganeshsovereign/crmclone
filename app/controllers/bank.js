@@ -249,7 +249,7 @@ MetronicApp.controller('BankController', ['$rootScope', '$scope', '$http', '$fil
 				}
 				$scope.totalBalance = $scope.transactions[transactions.length - 1].balance;
 				console.log($scope.transactions);
-				//calculate current and total balance 
+				//calculate current and total balance
 				var todayDate = new Date();
 				$scope.totalCurrentBalance = 0;
 
@@ -763,7 +763,7 @@ MetronicApp.controller('ReconciliationController', ['$scope', '$rootScope', '$ht
 						// mousedown event on checkbox header selection
 						grid.$headerContainer.on('mousedown', self.onHeaderMouseDown);
 				};
-				//init properties 
+				//init properties
 				self.initNeddedProprties = function() {
 						self.grid.config.multiSelect = true;
 						self.grid.config.showSelectionCheckbox = true;
@@ -1042,14 +1042,14 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
 								// execute some code after table records loaded
 						},
 						onError: function(grid) {
-								// execute some code on network or other general error 
+								// execute some code on network or other general error
 						},
 						loadingMessage: 'Loading...',
-						dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+						dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options
 
 								// Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-								// setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-								// So when dropdowns used the scrollable div should be removed. 
+								// setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js).
+								// So when dropdowns used the scrollable div should be removed.
 								//"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
 
 								"bStateSave": (params ? false : true), // save datatable state(pagination, sort, etc) in cookie.
@@ -1422,14 +1422,14 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
 								// execute some code after table records loaded
 						},
 						onError: function(grid) {
-								// execute some code on network or other general error 
+								// execute some code on network or other general error
 						},
 						loadingMessage: 'Loading...',
-						dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+						dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options
 
 								// Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-								// setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-								// So when dropdowns used the scrollable div should be removed. 
+								// setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js).
+								// So when dropdowns used the scrollable div should be removed.
 								//"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
 
 								"bStateSave": (params ? false : true), // save datatable state(pagination, sort, etc) in cookie.
@@ -1563,16 +1563,13 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
 
 		$scope.rejectEntry = function(line, reason) {
 
-				return; //TODO PB sur IDX faire de meme avec les cheques
-
 				return $http({
 						method: 'POST',
 						url: '/erp/api/bank/payment/chq/reject/' + $scope.group._id,
 						data: {
-								bills: $scope.group.lines[idx].bills,
-								supplier: $scope.group.lines[idx].supplier._id,
+								bills: line.bills,
+								supplier: line.supplier._id,
 								entity: $scope.group.entity,
-								idx: idx,
 								reason: reason
 						}
 				}).success(function(data, status) {

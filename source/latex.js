@@ -364,11 +364,11 @@ Template.prototype.applyHeadFoot = function() {
 										return emit("error", "Entity not found");
 								var mysoc = "";
 								mysoc = "\\textbf{\\large " + doc.name + "}\\\\" + doc.address.street.replace(/\n/g, "\\\\") + "\\\\" + doc.address.zip + " " + doc.address.city;
-								if (doc.phone)
+								if (doc.phones.phone)
 										mysoc += "\\\\Tel : " + doc.phones.phone;
-								if (doc.fax)
+								if (doc.phones.fax)
 										mysoc += "\\\\ Fax : " + doc.phones.fax;
-								if (doc.email)
+								if (doc.emails.length)
 										mysoc += "\\\\ Email : " + doc.emails[0].email;
 								if (doc.companyInfo.idprof6)
 										mysoc += "\\\\ TVA Intra. : " + doc.companyInfo.idprof6;

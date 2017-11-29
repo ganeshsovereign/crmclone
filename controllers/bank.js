@@ -493,7 +493,7 @@ Payment.prototype = {
 				var self = this;
 				var PaymentModel = MODEL('payment').Schema;
 
-				console.log(self.body);
+				//return console.log(self.body);
 				if (!id)
 						return self.json({
 								errorNotify: {
@@ -503,7 +503,7 @@ Payment.prototype = {
 						});
 
 				PaymentModel.getById(id, function(err, payment) {
-						//console.log(payment);
+						//return console.log(payment);
 
 						let journalResult;
 						async.forEachSeries(payment.lines, function(line, aCb) {
@@ -539,6 +539,10 @@ Payment.prototype = {
 												return aCb(err);
 
 										journalResult = journal;
+
+										line.isRejected = true;
+										line.memo = self.body.reason;
+
 										aCb();
 
 
@@ -554,14 +558,14 @@ Payment.prototype = {
 										});
 								}
 
-								payment.lines[self.body.idx].isRejected = true;
-								payment.lines[self.body.idx].memo = self.body.reason;
+								//payment.lines[self.body.idx].isRejected = true;
+								//payment.lines[self.body.idx].memo = self.body.reason;
 
 								payment.save(function(err, doc) {
 										if (err)
 												return console.log(err);
 
-										console.log("end", doc);
+										//console.log("end", doc);
 
 										self.json({
 												successNotify: {

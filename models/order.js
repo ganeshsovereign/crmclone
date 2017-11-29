@@ -4711,10 +4711,8 @@ F.on('order:recalculateStatus', function(data, callback) {
 										if (order.Status != 'DRAFT')
 												return wCb();
 
-
 										if (!order.pdfs)
 												return wCb();
-
 
 										async.each(order.pdfs, function(elem, eCb) {
 												OrderModel.generatePdfById(data.order._id, elem.modelPdf, eCb)
