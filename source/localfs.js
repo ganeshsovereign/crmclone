@@ -26,14 +26,14 @@ International Registered Trademark & Property of ToManage SAS
 /**
  * Module dependencies.
  */
-var async = require('async'),
+const async = require('async'),
 		_ = require('lodash'),
 		fs = require('fs'),
 		path = require('path'),
 		mongoose = require('mongoose'),
 		Image = require('total.js/image');
 
-var defaultFileDir = F.path.root() + '/uploads';
+const defaultFileDir = F.path.root() + '/uploads';
 
 function checkFilename(filename) {
 		var newFile = filename.replace(/[^a-zA-Z0-9-_./]/g, '');

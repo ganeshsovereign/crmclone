@@ -23,8 +23,8 @@ International Registered Trademark & Property of ToManage SAS
 
 const moment = require('moment');
 
-exports.name = 'orders';
-exports.version = '1.00';
+exports.name = 'order';
+exports.version = 1.01;
 exports.enabled = true;
 
 exports.csv = {
@@ -325,3 +325,21 @@ exports.filters = {
 				"array": ["supplier", "salesPerson", "workflow", "allocationStatus", "fulfilledStatus", "shippingStatus", "channel", "name"]
 		}
 };
+
+exports.pdfModels = [{
+		code: 'ORDER',
+		module: 'order',
+		latex: 'order.tex', //latex main file in latex directory
+		langs: [{
+				description: "BdC (default)"
+		}]
+}];
+
+F.on('load', function() {
+		const ModulesModel = MODEL('modules').Schema;
+
+		ModulesModel.insert(exports, function(err, doc) {
+				if (err)
+						return console.log("Error update module {0} : {1} ".format(exports.name, err));
+		});
+});

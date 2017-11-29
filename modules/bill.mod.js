@@ -24,7 +24,7 @@ International Registered Trademark & Property of ToManage SAS
 const moment = require('moment');
 
 exports.name = "bill";
-exports.version = '1.00';
+exports.version = 1.01;
 exports.enabled = true;
 exports.csv = {
 		"model": "invoice",
@@ -232,3 +232,20 @@ exports.filters = {
 				"array": ["supplier", "salesPerson", "workflow", "channel", "name"]
 		}
 };
+
+exports.pdfModels = [{
+		code: 'invoiceDefault',
+		module: 'bill',
+		latex: 'bill.tex', //latex main file in latex directory
+		langs: [{
+				description: "Facture (default)"
+		}]
+}];
+
+F.on('load', function() {
+		const ModulesModel = MODEL('modules').Schema;
+		ModulesModel.insert(exports, function(err, doc) {
+				if (err)
+						return console.log("Error update module {0} : {1} ".format(exports.name, err));
+		});
+});

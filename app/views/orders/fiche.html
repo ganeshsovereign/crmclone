@@ -362,16 +362,16 @@
 				</div>
 
 				<div class="portlet light">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group form-md-line-input">
-							<select class="form-control" id="entity" ng-model="object.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
-							<label for="entity">@(companies:Entity)</label>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group form-md-line-input">
+								<select class="form-control" id="entity" ng-model="object.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
+								<label for="entity">@(companies:Entity)</label>
+							</div>
+							<crm-id label="@(companies:Customer)" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
 						</div>
-						<crm-id label="@(companies:Customer)" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
 					</div>
 				</div>
-			</div>
 
 				<div class="profile-usermenu">
 					<ul class="nav" ng-if="module('offer')">
@@ -409,27 +409,44 @@
 			<div class="portlet light">
 				<div class="portlet-title">
 					<div class="caption font-green-sharp">
-                                            <i class="fa fa-file-pdf-o font-green-sharp"></i>
-                                            <span class="caption-subject"> @(orders:PDFModels)</span>
-                                            <span class="caption-helper"></span>
-                                        </div>
+						<i class="fa fa-file-pdf-o font-green-sharp"></i>
+						<span class="caption-subject"> @(orders:PDFModels)</span>
+						<span class="caption-helper"></span>
+					</div>
 				</div>
 				<div class="portlet-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="form-group form-md-line-input">
-							<div class="input-group input-group-sm">
-							<div class="input-group-control">
-							<select class="form-control" id="entity" ng-model="object.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
-							<label for="entity"></i> @(orders:PDFModels)</label>
-						</div>
-						<span class="input-group-btn btn-right">
-								<button class="btn green-haze" type="button">@(Generate)</button>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group form-md-line-input">
+								<div class="input-group input-group-sm">
+									<div class="input-group-control">
+										<select class="form-control" id="pdfModel" ng-model="object.pdfModel" ng-options="model._id as model.langs[_language].description for model in $dict.module.pdfModels"></select>
+										<label for="pdfModel"></i> @(orders:PDFModels)</label>
+									</div>
+									<span class="input-group-btn btn-right">
+								<button class="btn green-haze" type="button" ng-disabled="!object.pdfModel" ng-click="buildPDF()">@(Generate)</button>
 						</span>
+								</div>
+							</div>
+						</div>
 					</div>
-				</div>
-			</div>
-					</div>
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr role="row" class="heading">
+								<th width="25%">
+									Nom du fichier
+								</th>
+								<th width="5%">
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="pdf in object.pdfs">
+								<td><a ng-href="/erp/api/pdf/{{pdf.fileId}}?key={{pdf.token}}">{{pdf.filename}}</a> ({{pdf.datec | date:'dd/MM/yyyy HH:mm'}})</td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 

@@ -32,7 +32,8 @@ var mongoose = require('mongoose'),
 		timestamps = require('mongoose-timestamp'),
 		moment = require('moment'),
 		async = require('async'),
-		_ = require('lodash');
+		_ = require('lodash'),
+		fs = require('fs');
 
 var DataTable = require('mongoose-datatable');
 
@@ -43,6 +44,7 @@ DataTable.configure({
 mongoose.plugin(DataTable.init);
 
 var Dict = INCLUDE('dict');
+var Latex = INCLUDE('latex');
 
 var setPrice = MODULE('utils').setPrice;
 var setDate = MODULE('utils').setDate;
@@ -58,6 +60,42 @@ var options = {
 		}
 };
 
+const pdfSchema = new Schema({
+		// _id needed for download pdf file
+		filename: {
+				type: String
+		}, //File to display in list
+		fileId: {
+				type: String
+		}, //FileId in directory
+		modelPdf: {
+				type: ObjectId,
+				ref: 'modelspdf'
+		},
+		datec: {
+				type: Date,
+				default: Date.now
+		}, // creation date
+		dateu: Date //date last download file
+}, {
+		toObject: {
+				virtuals: true
+		},
+		toJSON: {
+				virtuals: true
+		}
+});
+
+pdfSchema.virtual('token')
+		.get(function() {
+				var CryptoJS = require("crypto-js");
+
+				if (!CONFIG('sha1-secret'))
+						return "";
+
+				return CryptoJS.SHA1(CONFIG('sha1-secret') + this.fileId.toUpperCase()).toString();
+		});
+
 const baseSchema = new Schema({
 		forSales: {
 				type: Boolean,
@@ -70,6 +108,11 @@ const baseSchema = new Schema({
 		},
 		ID: {
 				type: Number
+		},
+
+		pdfModel: {
+				type: Schema.Types.ObjectId,
+				ref: 'modelspdf'
 		},
 		/*title: {//For internal use only
 		    ref: String,
@@ -473,13 +516,12 @@ const baseSchema = new Schema({
 				ref: 'shippingMethod'
 		},
 
-		//attachments: { type: Array, default: [] },
+		pdfs: [pdfSchema], //Link To PDF file in uploads/pdf directory
+
 		files: {
 				type: Array,
 				default: []
 		},
-
-
 
 		channel: {
 				type: ObjectId,
@@ -1054,6 +1096,442 @@ baseSchema.statics.query = function(options, callback) {
 		async.waterfall(waterfallTasks, callback);
 };
 
+baseSchema.statics.generatePdfById = function(id, model, callback) {
+		// Generation de la facture PDF et download
+		const SocieteModel = MODEL('Customers').Schema;
+		const BankModel = MODEL('bank').Schema;
+		const ModelPDFModel = MODEL('modelspdf').Schema;
+
+		const self = this;
+
+		async.waterfall([
+				function(wCb) {
+						ModelPDFModel.findById(model, function(err, doc) {
+								if (err)
+										return wCb(err);
+
+								if (!doc)
+										return wCb("No model PDF found");
+
+								return wCb(null, doc);
+						});
+				},
+				function(modelPdf, wCb) {
+
+						var discount = false;
+						var cond_reglement_code = {};
+						Dict.dict({
+								dictName: "fk_payment_term",
+								object: true
+						}, function(err, docs) {
+								cond_reglement_code = docs;
+						});
+						var mode_reglement_code = {};
+						Dict.dict({
+								dictName: "fk_paiement",
+								object: true
+						}, function(err, docs) {
+								mode_reglement_code = docs;
+						});
+
+						self.getById(id, function(err, doc) {
+
+								var title = "";
+
+								var model = 'order'; //Latex model
+
+								if (self.query.proforma)
+										title = "Facture pro forma";
+								else
+										switch (doc._type) {
+												case 'orderCustomer':
+														title = 'Commande';
+														model = "order";
+														break;
+												case 'orderSupplier':
+														title = 'Commande fournisseur';
+														model = "order_supplier";
+														break;
+												case 'quotationCustomer':
+														title = 'Devis';
+														model = "offer";
+														break;
+												case 'quotationSupplier':
+														title = 'Demande d\'achat';
+														model = "offer_supplier";
+														break;
+										}
+
+								// check if discount
+								for (var i = 0; i < doc.lines.length; i++) {
+										if (doc.lines[i].discount > 0) {
+												model += "_discount";
+												discount = true;
+												break;
+										}
+								}
+
+								SocieteModel.findOne({
+										_id: doc.supplier._id
+								}, function(err, societe) {
+										BankModel.findOne({
+												_id: doc.bank_reglement
+										}, function(err, bank) {
+												if (bank)
+														var iban = bank.name_bank + "\n RIB : " + bank.code_bank + " " + bank.code_counter + " " + bank.account_number + " " + bank.rib + "\n IBAN : " + bank.iban + "\n BIC : " + bank.bic;
+
+												// Array of lines
+												var tabLines = [];
+
+												if (discount)
+														tabLines.push({
+																keys: [{
+																		key: "ref",
+																		type: "string"
+																}, {
+																		key: "description",
+																		type: "area"
+																}, {
+																		key: "qty",
+																		type: "number",
+																		precision: 3
+																}, {
+																		key: "pu_ht",
+																		type: "number",
+																		precision: 3
+																}, {
+																		key: "discount",
+																		type: "string"
+																}, {
+																		key: "total_ht",
+																		type: "euro"
+																}, {
+																		key: "tva_tx",
+																		type: "string"
+																}]
+														});
+												else
+														tabLines.push({
+																keys: [{
+																		key: "ref",
+																		type: "string"
+																}, {
+																		key: "description",
+																		type: "area"
+																}, {
+																		key: "qty",
+																		type: "number",
+																		precision: 0
+																}, {
+																		key: "pu_ht",
+																		type: "number",
+																		precision: 3
+																}, {
+																		key: "total_ht",
+																		type: "euro"
+																}, {
+																		key: "tva_tx",
+																		type: "string"
+																}]
+														});
+
+												for (var i = 0; i < doc.lines.length; i++) {
+														switch (doc.lines[i].type) {
+																case 'SUBTOTAL':
+																		tabLines.push({
+																				ref: "",
+																				description: "\\textbf{Sous-total}",
+																				tva_tx: null,
+																				pu_ht: "",
+																				discount: "",
+																				qty: "",
+																				total_ht: doc.lines[i].total_ht
+																		});
+																		break;
+																case 'COMMENT':
+																		tabLines.push({
+																				ref: "",
+																				description: /*"\\textbf{" + doc.lines[i].refProductSupplier + "}" + */ (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
+																				tva_tx: null,
+																				pu_ht: "",
+																				discount: "",
+																				qty: "",
+																				total_ht: ""
+																		});
+																		break;
+																default:
+																		tabLines.push({
+																				ref: doc.lines[i].product.info.SKU.substring(0, 12),
+																				description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : "") + (doc.lines[i].total_taxes.length > 1 ? "\\\\\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].product.taxes[1].value + " \\euro}" : ""),
+																				tva_tx: (doc.lines[i].total_taxes.length ? doc.lines[i].total_taxes[0].taxeId.rate : 0),
+																				pu_ht: doc.lines[i].pu_ht,
+																				discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
+																				qty: {
+																						value: doc.lines[i].qty,
+																						unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U")
+																				},
+																				total_ht: doc.lines[i].total_ht
+																		});
+
+																		/*if (doc.lines[i].total_taxes.length > 1) // Add ecotaxe
+																				tabLines.push({
+																				italic: true,
+																				ref: "",
+																				description: "\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].total_taxes[1].value + " \\euro}",
+																				//tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
+																				tva_tx: "",
+																				//pu_ht: doc.lines[i].product.taxes[1].value,
+																				pu_ht: "",
+																				discount: "",
+																				qty: "",
+																				//qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") },
+																				//total_ht: doc.lines[i].total_taxes[1].value
+																				total_ht: ""
+																		});*/
+														}
+
+														if (doc.lines[i].type == 'kit') {
+																tabLines[tabLines.length - 1].italic = true;
+																if (doc.lines[i + 1] && doc.lines[i + 1].type != 'kit')
+																		tabLines.push({
+																				hline: 1
+																		});
+														}
+
+														if (doc.lines[i].type == 'SUBTOTAL') {
+																tabLines[tabLines.length - 1].italic = true;
+																tabLines.push({
+																		hline: 1
+																});
+														}
+
+														//tab_latex += " & \\specialcell[t]{\\\\" + "\\\\} & " +   + " & " + " & " +  "\\tabularnewline\n";
+												}
+
+												// Array of totals
+												var tabTotal = [{
+														keys: [{
+																key: "label",
+																type: "string"
+														}, {
+																key: "total",
+																type: "euro"
+														}]
+												}];
+
+												// Frais de port
+												if (doc.shipping && doc.shipping.total_ht)
+														tabTotal.push({
+																label: "Frais de port",
+																total: doc.shipping.total_ht
+														});
+
+												// Remise globale
+												if (doc.discount && doc.discount.discount && doc.discount.discount.percent)
+														tabTotal.push({
+																italic: true,
+																label: "Remise globale " + doc.discount.discount.percent + ' %',
+																total: doc.discount.discount.value * -1
+														});
+
+												// Escompte
+												if (doc.discount && doc.discount.escompte && doc.discount.escompte.percent)
+														tabTotal.push({
+																italic: true,
+																label: "Escompte " + doc.discount.escompte.percent + ' %',
+																total: doc.discount.escompte.value * -1
+														});
+
+
+												//Total HT
+												tabTotal.push({
+														label: "Total HT",
+														total: doc.total_ht
+												});
+
+												for (var i = 0; i < doc.total_taxes.length; i++) {
+														tabTotal.push({
+																label: "Total " + doc.total_taxes[i].taxeId.langs[0].label,
+																total: doc.total_taxes[i].value
+														});
+												}
+
+												//Total TTC
+												tabTotal.push({
+														label: "Total TTC",
+														total: doc.total_ttc
+												});
+
+												var reglement = "";
+												switch (doc.mode_reglement_code) {
+														case "VIR":
+																if (doc.bank_reglement) // Bank specific for payment
+																		reglement = "\n" + (bank.invoice ? bank.invoice : bank.iban.id);
+																else // Default IBAN
+																		reglement = "\n --IBAN--";
+																break;
+														case "CHQ":
+																if (doc.bank_reglement) // Bank specific for payment
+																		reglement = "\n" + (bank.invoice ? bank.invoice : "");
+																else
+																		reglement = "A l'ordre de --ENTITY--";
+																break;
+												}
+
+												//Periode de facturation
+												var period = "";
+												if (doc.dateOf && doc.dateTo)
+														period = "\\textit{P\\'eriode du " + moment(doc.dateOf).format(CONFIG('dateformatShort')) + " au " + moment(doc.dateTo).format(CONFIG('dateformatShort')) + "}\\\\";
+
+												Latex.Template(model + ".tex", doc.entity)
+														.apply({
+																"NUM": {
+																		"type": "string",
+																		"value": doc.ref
+																},
+																"DESTINATAIRE.NAME": {
+																		"type": "string",
+																		"value": doc.supplier.fullName
+																},
+																"DESTINATAIRE.ADDRESS": {
+																		"type": "area",
+																		"value": doc.address.street
+																},
+																"DESTINATAIRE.ZIP": {
+																		"type": "string",
+																		"value": doc.address.zip
+																},
+																"DESTINATAIRE.TOWN": {
+																		"type": "string",
+																		"value": doc.address.city
+																},
+																"DESTINATAIRE.TVA": {
+																		"type": "string",
+																		"value": societe.companyInfo.idprof6
+																},
+																"SHIPPING.NAME": {
+																		"type": "string",
+																		"value": doc.shippingAddress.name
+																},
+																"SHIPPING.ADDRESS": {
+																		"type": "area",
+																		"value": doc.shippingAddress.street
+																},
+																"SHIPPING.ZIP": {
+																		"type": "string",
+																		"value": doc.shippingAddress.zip
+																},
+																"SHIPPING.TOWN": {
+																		"type": "string",
+																		"value": doc.shippingAddress.city
+																},
+																"CODECLIENT": {
+																		"type": "string",
+																		"value": societe.salesPurchases.ref
+																},
+																"TITLE": {
+																		"type": "string",
+																		"value": title
+																},
+																"REFCLIENT": {
+																		"type": "string",
+																		"value": doc.ref_client
+																},
+																"DELIVERYMODE": {
+																		"type": "string",
+																		"value": doc.delivery_mode
+																},
+																"PERIOD": {
+																		"type": "string",
+																		"value": period
+																},
+																"DATEC": {
+																		"type": "date",
+																		"value": doc.datec,
+																		"format": CONFIG('dateformatShort')
+																},
+																"DATEEXP": {
+																		"type": "date",
+																		"value": doc.datedl,
+																		"format": CONFIG('dateformatShort')
+																},
+																"REGLEMENT": {
+																		"type": "string",
+																		"value": cond_reglement_code.values[doc.cond_reglement_code].label
+																},
+																"PAID": {
+																		"type": "string",
+																		"value": mode_reglement_code.values[doc.mode_reglement_code].label
+																},
+																"NOTES": {
+																		"type": "area",
+																		"value": (doc.notes.length ? doc.notes[0].note : ""),
+																},
+																"BK": {
+																		"type": "area",
+																		"value": reglement
+																},
+																"TABULAR": tabLines,
+																"TOTAL": tabTotal,
+																"APAYER": {
+																		"type": "euro",
+																		"value": doc.total_ttc || 0
+																}
+														})
+														.on('error', wCb)
+														.finalize(function(tex) {
+																//console.log('The document was converted.');
+														})
+														.compile()
+														.pipe(fs.createWriteStream(F.path.root() + '/uploads/pdf/' + doc._id + "_" + modelPdf.code + ".pdf"))
+														.on('end', function() {
+																//console.log('document written');
+
+																self.update({
+																		_id: doc._id,
+																		'pdfs.modelPdf': modelPdf._id
+																}, {
+																		$set: {
+																				"pdfs.$.datec": new Date()
+																		}
+																}, {
+																		upsert: false
+																}, function(err, res) {
+																		if (err)
+																				return wCb(err);
+
+																		if (res && res.nModified)
+																				return wCb(); // Already exist and updated
+
+																		//create new entry in order
+																		self.update({
+																				_id: doc._id
+																		}, {
+																				$push: {
+																						"pdfs": {
+																								filename: doc.ref + modelPdf.name,
+																								fileId: doc._id + "_" + modelPdf.code + ".pdf",
+																								modelPdf: modelPdf._id,
+																								datec: new Date()
+																						}
+																				}
+																		}, {
+																				upsert: false
+																		}, function(err, doc) {
+																				if (err)
+																						return wCb(err);
+
+																				wCb();
+																		});
+																});
+														});
+										});
+								});
+						});
+
+				}
+		], callback);
+};
 orderCustomerSchema.methods.setAllocated = function(newRows, callback) {
 		if (!newRows || !newRows.length)
 				return callback();
@@ -3784,10 +4262,10 @@ F.on('order:recalculateStatus', function(data, callback) {
 				OrderModel = exports.Schema.Order;
 
 				var stockStatus = {
-					allocateStatus:"NOR",
-fulfillStatus:"NOR",
-invoiceStatus:"NOT",
-shippingStatus:"NOR"
+						allocateStatus: "NOR",
+						fulfillStatus: "NOR",
+						invoiceStatus: "NOT",
+						shippingStatus: "NOR"
 				};
 
 				if (docs && docs.length && docs[0].order.Status != "DRAFT" && docs[0].order.Status != "NEW") {
@@ -4035,7 +4513,7 @@ shippingStatus:"NOR"
 						const Order = exports.Schema.Order;
 						// Get Type ONLY CustomerOrder AND SupplierOrder type
 
-						Order.findById(data.order._id, "_type Status total_ht", function(err, doc) {
+						Order.findById(data.order._id, "_type Status total_ht pdfs", function(err, doc) {
 								if (err)
 										return wCb(err);
 
@@ -4059,194 +4537,219 @@ shippingStatus:"NOR"
 						if (!OrderModel)
 								return wCb();
 
-						OrderRows.find({
-										order: data.order._id, //orderId
-										product: {
-												$ne: null
-										}
-								})
-								.populate({
-										path: "product",
-										select: "directCost info",
-										populate: {
-												path: "info.productType"
-										},
-								})
-								.populate('order', 'Status')
-								.exec(function(err, docs) {
-										if (err)
-												return wCb(err);
-
-										getAvailableForRows(docs, function(err, status) {
-												if (err)
-														return wCb(err);
-
-												/* Update invoiceStatus */
-												const BillModel = MODEL('invoice').Schema;
-
-												BillModel.aggregate([{
-														$match: {
-																orders: ObjectId(data.order._id),
-																isremoved: {
-																		$ne: true
-																}
+						async.parallel([
+								function(pCb) {
+										OrderRows.find({
+														order: data.order._id, //orderId
+														product: {
+																$ne: null
 														}
-												}, {
-														$project: {
-																_id: 1,
-																ref: 1,
-																orders: 1,
-																total_ht: 1
-														}
-												}, {
-														$group: {
-																_id: null,
-																total: {
-																		$sum: "$total_ht"
-																},
-																data: {
-																		$push: "$$ROOT"
-																}
-														}
-												}, {
-														$unwind: "$data"
-												}, {
-														$project: {
-																_id: "$data._id",
-																ref: "$data.ref",
-																orders: "$data.orders",
-																total: "$total"
-														}
-												}, {
-														$unwind: "$orders"
-												}, {
-														$lookup: {
-																from: 'Orders',
-																localField: 'orders',
-																foreignField: '_id',
-																as: 'orders'
-														}
-												}, {
-														$unwind: {
-																path: '$orders'
-														}
-												}, {
-														$project: {
-																_id: 1,
-																ref: 1,
-																'orders._id': 1,
-																'orders.ref': 1,
-																'orders.total_ht': 1,
-																total: 1
-														}
-												}, {
-														$group: {
-																_id: null,
-																total: {
-																		$sum: "$orders.total_ht"
-																},
-																data: {
-																		$push: "$$ROOT"
-																}
-														}
-												}, {
-														$unwind: "$data"
-												}, {
-														$project: {
-																_id: "$data._id",
-																ref: "$data.ref",
-																orders: "$data.orders",
-																total: {
-																		invoice: "$data.total",
-																		orders: "$total"
-																}
-														}
-												}, {
-														$group: {
-																_id: null,
-																total: {
-																		$first: "$total"
-																},
-																data: {
-																		$push: "$$ROOT"
-																}
-														}
-												}], function(err, invoices) {
+												})
+												.populate({
+														path: "product",
+														select: "directCost info",
+														populate: {
+																path: "info.productType"
+														},
+												})
+												.populate('order', 'Status')
+												.exec(function(err, docs) {
 														if (err)
-																return wCb(err);
+																return pCb(err);
 
-														if (round(order.total_ht) == 0)
-																status.invoiceStatus = 'NOR'; // No need bill
-
-														//console.log("invoices: ", invoices);
-														if (invoices && invoices.length) {
-																let result = invoices[0].total;
-
-																if (result.invoice >= result.orders)
-																		status.invoiceStatus = 'ALL'; // All billed
-																else
-																		status.invoiceStatus = 'NOA'; // Not all billed
-														}
-
-
-														let query = {
-																status: status
-														};
-
-														// Classify CLOSED
-														if (status.fulfillStatus == 'ALL' && status.allocateStatus == 'ALL' && status.shippingStatus == 'ALL' && (status.invoiceStatus == 'ALL' || status.invoiceStatus == 'NOR'))
-																query.Status = 'CLOSED';
-
-														else if (status.fulfillStatus == 'NOR' && status.allocateStatus == 'NOR' && status.shippingStatus == 'NOR') {
-														 	if( status.invoiceStatus == 'ALL')
-																		query.Status = 'CLOSED';
-																	else if(query.Status == 'CLOSED')
-																		query.Status = 'VALIDATED';
-																}
-
-														OrderModel.findByIdAndUpdate(data.order._id, query, {
-																new: true
-														}, function(err, el) {
+														getAvailableForRows(docs, function(err, status) {
 																if (err)
-																		return wCb(err);
+																		return pCb(err);
 
-																//console.log(status, el.status);
+																/* Update invoiceStatus */
+																const BillModel = MODEL('invoice').Schema;
 
-																console.log('Status updated');
-																//Force reload order
-																//Force reload product
-
-																if (userId)
-																		F.emit('notify:controllerAngular', {
-																				userId: userId,
-																				route: 'order',
-																				_id: el._id.toString(),
-																				message: "Commande " + el.ref + ' modifie.'
-																		});
-
-
-																setTimeout2('notifyorder:controllerAngular', function() {
-																		F.emit('notify:controllerAngular', {
-																				userId: null,
-																				route: 'order',
-																				//_id: el._id.toString(),
-																				//message: "Commande " + el.ref + ' modifie.'
-																		});
-																}, 60000);
-
-																F.emit('customer:recalculateStatus', {
-																		userId: null,
-																		supplier: {
-																				_id: el.supplier.toString()
+																BillModel.aggregate([{
+																		$match: {
+																				orders: ObjectId(data.order._id),
+																				isremoved: {
+																						$ne: true
+																				}
 																		}
-																});
+																}, {
+																		$project: {
+																				_id: 1,
+																				ref: 1,
+																				orders: 1,
+																				total_ht: 1
+																		}
+																}, {
+																		$group: {
+																				_id: null,
+																				total: {
+																						$sum: "$total_ht"
+																				},
+																				data: {
+																						$push: "$$ROOT"
+																				}
+																		}
+																}, {
+																		$unwind: "$data"
+																}, {
+																		$project: {
+																				_id: "$data._id",
+																				ref: "$data.ref",
+																				orders: "$data.orders",
+																				total: "$total"
+																		}
+																}, {
+																		$unwind: "$orders"
+																}, {
+																		$lookup: {
+																				from: 'Orders',
+																				localField: 'orders',
+																				foreignField: '_id',
+																				as: 'orders'
+																		}
+																}, {
+																		$unwind: {
+																				path: '$orders'
+																		}
+																}, {
+																		$project: {
+																				_id: 1,
+																				ref: 1,
+																				'orders._id': 1,
+																				'orders.ref': 1,
+																				'orders.total_ht': 1,
+																				total: 1
+																		}
+																}, {
+																		$group: {
+																				_id: null,
+																				total: {
+																						$sum: "$orders.total_ht"
+																				},
+																				data: {
+																						$push: "$$ROOT"
+																				}
+																		}
+																}, {
+																		$unwind: "$data"
+																}, {
+																		$project: {
+																				_id: "$data._id",
+																				ref: "$data.ref",
+																				orders: "$data.orders",
+																				total: {
+																						invoice: "$data.total",
+																						orders: "$total"
+																				}
+																		}
+																}, {
+																		$group: {
+																				_id: null,
+																				total: {
+																						$first: "$total"
+																				},
+																				data: {
+																						$push: "$$ROOT"
+																				}
+																		}
+																}], function(err, invoices) {
+																		if (err)
+																				return pCb(err);
 
-																wCb();
+																		if (round(order.total_ht) == 0)
+																				status.invoiceStatus = 'NOR'; // No need bill
+
+																		//console.log("invoices: ", invoices);
+																		if (invoices && invoices.length) {
+																				let result = invoices[0].total;
+
+																				if (result.invoice >= result.orders)
+																						status.invoiceStatus = 'ALL'; // All billed
+																				else
+																						status.invoiceStatus = 'NOA'; // Not all billed
+																		}
+
+
+																		let query = {
+																				status: status
+																		};
+
+																		// Classify CLOSED
+																		if (status.fulfillStatus == 'ALL' && status.allocateStatus == 'ALL' && status.shippingStatus == 'ALL' && (status.invoiceStatus == 'ALL' || status.invoiceStatus == 'NOR'))
+																				query.Status = 'CLOSED';
+
+																		else if (status.fulfillStatus == 'NOR' && status.allocateStatus == 'NOR' && status.shippingStatus == 'NOR') {
+																				if (status.invoiceStatus == 'ALL')
+																						query.Status = 'CLOSED';
+																				else if (query.Status == 'CLOSED')
+																						query.Status = 'VALIDATED';
+																		}
+
+																		OrderModel.findByIdAndUpdate(data.order._id, query, {
+																				new: true
+																		}, function(err, el) {
+																				if (err)
+																						return pCb(err);
+
+																				F.emit('customer:recalculateStatus', {
+																						userId: null,
+																						supplier: {
+																								_id: el.supplier.toString()
+																						}
+																				});
+
+																				pCb(null, el);
+																		});
+																});
 														});
 												});
+								},
+								//Refresh PDF
+								function(pCb) {
+										if (!OrderModel)
+												return wCb();
+
+										if (order.Status != 'DRAFT')
+												return wCb();
+
+
+										if (!order.pdfs)
+												return wCb();
+
+
+										async.each(order.pdfs, function(elem, eCb) {
+												OrderModel.generatePdfById(data.order._id, elem.modelPdf, eCb)
+										}, pCb);
+								}
+						], function(err, el) {
+								if (err)
+										return wCb(err);
+
+								//console.log(status, el.status);
+
+								console.log('Status updated');
+								//Force reload order
+								//Force reload product
+
+								if (userId)
+										F.emit('notify:controllerAngular', {
+												userId: userId,
+												route: 'order',
+												_id: el[0]._id.toString(),
+												message: "Commande " + el[0].ref + ' modifie.'
 										});
 
-								});
+
+								setTimeout2('notifyorder:controllerAngular', function() {
+										F.emit('notify:controllerAngular', {
+												userId: null,
+												route: 'order',
+												//_id: el._id.toString(),
+												//message: "Commande " + el.ref + ' modifie.'
+										});
+								}, 60000);
+
+								wCb();
+						});
 				}
 		], function(err) {
 				if (err)

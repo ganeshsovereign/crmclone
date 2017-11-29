@@ -198,7 +198,7 @@ exports.install = function() {
 		F.route('/erp/convert/resource', convert_resource, ['authorize']);
 		//F.route('/erp/convert/{type}', convert, []);
 
-
+		F.route('/erp/api/modules/{id}', getModulesById, ['authorize']);
 
 
 		// SHOW LAST 50 PROBLEMS
@@ -745,7 +745,7 @@ function convert_resource() {
 								/*if (value === "UTF-8")
 								 return;*/
 
-								//var header = file.substring(0, file.length - 5);//delete .json 
+								//var header = file.substring(0, file.length - 5);//delete .json
 
 								/* var temp = fixedWidthString(header + "_" + key, 80);
 								 temp += ": ";
@@ -839,4 +839,21 @@ function getSettings() {
 						data: result.values
 				});
 		});
+}
+
+function getModulesById(id) {
+		const self = this;
+		const ModulesModel = MODEL('modules').Schema;
+
+		ModulesModel.findById(id)
+				.populate("pdfModels")
+				.exec(function(err, result) {
+						if (err)
+								return self.throw500(err);
+
+						if (!result)
+								return self.json({});
+
+						self.json(result);
+				});
 }

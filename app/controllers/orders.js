@@ -235,6 +235,15 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 								//console.log(data);
 						});
 
+						$http({
+								method: 'GET',
+								url: '/erp/api/modules/' + $scope.module()
+
+						}).success(function(data, status) {
+								$scope.$dict.module = data;
+								console.log(data);
+						});
+
 						$scope.findOne();
 				});
 
@@ -736,6 +745,19 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 										$scope.findOne();
 								else
 										$scope.find();
+						});
+				};
+
+				$scope.buildPDF = function() {
+						$http({
+								method: 'PUT',
+								url: '/erp/api/' + $scope.module() + '/pdf/' + this.object._id,
+								params: {
+										model: $scope.object.pdfModel
+								}
+						}).success(function(data, status) {
+								if (status === 200)
+										$scope.findOne();
 						});
 				};
 		}

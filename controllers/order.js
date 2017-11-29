@@ -24,12 +24,13 @@ International Registered Trademark & Property of ToManage SAS
 "use strict";
 
 exports.id = 'order';
-exports.version = '1.01';
+exports.version = 1.01;
 
 var mongoose = require('mongoose'),
 		_ = require('lodash'),
 		async = require('async'),
-		moment = require('moment');
+		moment = require('moment'),
+		fs = require('fs');
 
 var Dict = INCLUDE('dict');
 var Latex = INCLUDE('latex');
@@ -129,6 +130,7 @@ exports.install = function(options) {
 		F.route('/erp/api/order/file/{Id}/{fileName}', object.getFile, ['authorize']);
 		F.route('/erp/api/order/file/{Id}/{fileName}', object.deleteFile, ['delete', 'authorize']);
 		F.route('/erp/api/order/pdf/{orderId}', object.pdf, ['authorize']);
+		F.route('/erp/api/order/pdf/{orderId}', object.generatePdf, ['put', 'authorize']);
 		F.route('/erp/api/order/download/{:id}', object.download);
 
 		F.route('/erp/api/offer/pdf/{orderId}', object.pdf, ['authorize']);
@@ -1754,6 +1756,23 @@ Object.prototype = {
 												});
 								});
 						});
+				});
+		},
+		generatePdf: function(id) {
+				// Generation de la facture PDF et download
+				const OrderModel = MODEL('order').Schema.Order;
+				const self = this;
+
+				OrderModel.generatePdfById(id, self.query.model, function(err, doc) {
+						if (err)
+								return self.json({
+										errorNotify: {
+												title: 'Erreur',
+												message: err
+										}
+								});
+
+						return self.json({});
 				});
 		},
 		download: function(id) {

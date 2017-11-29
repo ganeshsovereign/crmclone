@@ -21,8 +21,8 @@ International Registered Trademark & Property of ToManage SAS
 
 
 
-exports.name = 'offers';
-exports.version = '1.00';
+exports.name = 'offer';
+exports.version = 1.00;
 exports.enabled = true;
 exports.description = "Gestion des devis et demandes d'achats";
 exports.rights = [{
@@ -92,3 +92,20 @@ exports.menus = {
 				}
 		}
 };
+
+exports.pdfModels = [{
+		code: 'OFFER',
+		module: 'offer',
+		latex: 'offer.tex', //latex main file in latex directory
+		langs: [{
+				description: "Devis (default)"
+		}]
+}];
+
+F.on('load', function() {
+		const ModulesModel = MODEL('modules').Schema;
+		ModulesModel.insert(exports, function(err, doc) {
+				if (err)
+						return console.log("Error update module {0} : {1} ".format(exports.name, err));
+		});
+});

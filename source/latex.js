@@ -148,7 +148,7 @@ Template.prototype.processContent = function(stream) {
 						//this.append({name: 'content.xml'})
 				],
 				function(err, result) {
-						// result now equals 'done'    
+						// result now equals 'done'
 
 						if (err)
 								return emit('error', err);
@@ -443,6 +443,7 @@ Template.prototype.compile = function(layout, inputTex) {
 								emit('pipe', outputStream);
 								outputStream.on('end', function() {
 										deleteFolderRecursive(dirPath);
+										emit('end');
 								});
 								return;
 						});
