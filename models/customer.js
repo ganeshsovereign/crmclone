@@ -1272,7 +1272,7 @@ exports.Status = {
 				"ST_NO": {
 						"enable": true,
 						"label": "DoNotContact",
-						"cssClass": "ribbon-color-info label-info",
+						"cssClass": "ribbon-color-danger label-danger",
 						"system": true
 				}
 		}
@@ -1297,7 +1297,7 @@ F.on('customer:recalculateStatus', function(data) {
 
 		async.waterfall([
 						function(wCb) {
-								CustomerModel.findById(data.supplier._id, "Status lastOrder ",
+								CustomerModel.findById(data.supplier._id, "Status lastOrder salesPurchases",
 										function(err, supplier) {
 												if (err)
 														return wCb(err);
@@ -1307,8 +1307,8 @@ F.on('customer:recalculateStatus', function(data) {
 
 												if (supplier.salesPurchases.isActive == false)
 														supplier.Status = "ST_NO";
-
-												supplier.Status = 'ST_NEVER';
+												else
+														supplier.Status = 'ST_NEVER';
 
 												return wCb(null, supplier);
 										});
