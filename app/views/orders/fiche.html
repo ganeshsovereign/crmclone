@@ -442,7 +442,7 @@
 						</thead>
 						<tbody>
 							<tr ng-repeat="pdf in object.pdfs">
-								<td><a ng-href="/erp/api/pdf/{{pdf.fileId}}?key={{pdf.token}}">{{pdf.filename}}</a> ({{pdf.datec | date:'dd/MM/yyyy HH:mm'}})</td>
+								<td><a ng-href="/erp/api/pdf/{{pdf.fileId}}?key={{pdf.token}}&filename={{pdf.filename}}">{{pdf.filename}}</a> ({{pdf.datec | date:'dd/MM/yyyy HH:mm'}})</td>
 								<td></td>
 							</tr>
 						</tbody>

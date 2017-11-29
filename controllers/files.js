@@ -119,7 +119,7 @@ exports.install = function() {
 								return self.throw500(err);
 
 						if (self.query.download)
-								return self.stream(store.contentType, store.stream(true), store.metadata.originalFilename); // for downloading 
+								return self.stream(store.contentType, store.stream(true), store.metadata.originalFilename); // for downloading
 
 						self.stream(store.contentType, store.stream(true));
 
@@ -206,4 +206,23 @@ exports.install = function() {
 						});
 				});
 		}, ['delete', 'authorize']);
+
+
+		F.file('/erp/api/pdf/*.pdf', downloadPdf);
+};
+
+
+function downloadPdf(req, res) {
+		//Test token download
+		var CryptoJS = require("crypto-js");
+
+		if (!CONFIG('sha1-secret'))
+				return res.throw401();
+
+		var token =  CryptoJS.SHA1(CONFIG('sha1-secret') + req.split.last().toUpperCase()).toString();
+
+		if(token !== req.query.key)
+			return res.throw401();
+
+		res.stream('application/pdf', fs.createReadStream(F.path.root() + '/uploads/pdf/' + req.split.last()),(req.query.filename || "donwload") + ".pdf");
 };
