@@ -51,7 +51,6 @@ exports.install = function() {
 		//update an account bank
 		F.route('/erp/api/bank/{id}', bank.update, ['put', 'json', 'authorize']);
 
-
 		F.route('/erp/api/bank/payment', payment.read, ['authorize']);
 		//F.route('/erp/api/payment/dt', payment.readDT, ['post', 'authorize']);
 		F.route('/erp/api/bank/payment', payment.create, ['post', 'json', 'authorize'], 1024);
@@ -160,6 +159,7 @@ Payment.prototype = {
 						}
 
 						self.json({
+								journal: journal,
 								successNotify: {
 										title: "Paiement enregistre",
 										message: "Piece comptable : " + journal[0].seq

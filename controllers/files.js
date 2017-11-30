@@ -219,10 +219,10 @@ function downloadPdf(req, res) {
 		if (!CONFIG('sha1-secret'))
 				return res.throw401();
 
-		var token =  CryptoJS.SHA1(CONFIG('sha1-secret') + req.split.last().toUpperCase()).toString();
+		var token = CryptoJS.SHA1(CONFIG('sha1-secret') + req.split.last().toUpperCase()).toString();
 
-		if(token !== req.query.key)
-			return res.throw401();
+		if (token !== req.query.key)
+				return res.throw401();
 
-		res.stream('application/pdf', fs.createReadStream(F.path.root() + '/uploads/pdf/' + req.split.last()),(req.query.filename || "donwload") + ".pdf");
+		res.stream('application/pdf', fs.createReadStream(F.path.root() + '/uploads/pdf/' + req.split.last()), (req.query.filename || "donwload") + ".pdf");
 };
