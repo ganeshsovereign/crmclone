@@ -235,7 +235,7 @@ Object.prototype = {
 
 				var type = self.query.type;
 
-				const exportMap = MODULE('orders').csv;
+				const exportMap = MODULE('order').csv;
 
 				var Stream = require('stream');
 				var stream = new Stream();
