@@ -4677,7 +4677,7 @@ F.on('order:recalculateStatus', function(data, callback) {
 																		if (status.fulfillStatus == 'ALL' && status.allocateStatus == 'ALL' && status.shippingStatus == 'ALL' && (status.invoiceStatus == 'ALL' || status.invoiceStatus == 'NOR'))
 																				query.Status = 'CLOSED';
 
-																		else if (status.fulfillStatus == 'NOR' && status.allocateStatus == 'NOR' && status.shippingStatus == 'NOR' && query.Status != 'DRAFT') {
+																		else if (status.fulfillStatus == 'NOR' && status.allocateStatus == 'NOR' && status.shippingStatus == 'NOR' && order.Status != 'DRAFT') {
 																				if (status.invoiceStatus == 'ALL')
 																						query.Status = 'CLOSED';
 																				else if (query.Status == 'CLOSED')
