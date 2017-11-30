@@ -1241,9 +1241,9 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 								$scope.totalAll = data.totalAll;
 								//console.log("query", data);
 
-								$scope.search.total_ht = {
-										value: [data.totalAll.min, data.totalAll.max]
-								};
+								//$scope.search.total_ht = {
+								//		value: [data.totalAll.min, data.totalAll.max]
+								//};
 
 								$timeout(function() {
 										Metronic.unblockUI('.waiting');
@@ -1837,9 +1837,9 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
 										$scope.orders = data.data;
 										$scope.totalAll = data.totalAll;
 
-										$scope.search.total_ht = {
-												value: [data.totalAll.min, data.totalAll.max]
-										};
+										//$scope.search.total_ht = {
+										//		value: [data.totalAll.min, data.totalAll.max]
+										//};
 
 										$timeout(function() {
 												Metronic.unblockUI('.waiting');
@@ -1851,9 +1851,9 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
 										$scope.orders = data.data;
 										$scope.totalAll = data.totalAll;
 
-										$scope.search.total_ht = {
-												value: [data.totalAll.min, data.totalAll.max]
-										};
+										//$scope.search.total_ht = {
+										//		value: [data.totalAll.min, data.totalAll.max]
+										//};
 
 										$timeout(function() {
 												Metronic.unblockUI('.waiting');
